@@ -1,6 +1,7 @@
 #ifndef FT_CONTAINER_H
 # define FT_CONTAINER_H
 
+// # include "vector.hpp"
 # include <string>
 # include <iomanip>
 # include <ios>
@@ -15,6 +16,12 @@
 template <typename myContainer, typename stlContainer>
 void    display(std::string error, myContainer &myCont, stlContainer &stlCont, std::ostream &o)
 {
+
+    static int error_count = 0;
+    error_count++;
+    std::cout << " (" << error_count << ')' << std::endl;
+
+    o << '(' << error_count << ')' << std::endl;
     o << "Error: " << error << std::endl;
     o << "My container:\n";
     o << "Size: " << std::setw(6) << myCont.size()
@@ -76,13 +83,13 @@ void    testContFeature(bool ok, std::string feature, myContainer &myCont, stlCo
     std::cout 
     << "\033[1;"
     << (90 + ((std::rand() + std::clock()) % 8))// + (60 * (std::clock() % 2)))
-    << 'm' << std::setw(20) << feature << "\033[0m";
+    << 'm' << std::setw(30) << feature << "\033[0m";
 
     if (ok)
         std::cout << OK_GREEN << std::endl;
     else
     {
-        std::cout << KO_RED << std::endl;
+        std::cout << KO_RED;
         display(feature, myCont, stlCont, std::cerr);
     }     
 }
@@ -110,16 +117,31 @@ void containerCmp(myContainer &myCont, stlContainer &stlCont)
         {
             if (*my_it != *stl_it)
             {
-                testContFeature(false, "Elements", myCont, stlCont);
+                testContFeature(false, "Elements (iterator)", myCont, stlCont);
                 break ;
             }
             my_it++;
             stl_it++;
         }
         if (my_it == my_ite && stl_it == stl_ite)
-            testContFeature(true, "Elements end", myCont, stlCont);
+            testContFeature(true, "Elements (iterator)", myCont, stlCont);
         else
-            testContFeature(false, "Elements end", myCont, stlCont);        
+            testContFeature(false, "Elements end (iterator)", myCont, stlCont);
+
+        typename myContainer::size_type i = 0;        
+        for (;i < myCont.size(); i++)
+        {
+            if (myCont[i] != stlCont[i])
+                break ;
+        }
+        testContFeature(i == myCont.size(), "Elements (operator[])", myCont, stlCont);
+        
+        for (i = 0; i < myCont.size(); i++)
+        {
+            if (myCont.at(i) != stlCont.at(i))
+                break ;
+        }
+        testContFeature(i == myCont.size(), "Elements (operator 'at')", myCont, stlCont);
     }
 
 }

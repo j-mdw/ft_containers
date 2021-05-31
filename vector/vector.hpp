@@ -5,6 +5,8 @@
 # include <cstddef> // for 'difference_type' type
 # include <limits>
 
+# include <iostream>
+
 # define VECTOR_GROWTH 2
 
 namespace ft
@@ -49,15 +51,15 @@ class vector
             resize(n, val);
         };
 
-        template <class InputIterator>
-        vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type()) : 
-        _vector(NULL),
-        _size(0),
-        _capacity(0)
-        {
-            (void)alloc;
-            assign(first, last);
-        };
+        // template <class InputIterator>
+        // vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type()) : 
+        // _vector(NULL),
+        // _size(0),
+        // _capacity(0)
+        // {
+        //     (void)alloc;
+        //     assign(first, last);
+        // };
 
         // vector (const vector& x);
 
@@ -103,7 +105,7 @@ class vector
         {
             reserve(n);
             if (n > this->_size)
-                memset(this->_vector + this->_size, val, (n - this->_size));
+                memset(this->_vector + this->_size, (n - this->_size), val);
             this->_size = n;
         };
 
@@ -114,7 +116,7 @@ class vector
         {
             if (n > this->_capacity)
             {
-                value_type *p = new value_type [n];
+                value_type *p = new value_type [n]; // Can add () after [n] to initialize
                 this->_capacity = n;
                 memcpy(p, this->_vector, this->_size);
                 delete [] this->_vector;
@@ -141,14 +143,16 @@ class vector
         template <class InputIterator>
         void assign (InputIterator first, InputIterator last)
         {
-            size_type range = range(first, last);
-            if (range > this->_capacity)
-                reserve(range);
-            this->_size = range;
-            for (size_type i = 0; i < range; i++)
+            size_type inputRange = range(first, last);
+            if (inputRange > this->_capacity)
+                reserve(inputRange);
+            this->_size = inputRange;
+            for (size_type i = 0; i < inputRange; i++)
+            {
                 this->_vector[i] = *first;
+                first++;
+            }
         };
-
         void assign (size_type n, const value_type& val)
         {
             this->_size = 0;
@@ -178,27 +182,38 @@ class vector
         {
             resize(this->_size + n);
             memmove(position + n, position, end() - position);
-            memset(position, val, n);
+            memset(position, n, val);
         };
 
-        template <class InputIterator>
-        void        insert (iterator position, InputIterator first, InputIterator last)
+        // template <class InputIterator>
+        // void        insert (iterator position, InputIterator first, InputIterator last)
+        // {
+        //     iterator startPosition = position;
+        //     size_type inputSize = range(first, last);
+        //     resize(this->_size + inputSize);
+        //     memmove(position + inputSize, position, end() - position);
+        //     while (first != last)
+        //     {
+        //         *position = *first;
+        //         position++;
+        //         first++;
+        //     }
+        //     return (startPosition);
+        // };
+
+        iterator erase (iterator position)
         {
-            iterator startPosition = position;
-            size_type inputSize = range(first, last);
-            resize(this->_size + inputSize);
-            memmove(position + inputSize, position, end() - position);
-            while (first != last)
-            {
-                *position = *first;
-                position++;
-                first++;
-            }
-            return (startPosition);
-        };
+            memmove(position, position + 1, range(position + 1, this->end()));
+            this->_size--;
+            return (position);
+        }
 
-        // iterator erase (iterator position);
-        // iterator erase (iterator first, iterator last);
+        iterator erase (iterator first, iterator last)
+        {
+            memmove(first, last, range(first, this->end()));
+            this->_size -= range(first, last);
+            return (first);
+        }
 
         // void swap (vector& x);
 
@@ -219,10 +234,7 @@ class vector
         void    memset (iterator dst, size_type n, const value_type &val)
         {
             for (size_type i = 0; i < n; i++)
-            {
-                *dst = val;
-                dst++;
-            }
+                dst[i] = val;
         };
 
         void    memcpy (iterator dst, iterator src, size_type n)
@@ -238,9 +250,9 @@ class vector
         void    memmove(iterator dst, iterator src, size_type n)
         {
             value_type *p = new value_type [n];
-            for (value_type i = 0; i < n; i++)
+            for (size_type i = 0; i < n; i++)
                 p[i] = src[i];
-            for (value_type i = 0; i < n; i++)
+            for (size_type i = 0; i < n; i++)
                 dst[i] = p[i];
             delete [] p;
         };
