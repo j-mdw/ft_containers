@@ -226,16 +226,19 @@ class vector
             return (first);
         }
 
-        // void swap (vector & x)
-        // {
-        //     value_type *    vector_cpy = this->_vector;
-        //     size_type       size_cpy = this->_size;
-        //     size_type       capacity_cpy = this->_capacity;
-        //     // vector<value_type> v_cpy(*this);
-        //     // std::cout << "x.begin: " << *x.begin() << std::endl;
-        //     this->assign(x.begin(), x.end());
-        //     x.assign(this->_vector, vector_cpy + size_cpy);
-        // };
+        void swap (vector & x)
+        {
+            value_type *    vector_cpy = this->_vector;
+            size_type       size_cpy = this->_size;
+            size_type       capacity_cpy = this->_capacity;
+
+            this->_vector = x._vector;
+            this->_size = x._size;
+            this->_capacity = x._capacity;
+            x._vector = vector_cpy;
+            x._size = size_cpy;
+            x._capacity = capacity_cpy;
+        };
 
         void clear(void)    { this->resize(0); };
 
@@ -347,10 +350,13 @@ class vector
             return !(lhs < rhs);
         };
 
-        // //  Swap
+        //  Swap
 
-        // template <class T, class Alloc>
-        // void swap (vector<T,Alloc>& x, vector<T,Alloc>& y);
+        template <class T, class Alloc>
+        void swap (vector<T,Alloc>& x, vector<T,Alloc>& y)
+        {
+            x.swap();
+        };
 
 }
 #endif
