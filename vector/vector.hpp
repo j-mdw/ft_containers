@@ -8,6 +8,7 @@
 # include <iostream>
 
 # define VECTOR_GROWTH 2
+# define MAX_SIZE std::numeric_limits<size_t>::max() >> 2
 
 namespace ft
 {
@@ -33,7 +34,7 @@ class vector
 
         // CONSTRUCTORS
 
-        explicit vector (const allocator_type& alloc = allocator_type()) : 
+        explicit vector (const allocator_type & alloc = allocator_type()) : 
         _vector(NULL),
         _size(0),
         _capacity(0)
@@ -42,7 +43,7 @@ class vector
             reserve(0);
         };
 
-        explicit vector (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()) :
+        explicit vector (size_type n, const value_type & val = value_type(), const allocator_type& alloc = allocator_type()) :
         _vector(NULL),
         _size(0),
         _capacity(0)
@@ -61,7 +62,17 @@ class vector
         //     assign(first, last);
         // };
 
-        // vector (const vector& x);
+        vector (const vector & x)
+        {
+            std::cout << "this->begin: " << this->begin() << std::endl;
+            std::cout << "this->size: " << this->size() << std::endl;
+            std::cout << "this->capacity: " << this->capacity() << std::endl;
+
+            std::cout << "x.begin: " << *x.begin() << std::endl;
+            std::cout << "x.size: " << x.size() << std::endl;
+            std::cout << "x.capacity: " << x.capacity() << std::endl;
+            assign(x.begin(), x.end());
+        };
 
         // DESTRUCTOR
 
@@ -72,13 +83,13 @@ class vector
 
         // COPY OPERATOR
 
-        vector& operator= (const vector& x);
+        vector& operator= (const vector & x);
 
     private:
 
-        T *         _vector;
-        size_type   _size;
-        size_type   _capacity;
+        value_type *    _vector;
+        size_type       _size;
+        size_type       _capacity;
 
     public:
 
@@ -99,7 +110,7 @@ class vector
         // CAPACITY
 
         size_type   size(void) const    { return this->_size; };
-        size_type   max_size() const    { return std::numeric_limits<size_t>::max(); };
+        size_type   max_size() const    { return MAX_SIZE; };
         
         void        resize (size_type n, value_type val = value_type())
         {
@@ -153,13 +164,13 @@ class vector
                 first++;
             }
         };
-        void assign (size_type n, const value_type& val)
+        void assign (size_type n, const value_type & val)
         {
             this->_size = 0;
             resize(n, val);
         };
 
-        void push_back (const value_type& val)
+        void push_back (const value_type & val)
         {
             if (this->_size == this->_capacity)
                 reserve(this->_capacity * VECTOR_GROWTH);
@@ -215,9 +226,18 @@ class vector
             return (first);
         }
 
-        // void swap (vector& x);
+        // void swap (vector & x)
+        // {
+        //     value_type *    vector_cpy = this->_vector;
+        //     size_type       size_cpy = this->_size;
+        //     size_type       capacity_cpy = this->_capacity;
+        //     // vector<value_type> v_cpy(*this);
+        //     // std::cout << "x.begin: " << *x.begin() << std::endl;
+        //     this->assign(x.begin(), x.end());
+        //     x.assign(this->_vector, vector_cpy + size_cpy);
+        // };
 
-        // void clear(void);
+        void clear(void)    { this->resize(0); };
 
 
     private:
@@ -263,28 +283,69 @@ class vector
 
         //  Relational operators
 
-        // template <class T, class Alloc>
-        // bool operator== (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs);
+        template <class T, class Alloc>
+        bool operator== (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+        {
+            if (lhs.size() != rhs.size())
+                return false;
+            for (typename vector<T>::size_type i = 0; i < lhs.size(); i++)
+            {
+                if (rhs[i] != lhs[i])
+                    return false;
+            }
+            return true;
+        };
 
 
-        // template <class T, class Alloc>
-        // bool operator!= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs);
-	
-
-        // template <class T, class Alloc>
-        // bool operator<  (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs);
-
-
-        // template <class T, class Alloc>
-        // bool operator<= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs);
+        template <class T, class Alloc>
+        bool operator!= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+        {
+            return !(lhs == rhs);
+        };
 
 
-        // template <class T, class Alloc>
-        // bool operator>  (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs);
+        template <class T, class Alloc>
+        bool operator< (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+        {
+            typename vector<T>::iterator it1 = lhs.begin();
+            typename vector<T>::iterator ite1 = lhs.end();
+        
+            typename vector<T>::iterator it2 = rhs.begin();
+            typename vector<T>::iterator ite2 = rhs.end();
+
+            for(;it1 != ite1; it1++)
+            {
+                if (it2 == ite2)
+                    return false; // rhs ends before lhs, rhs is less than lhs
+                if (*it1 != *it2)
+                    return (*it1 < *it2);
+                else
+                    it2++;
+            }
+            if (it2 != ite2)
+                return true;    // lhs ends before rhs
+            return false;
+        };
 
 
-        // template <class T, class Alloc>
-        // bool operator>= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs);
+        template <class T, class Alloc>
+        bool operator<= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+        {
+            return (lhs < rhs || lhs == rhs);
+        };
+
+        template <class T, class Alloc>
+        bool operator>  (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+        {
+            return !(lhs < rhs || lhs == rhs);
+        };
+
+
+        template <class T, class Alloc>
+        bool operator>= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+        {
+            return !(lhs < rhs);
+        };
 
         // //  Swap
 

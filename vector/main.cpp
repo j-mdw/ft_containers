@@ -44,6 +44,11 @@ main(void)
         std::vector<int> vv3(100, 42);
         containerCmp(v3, vv3);
 
+        std::cout << "\n#### Copy Constructor ####\n\n";
+        ft::vector<int> v3_cpy(v3);
+        containerCmp(v3_cpy, vv3);
+
+
         std::cout << "\n#### Resize to 150 with value 30 ####\n\n";
         v3.resize(150, 30);
         vv3.resize(150, 30);
@@ -75,9 +80,11 @@ main(void)
         containerCmp(v3, vv3);
 
         std::cout << "\n#### Assign (iterator) ####\n\n";
-        std::vector<int> vvv3(10, -13);
-        v3.assign(vvv3.begin(), vvv3.end());
-        vv3.assign(vvv3.begin(), vvv3.end());
+        ft::vector<int> v3v(10, -13);
+        std::vector<int> vv3v(10, -13);
+
+        v3.assign(v3v.begin(), v3v.end());
+        vv3.assign(vv3v.begin(), vv3v.end());
         containerCmp(v3, vv3);
 
         // std::cout << "\n#### Assign (value) ####\n\n";
@@ -136,13 +143,96 @@ main(void)
             *v3.erase(v3.end() - 1) ==
             *vv3.erase(vv3.end() - 1),
             "Erase2:", v3, vv3);
-        // testContFeature(
-            // *
-        v3.erase(v3.end());
-        vv3.erase(vv3.end());
-            // "Erase3:", v3, vv3);
-
         containerCmp(v3, vv3);
+
+        // std::cout << "\n#### Swap (non-static method) ####\n\n";
+        // ft::vector<int> v3s(7, -7);
+        // std::vector<int> vv3s(7, -7);
+        
+        // v3.swap(v3s);
+        // vv3.swap(vv3s);
+        // containerCmp(v3, vv3);
+        // containerCmp(v3s, vv3s);
+
+        // std::cout << "\n#### Clear ####\n\n";
+        // v3.clear();
+        // vv3.clear();
+        // containerCmp(v3, vv3); 
+
+        std::cout << "\n#### Relational operators ####\n\n";
+        {
+            ft::vector<int> v4(10, 42);
+            ft::vector<int> v5(10, 42);
+            std::vector<int> vv4(10, 42);
+            std::vector<int> vv5(10, 42);
+            testContFeature(v4 == v5, "operator ==", v4, v5);
+            testContFeature(vv4 == vv5, "operator ==", vv4, vv5);
+            v5.pop_back();
+            vv5.pop_back();
+            testContFeature(!(v4 == v5), "operator ==", v4, v5);
+            testContFeature(!(vv4 == vv5), "operator ==", vv4, vv5);
+            testContFeature(v4 >= v5, "operator >=", v4, v5);
+            testContFeature(vv4 >= vv5, "operator >=", vv4, vv5);
+            testContFeature(v4 > v5, "operator >", v4, v5);
+            testContFeature(vv4 > vv5, "operator >", vv4, vv5);
+            v5.push_back(7);
+            vv5.push_back(7);
+            testContFeature(!(v4 == v5), "operator ==", v4, v5);
+            testContFeature(!(vv4 == vv5), "operator ==", vv4, vv5);
+            testContFeature(v4 >= v5, "operator >=", v4, v5);
+            testContFeature(vv4 >= vv5, "operator >=", vv4, vv5);
+            testContFeature(v4 > v5, "operator >", v4, v5);
+            testContFeature(vv4 > vv5, "operator >", vv4, vv5);
+
+            testContFeature(v4 != v5, "operator !=", v4, v5);
+            testContFeature(vv4 != vv5, "operator !=", vv4, vv5);
+            v5.pop_back();
+            vv5.pop_back();
+            testContFeature(v4 != v5, "operator !=", v4, v5);
+            testContFeature(vv4 != vv5, "operator !=", vv4, vv5);
+            v5.push_back(42);
+            vv5.push_back(42);
+            testContFeature(!(v4 != v5), "operator !=", v4, v5);
+            testContFeature(!(vv4 != vv5), "operator !=", vv4, vv5);
+            testContFeature(v4 >= v5, "operator >=", v4, v5);
+            testContFeature(vv4 >= vv5, "operator >=", vv4, vv5);
+            testContFeature(!(v4 > v5), "operator >", v4, v5);
+            testContFeature(!(vv4 > vv5), "operator >", vv4, vv5);
+
+
+            testContFeature(!(v4 < v5), "operator <", v4, v5);
+            testContFeature(!(vv4 < vv5), "operator <", vv4, vv5);
+            v4.pop_back();
+            vv4.pop_back();
+            testContFeature(v4 < v5, "operator <", v4, v5);
+            testContFeature(vv4 < vv5, "operator <", vv4, vv5);
+            testContFeature(v4 <= v5, "operator <=", v4, v5);
+            testContFeature(vv4 <= vv5, "operator <=", vv4, vv5);
+            testContFeature(v4 != v5, "operator !=", v4, v5);
+            testContFeature(vv4 != vv5, "operator !=", vv4, vv5);
+            v5.pop_back();
+            vv5.pop_back();
+            v5.pop_back();
+            vv5.pop_back();
+            testContFeature(!(v4 < v5), "operator <", v4, v5);
+            testContFeature(!(vv4 < vv5), "operator <", vv4, vv5);
+            v5.push_back(100);
+            vv5.push_back(100);
+            testContFeature(v4 < v5, "operator <", v4, v5);
+            testContFeature(vv4 < vv5, "operator <", vv4, vv5);
+            v5.pop_back();
+            vv5.pop_back();
+            v4[0] = -10;
+            vv4[0] = -10;
+            testContFeature(v4 < v5, "operator <", v4, v5);
+            testContFeature(vv4 < vv5, "operator <", vv4, vv5);
+            v4.at(0) = 100;
+            vv4.at(0) = 100;
+            testContFeature(!(v4 < v5), "operator <", v4, v5);
+            testContFeature(!(vv4 < vv5), "operator <", vv4, vv5);
+
+            
+        }
     }
     return (0);
 }
