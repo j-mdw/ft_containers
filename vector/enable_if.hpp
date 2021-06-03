@@ -28,6 +28,22 @@ struct is_integral
 	{
 		value = true;
 	}
+
+	void foo(void)
+	{
+		return true;
+	};
+
+	return (a + b);
 };
+
+class name
+{
+	name(void) :
+
+
+
+	{};	
+}
 
 #endif

@@ -48,6 +48,15 @@ main(void)
         ft::vector<int> v3_cpy(v3);
         containerCmp(v3_cpy, vv3);
 
+        std::cout << "\n#### Reverse iterator ####\n\n";
+        ft::reverse_iterator<int> rite = v3.rend();
+        ft::reverse_iterator<int> rit = v3.rbegin();
+        
+        for (; rite != rit; rite++)
+        {
+            std::cout << *rite;
+        }
+
 
         std::cout << "\n#### Resize to 150 with value 30 ####\n\n";
         v3.resize(150, 30);
@@ -145,19 +154,26 @@ main(void)
             "Erase2:", v3, vv3);
         containerCmp(v3, vv3);
 
-        // std::cout << "\n#### Swap (non-static method) ####\n\n";
-        // ft::vector<int> v3s(7, -7);
-        // std::vector<int> vv3s(7, -7);
+        std::cout << "\n#### Swap (method) ####\n\n";
+        ft::vector<int> v3s(7, -7);
+        std::vector<int> vv3s(7, -7);
         
-        // v3.swap(v3s);
-        // vv3.swap(vv3s);
-        // containerCmp(v3, vv3);
-        // containerCmp(v3s, vv3s);
+        v3.swap(v3s);
+        vv3.swap(vv3s);
+        containerCmp(v3, vv3);
+        containerCmp(v3s, vv3s);
 
-        // std::cout << "\n#### Clear ####\n\n";
-        // v3.clear();
-        // vv3.clear();
-        // containerCmp(v3, vv3); 
+        std::cout << "\n#### Swap (non-member function overload) ####\n\n";
+
+        ft::swap(v3, v3s);
+        std::swap(vv3, vv3s);
+        containerCmp(v3, vv3);
+        containerCmp(v3s, vv3s);
+
+        std::cout << "\n#### Clear ####\n\n";
+        v3.clear();
+        vv3.clear();
+        containerCmp(v3, vv3); 
 
         std::cout << "\n#### Relational operators ####\n\n";
         {
@@ -230,8 +246,7 @@ main(void)
             vv4.at(0) = 100;
             testContFeature(!(v4 < v5), "operator <", v4, v5);
             testContFeature(!(vv4 < vv5), "operator <", vv4, vv5);
-
-            
+           
         }
     }
     return (0);

@@ -6,6 +6,8 @@
 # include <limits>
 
 # include <iostream>
+# include "reverse_iterator.hpp"
+
 
 # define VECTOR_GROWTH 2
 # define MAX_SIZE std::numeric_limits<size_t>::max() >> 2
@@ -27,8 +29,8 @@ class vector
         typedef typename allocator_type::const_pointer      const_pointer;
         typedef value_type *                                iterator;
         typedef value_type * const                          const_iterator;
-        typedef value_type *                                reverse_iterator;   // Will try to handle this with operators overloads
-        typedef value_type * const                          const_reverse_iterator;
+        typedef typename ft::reverse_iterator<value_type>                reverse_iterator;
+        typedef typename ft::reverse_iterator<value_type>                const_reverse_iterator;
         typedef ptrdiff_t                                   difference_type;
         typedef size_t                                      size_type;
 
@@ -101,11 +103,29 @@ class vector
         iterator        end(void)       { return (this->_vector + this->_size); };
         const_iterator  end(void) const { return (this->_vector + this->_size); };
 
-        // reverse_iterator        rbegin(void);
-        // const_reverse_iterator  rbegin(void) const;
+        reverse_iterator        rbegin(void)
+        {
+            reverse_iterator<value_type> rit(this->begin());
+            return rit;
+        };
 
-        // reverse_iterator        rend(void);
-        // const_reverse_iterator  rend(void) const;
+        const_reverse_iterator  rbegin(void) const
+        {
+            reverse_iterator<value_type> rit(this->begin());
+            return rit;
+        };
+
+        reverse_iterator        rend(void)
+        {
+            reverse_iterator<value_type> rite(this->end());
+            return rite;
+        };
+        
+        const_reverse_iterator  rend(void) const
+        {
+            reverse_iterator<value_type> rite(this->end());
+            return rite;
+        }
 
         // CAPACITY
 
@@ -355,8 +375,9 @@ class vector
         template <class T, class Alloc>
         void swap (vector<T,Alloc>& x, vector<T,Alloc>& y)
         {
-            x.swap();
+            x.swap(y);
         };
 
 }
+
 #endif
