@@ -70,18 +70,18 @@ class iterator
         T *_base_iterator;
 };
 
-    template <class Iterator>
-    bool operator== (const iterator<Iterator>& lhs, const iterator<Iterator>& rhs)
-    {
-        if (lhs->_rev_iterator == rhs->_rev_iterator)
-            return true;
-        return false;
-    };
+//     template <class Iterator>
+//     bool operator== (const iterator<Iterator>& lhs, const iterator<Iterator>& rhs)
+//     {
+//         if (lhs->_rev_iterator == rhs->_rev_iterator)
+//             return true;
+//         return false;
+//     };
 
-    template <class Iterator>
-    bool operator!= (const iterator<Iterator>& lhs, const iterator<Iterator>& rhs)
-    {
-        return !(lhs == rhs);
-    };
-}
+//     template <class Iterator>
+//     bool operator!= (const iterator<Iterator>& lhs, const iterator<Iterator>& rhs)
+//     {
+//         return !(lhs == rhs);
+//     };
+// }
 #endif

@@ -29,8 +29,8 @@ class vector
         typedef typename allocator_type::const_pointer      const_pointer;
         typedef value_type *                                iterator;
         typedef value_type * const                          const_iterator;
-        typedef typename ft::reverse_iterator<value_type>                reverse_iterator;
-        typedef typename ft::reverse_iterator<value_type>                const_reverse_iterator;
+        typedef ft::reverse_iterator<iterator>              reverse_iterator;
+        typedef ft::reverse_iterator<const_iterator>        const_reverse_iterator;
         typedef ptrdiff_t                                   difference_type;
         typedef size_t                                      size_type;
 
@@ -105,25 +105,25 @@ class vector
 
         reverse_iterator        rbegin(void)
         {
-            reverse_iterator<value_type> rit(this->begin());
+            reverse_iterator rit(this->begin());
             return rit;
         };
 
         const_reverse_iterator  rbegin(void) const
         {
-            reverse_iterator<value_type> rit(this->begin());
+            const_reverse_iterator rit(this->begin());
             return rit;
         };
 
         reverse_iterator        rend(void)
         {
-            reverse_iterator<value_type> rite(this->end());
+            reverse_iterator rite(this->end());
             return rite;
         };
         
         const_reverse_iterator  rend(void) const
         {
-            reverse_iterator<value_type> rite(this->end());
+            const_reverse_iterator rite(this->end());
             return rite;
         }
 

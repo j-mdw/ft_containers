@@ -31,6 +31,7 @@ main(void)
         std::cout << "\n##### Empty vector #####\n\n";
         ft::vector<int> v1;
         std::vector<int> vv1;
+        
         containerCmp(v1, vv1);
 
         std::cout << "\n##### Vector initialize with size 10 #####\n\n";
@@ -49,8 +50,8 @@ main(void)
         containerCmp(v3_cpy, vv3);
 
         std::cout << "\n#### Reverse iterator ####\n\n";
-        ft::reverse_iterator<int> rite = v3.rend();
-        ft::reverse_iterator<int> rit = v3.rbegin();
+        ft::reverse_iterator<ft::vector<int>::iterator> rite = v3.rend();
+        ft::reverse_iterator<ft::vector<int>::iterator> rit = v3.rbegin();
         
         for (; rite != rit; rite++)
         {
