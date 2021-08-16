@@ -34,23 +34,33 @@ class vector
         typedef ptrdiff_t                                   difference_type;
         typedef size_t                                      size_type;
 
+		// VARIABLES
+
+    private:
+
+        value_type *    _vector;
+        size_type       _size;
+        size_type       _capacity;
+		Alloc			_allocator;
+
         // CONSTRUCTORS
 
+	public:
         explicit vector (const allocator_type & alloc = allocator_type()) : 
         _vector(NULL),
         _size(0),
-        _capacity(0)
+        _capacity(0),
+		_allocator(alloc)
         {
-            (void)alloc;
             reserve(0);
         };
 
-        explicit vector (size_type n, const value_type & val = value_type(), const allocator_type& alloc = allocator_type()) :
+        explicit vector (size_type n, const value_type & val = value_type(), const allocator_type & alloc = allocator_type()) :
         _vector(NULL),
         _size(0),
-        _capacity(0)
+        _capacity(0),
+		_allocator(alloc)
         {
-            (void)alloc;
             resize(n, val);
         };
 
@@ -80,18 +90,14 @@ class vector
 
         ~vector(void)
         {
-            delete [] this->_vector;
+			_allocator.deallocate(this->_vector, _capacity);
+            // delete [] this->_vector;
         };
 
         // COPY OPERATOR
 
         vector& operator= (const vector & x);
 
-    private:
-
-        value_type *    _vector;
-        size_type       _size;
-        size_type       _capacity;
 
     public:
 
@@ -147,7 +153,8 @@ class vector
         {
             if (n > this->_capacity)
             {
-                value_type *p = new value_type [n]; // Can add () after [n] to initialize
+                value_type *p = _allocator.allocate(n);
+				// new value_type [n]; // Can add () after [n] to initialize
                 this->_capacity = n;
                 memcpy(p, this->_vector, this->_size);
                 delete [] this->_vector;
