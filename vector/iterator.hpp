@@ -8,8 +8,7 @@ template <typename T>
 class iterator
 {
     public:
-        iterator(T *it) :
-        _base_iterator(it)
+        iterator(T *it) : _base_iterator(it)
         {};
 
         ~iterator(void);
