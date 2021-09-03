@@ -14,12 +14,11 @@ template <class Category,              // iterator::iterator_category
 class iterator
 {
 	public:
-
+		typedef Category  iterator_category;
 		typedef T         value_type;
 		typedef Distance  difference_type;
 		typedef Pointer   pointer;
 		typedef Reference reference;
-		typedef Category  iterator_category;
 };
 
 }

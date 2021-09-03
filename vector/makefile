@@ -4,20 +4,25 @@ C = clang++
 
 F = -Wall -Werror -Wextra -std=c++98
 
-I = -I 
-
-H = ../iterator ../enable_if ../is_integral
-
-I += $H;
+I = -I ../iterator -I ../enable_if -I ../is_integral
 
 FILES = main.cpp
+
+DEBUG = debug
+
+DEBUG_F = -g3
 
 all: $(NAME)
 
 $(NAME): $(FILES)
 	$C $F $I $< -o $@
 
+$(DEBUG):  $(FILES)
+	$C $F $(DEBUG_F) $I $< -o $(NAME)
+
 clean:
 
 fclean:
-	rm $(NAME)	
+	rm -f $(NAME)
+
+re: fclean all

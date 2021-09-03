@@ -21,7 +21,7 @@ class reverse_iterator
         iterator_type _base;
 
     public:
-		reverse_iterator(void);
+		reverse_iterator(void) {};
 
 		explicit reverse_iterator(iterator_type it) :
         _base(it) {};
@@ -30,7 +30,7 @@ class reverse_iterator
 		reverse_iterator(const reverse_iterator<Iter> & rev_it) :
         _base(rev_it._base) {};
 
-        ~reverse_iterator(void);
+        ~reverse_iterator(void) {};
 
         reverse_iterator & operator= (const reverse_iterator & rev_it)
         {
@@ -69,7 +69,7 @@ class reverse_iterator
         reverse_iterator operator++ (int)
         {
             reverse_iterator cpy = *this;
-            --(*this);
+            --this->_base;
             return cpy;
         };
 
@@ -82,7 +82,7 @@ class reverse_iterator
         reverse_iterator operator-- (int)
         {
             reverse_iterator cpy = *this;
-            ++(*this);
+            ++this->_base;
             return cpy;
         };
 

@@ -50,23 +50,135 @@ main(void)
         containerCmp(v3_cpy, vv3);
 
         std::cout << "\n#### Reverse iterator ####\n\n";
-        ft::vector<int>::reverse_iterator rite = v3.rend();
-        ft::vector<int>::reverse_iterator rit = v3.rbegin();
-        // std::vector<int>::reverse_iterator std_rite = vv3.rend();
-        // std::vector<int>::reverse_iterator std_rit = vv3.rbegin();
+        {
+		ft::vector<int> my_v;
+		std::vector<int> std_v;
+		for (int i = 0; i < 10; i++)
+		{
+			my_v.push_back(i);
+			std_v.push_back(i);
+		}
 
-        // for (; rite != rit; rite++)
-        // {
-        //     std::cout << *rit << " : " << *std_rit << '|';
-        //     if (*rit != *std_rit)
-        //         std::cout << "Rev it failed\n";
-        // }
-        // std::cout << '\n';
-        // if (rit == rite && std_rit == std_rite)
-        //     std::cout << "Rev it ok\n";
-        // else
-        //     std::cout << "Rev it failed\n";
+        ft::vector<int>::reverse_iterator rit = my_v.rbegin();
+		ft::vector<int>::reverse_iterator rite = my_v.rend();
 
+        std::vector<int>::reverse_iterator std_rit = std_v.rbegin();
+        std::vector<int>::reverse_iterator std_rite = std_v.rend();
+
+        for (; rit != rite; rit++)
+        {
+			// std::cout << "Begin: " <<
+            std::cout << *rit << " : " << *std_rit << " | ";
+            if (*rit != *std_rit)
+			{
+                std::cout << "Rev it failed\n";
+				break ;
+			}
+			std_rit++;
+        }
+        std::cout << '\n';
+        if (rit == rite && std_rit == std_rite)
+            std::cout << "Rev it ok\n";
+        else
+            std::cout << "Rev it failed\n";
+		if (*(rit - 1) != *(std_rit - 1))
+			std::cout << "KO|";
+		else
+			std::cout << "OK|";
+		if (*(rit - 5) != *(std_rit - 5))
+			std::cout << "KO|";
+		else
+			std::cout << "OK|";
+
+		rit--;
+		std_rit--;
+		if (*rit != *std_rit)
+			std::cout << "KO|";
+		else
+			std::cout << "OK|";
+		rit-= 6;
+		std_rit -= 6;
+		if (*rit != *std_rit)
+			std::cout << "KO|";
+		else
+			std::cout << "OK|";
+		rit+= 2;
+		std_rit += 2;
+		if (*rit != *std_rit)
+			std::cout << "KO|";
+		else
+			std::cout << "OK|";
+
+		if (*++rit != *++std_rit)
+			std::cout << "KO|";
+		else
+			std::cout << "OK|";
+		if (*rit-- != *std_rit--)
+			std::cout << "KO|";
+		else
+			std::cout << "OK|";
+		if (*(rit - 2) != *(std_rit -2))
+			std::cout << "KO|";
+		else
+			std::cout << "OK|";
+		
+		ft::vector<int>::reverse_iterator rit_cpy(rit);
+		std::vector<int>::reverse_iterator std_rit_cpy(std_rit);
+
+		if ((rit != rit_cpy) != (std_rit != std_rit_cpy))
+			std::cout << "KO|";
+		else
+			std::cout << "OK|";
+		if ((rit == rit_cpy) != (std_rit == std_rit_cpy))
+			std::cout << "KO|";
+		else
+			std::cout << "OK|";
+		if ((rit >= rit_cpy) != (std_rit >= std_rit_cpy))
+			std::cout << "KO|";
+		else
+			std::cout << "OK|";
+		if ((rit <= rit_cpy) != (std_rit <= std_rit_cpy))
+			std::cout << "KO|";
+		else
+			std::cout << "OK|";
+		
+		if ((rit < rit_cpy) != (std_rit < std_rit_cpy))
+			std::cout << "KO|";
+		else
+			std::cout << "OK|";
+		if ((rit > rit_cpy) != (std_rit > std_rit_cpy))
+			std::cout << "KO|";
+		else
+			std::cout << "OK|";
+
+		rit_cpy--; std_rit_cpy--;
+		if ((rit != rit_cpy) != (std_rit != std_rit_cpy))
+			std::cout << "KO|";
+		else
+			std::cout << "OK|";
+		if ((rit == rit_cpy) != (std_rit == std_rit_cpy))
+			std::cout << "KO|";
+		else
+			std::cout << "OK|";
+		if ((rit >= rit_cpy) != (std_rit >= std_rit_cpy))
+			std::cout << "KO|";
+		else
+			std::cout << "OK|";
+		if ((rit <= rit_cpy) != (std_rit <= std_rit_cpy))
+			std::cout << "KO|";
+		else
+			std::cout << "OK|";
+		
+		if ((rit < rit_cpy) != (std_rit < std_rit_cpy))
+			std::cout << "KO|";
+		else
+			std::cout << "OK|";
+		if ((rit > rit_cpy) != (std_rit > std_rit_cpy))
+			std::cout << "KO|";
+		else
+			std::cout << "OK|";
+
+		}
         std::cout << "\n#### Resize to 150 with value 30 ####\n\n";
         v3.resize(150, 30);
         vv3.resize(150, 30);
