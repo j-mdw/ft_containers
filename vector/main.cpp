@@ -49,15 +49,23 @@ main(void)
         ft::vector<int> v3_cpy(v3);
         containerCmp(v3_cpy, vv3);
 
-        // std::cout << "\n#### Reverse iterator ####\n\n";
-        // ft::reverse_iterator<ft::vector<int>::iterator> rite = v3.rend();
-        // ft::reverse_iterator<ft::vector<int>::iterator> rit = v3.rbegin();
-        
+        std::cout << "\n#### Reverse iterator ####\n\n";
+        ft::vector<int>::reverse_iterator rite = v3.rend();
+        ft::vector<int>::reverse_iterator rit = v3.rbegin();
+        // std::vector<int>::reverse_iterator std_rite = vv3.rend();
+        // std::vector<int>::reverse_iterator std_rit = vv3.rbegin();
+
         // for (; rite != rit; rite++)
         // {
-        //     std::cout << *rite;
+        //     std::cout << *rit << " : " << *std_rit << '|';
+        //     if (*rit != *std_rit)
+        //         std::cout << "Rev it failed\n";
         // }
-
+        // std::cout << '\n';
+        // if (rit == rite && std_rit == std_rite)
+        //     std::cout << "Rev it ok\n";
+        // else
+        //     std::cout << "Rev it failed\n";
 
         std::cout << "\n#### Resize to 150 with value 30 ####\n\n";
         v3.resize(150, 30);

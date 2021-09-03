@@ -4,7 +4,6 @@
 # include <memory>
 # include <cstddef> // for 'difference_type' type
 # include <limits>
-
 # include <iostream>
 # include "reverse_iterator.hpp"
 
@@ -29,9 +28,9 @@ class vector
         typedef typename allocator_type::const_pointer      const_pointer;
         typedef value_type *                                iterator;
         typedef value_type * const                          const_iterator;
-        typedef ft::reverse_iterator<iterator>              reverse_iterator;
-        typedef ft::reverse_iterator<const_iterator>        const_reverse_iterator;
-        typedef ptrdiff_t                                   difference_type;
+        typedef typename ft::reverse_iterator<iterator>         reverse_iterator;
+        typedef typename ft::reverse_iterator<const_iterator>   const_reverse_iterator;
+        typedef typename iterator_traits<iterator>::difference_type difference_type;
         typedef size_t                                      size_type;
 
 		// VARIABLES
@@ -109,27 +108,27 @@ class vector
         iterator        end(void)       { return (this->_vector + this->_size); };
         const_iterator  end(void) const { return (this->_vector + this->_size); };
 
-        reverse_iterator        rbegin(void)
+        reverse_iterator    rbegin(void)
         {
-            reverse_iterator rit(this->begin());
+            reverse_iterator rit(this->end());
             return rit;
         };
 
         const_reverse_iterator  rbegin(void) const
         {
-            const_reverse_iterator rit(this->begin());
+            const_reverse_iterator rit(this->end());
             return rit;
         };
 
         reverse_iterator        rend(void)
         {
-            reverse_iterator rite(this->end());
+            reverse_iterator rite(this->begin());
             return rite;
         };
         
         const_reverse_iterator  rend(void) const
         {
-            const_reverse_iterator rite(this->end());
+            const_reverse_iterator rite(this->begin());
             return rite;
         }
 

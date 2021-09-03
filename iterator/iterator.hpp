@@ -1,7 +1,7 @@
-#ifndef ITERATOR_HPP
-# define ITERATOR_HPP
+#ifndef FT_ITERATOR_HPP
+# define FT_ITERATOR_HPP
 
-#include <iterator> //needed for iteartor_categories
+class Category;
 
 namespace ft {
 
