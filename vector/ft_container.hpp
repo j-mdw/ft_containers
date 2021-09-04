@@ -16,7 +16,6 @@
 template <typename myContainer, typename stlContainer>
 void    display(std::string error, myContainer &myCont, stlContainer &stlCont, std::ostream &o)
 {
-
     static int error_count = 0;
     error_count++;
     std::cout << " (" << error_count << ')' << std::endl;

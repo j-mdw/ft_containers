@@ -47,7 +47,7 @@ class vector
         // CONSTRUCTORS
 
 	public:
-        explicit vector (const allocator_type & alloc = allocator_type()) : 
+        explicit vector(const allocator_type & alloc = allocator_type()) : 
         _vector(NULL),
         _size(0),
         _capacity(0),
@@ -56,7 +56,7 @@ class vector
             reserve(0);
         };
 
-        explicit vector (size_type n, const value_type & val = value_type(), const allocator_type & alloc = allocator_type()) :
+        explicit vector(size_type n, const value_type & val = value_type(), const allocator_type & alloc = allocator_type()) :
         _vector(NULL),
         _size(0),
         _capacity(0),
@@ -65,8 +65,8 @@ class vector
             resize(n, val);
         };
 
-        template <class InputIterator, typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator> >
-        vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type()) : 
+        template <class InputIterator>
+        vector(InputIterator first, typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type last, const allocator_type& alloc = allocator_type()) : 
         _vector(NULL),
         _size(0),
         _capacity(0),
@@ -75,15 +75,20 @@ class vector
             assign(first, last);
         };
 
-        vector (const vector & x)
+        vector(const vector & x) :
+		_vector(NULL),
+		_size(0),
+		_capacity(0),
+		_allocator(x._allocator)
         {
-            std::cout << "this->begin: " << this->begin() << std::endl;
-            std::cout << "this->size: " << this->size() << std::endl;
-            std::cout << "this->capacity: " << this->capacity() << std::endl;
+            // std::cout << "this->begin: " << this->begin() << std::endl;
+            // std::cout << "this->size: " << this->size() << std::endl;
+            // std::cout << "this->capacity: " << this->capacity() << std::endl;
 
-            std::cout << "x.begin: " << *x.begin() << std::endl;
-            std::cout << "x.size: " << x.size() << std::endl;
-            std::cout << "x.capacity: " << x.capacity() << std::endl;
+            // std::cout << "x.begin: " << *x.begin() << std::endl;
+            // std::cout << "x.size: " << x.size() << std::endl;
+            // std::cout << "x.capacity: " << x.capacity() << std::endl;
+			// reserve(x._capacity);
             assign(x.begin(), x.end());
         };
 
@@ -94,10 +99,14 @@ class vector
 			_allocator.deallocate(this->_vector, _capacity);
         };
 
-        // COPY OPERATOR
+        // ASSIGNMENT OPERATOR
 
-        vector& operator= (const vector & x);
-
+        vector& operator= (const vector & x)
+		{
+			_allocator = x._allocator;
+			reserve(x._capacity);
+			assign(x.begin(), x.end());
+		};
 
     public:
 
@@ -131,12 +140,12 @@ class vector
         {
             const_reverse_iterator rite(this->begin());
             return rite;
-        }
+        };
 
         // CAPACITY
 
         size_type   size(void) const    { return this->_size; };
-        size_type   max_size() const    { return MAX_SIZE; };
+        size_type   max_size(void) const    { return MAX_SIZE; };
         
         void        resize (size_type n, value_type val = value_type())
         {
@@ -146,15 +155,14 @@ class vector
             this->_size = n;
         };
 
-        size_type   capacity() const    { return this->_capacity; };
-        bool        empty() const       { return (this->_size == 0); }; // IS 0 CONSIDERED BOOL?
+        size_type   capacity(void) const    { return this->_capacity; };
+        bool        empty(void) const       { return (this->_size == 0); };
         
-        void        reserve (size_type n)
+        void        reserve(size_type n)
         {
             if (n > this->_capacity)
             {
                 value_type *p = _allocator.allocate(n);
-				// new value_type [n]; // Can add () after [n] to initialize
                 this->_capacity = n;
                 memcpy(p, this->_vector, this->_size);
                 delete [] this->_vector;
@@ -167,8 +175,8 @@ class vector
         reference       operator[] (size_type n)        { return this->_vector[n]; };
         const_reference operator[] (size_type n) const  { return this->_vector[n]; };
 
-        reference       at (size_type n)        { return this->_vector[n]; };
-        const_reference at (size_type n) const  { return this->_vector[n]; };
+        reference       at(size_type n)        { return this->_vector[n]; };
+        const_reference at(size_type n) const  { return this->_vector[n]; };
 
         reference       front(void)         { return this->_vector[0]; };
         const_reference front(void) const   { return this->_vector[0]; };
@@ -179,7 +187,7 @@ class vector
         // MODIFIERS
 
         template <class InputIterator>
-        void assign (InputIterator first, InputIterator last)
+        void assign(InputIterator first, typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type last)
         {
             size_type inputRange = range(first, last);
             if (inputRange > this->_capacity)
@@ -191,13 +199,14 @@ class vector
                 first++;
             }
         };
-        void assign (size_type n, const value_type & val)
+
+        void assign(size_type n, const value_type & val)
         {
             this->_size = 0;
             resize(n, val);
         };
 
-        void push_back (const value_type & val)
+        void push_back(const value_type & val)
         {
             if (this->_size == this->_capacity)
 			{
@@ -224,44 +233,43 @@ class vector
             return (position);
         };
 
-        void        insert (iterator position, size_type n, const value_type& val)
+        void        insert(iterator position, size_type n, const value_type& val)
         {
             resize(this->_size + n);
             memmove(position + n, position, end() - position);
             memset(position, n, val);
         };
 
-        // template <class InputIterator>
-        // void        insert (iterator position, InputIterator first, InputIterator last)
-        // {
-        //     iterator startPosition = position;
-        //     size_type inputSize = range(first, last);
-        //     resize(this->_size + inputSize);
-        //     memmove(position + inputSize, position, end() - position);
-        //     while (first != last)
-        //     {
-        //         *position = *first;
-        //         position++;
-        //         first++;
-        //     }
-        //     return (startPosition);
-        // };
+        template <class InputIterator>
+        void        insert(iterator position, InputIterator first, typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type last)
+        {
+            // iterator startPosition = position;
+            size_type inputSize = range(first, last);
+            resize(this->_size + inputSize);
+            memmove(position + inputSize, position, end() - position);
+            while (first != last)
+            {
+                *position = *first;
+                position++;
+                first++;
+            }
+        };
 
-        iterator erase (iterator position)
+        iterator erase(iterator position)
         {
             memmove(position, position + 1, range(position + 1, this->end()));
             this->_size--;
             return (position);
-        }
+        };
 
-        iterator erase (iterator first, iterator last)
+        iterator erase(iterator first, iterator last)
         {
             memmove(first, last, range(first, this->end()));
             this->_size -= range(first, last);
             return (first);
-        }
+        };
 
-        void swap (vector & x)
+        void swap(vector & x)
         {
             value_type *    vector_cpy = this->_vector;
             size_type       size_cpy = this->_size;
@@ -281,7 +289,7 @@ class vector
     private:
 
         template <class InputIterator>
-        size_type    range (InputIterator first, InputIterator last)
+        size_type    range(InputIterator first, InputIterator last)
         {
             size_type n = 0;
             for (; first != last; first++)
@@ -289,13 +297,13 @@ class vector
             return (n);
         };
 
-        void    memset (iterator dst, size_type n, const value_type &val)
+        void    memset(iterator dst, size_type n, const value_type &val)
         {
             for (size_type i = 0; i < n; i++)
                 dst[i] = val;
         };
 
-        void    memcpy (iterator dst, iterator src, size_type n)
+        void    memcpy(iterator dst, iterator src, size_type n)
         {
             for (size_type i = 0; i < n; i++)
             {
@@ -314,6 +322,9 @@ class vector
                 dst[i] = p[i];
             delete [] p;
         };
+
+	// GET ALLOCATOR
+		allocator_type get_allocator() const { return _allocator; };
 };
 
 
@@ -388,7 +399,7 @@ bool operator>= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
 //  Swap
 
 template <class T, class Alloc>
-void swap (vector<T,Alloc>& x, vector<T,Alloc>& y)
+void swap(vector<T,Alloc>& x, vector<T,Alloc>& y)
 {
 	x.swap(y);
 };
