@@ -179,6 +179,22 @@ main(void)
 			std::cout << "OK|";
 
 		}
+        std::cout << "\n##### Vector using Iterator constructor #####\n\n";
+		{
+			ft::vector<int> ft_v;
+			std::vector<int> std_v;
+			for (size_t i = 0; i < 100; ++i)
+			{
+				ft_v.push_back(i);
+				std_v.push_back(i);
+			}
+			// ft::vector<int> vec(12, )
+			ft::vector<int> ft_vit(ft_v.begin(), ft_v.end());
+			std::vector<int> std_vit(std_v.begin(), std_v.end());
+			
+			containerCmp(ft_vit, std_vit);
+		}
+
         std::cout << "\n#### Resize to 150 with value 30 ####\n\n";
         v3.resize(150, 30);
         vv3.resize(150, 30);

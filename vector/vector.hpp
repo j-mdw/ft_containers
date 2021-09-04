@@ -65,7 +65,7 @@ class vector
             resize(n, val);
         };
 
-        template <class InputIterator, ft::enable_if<!ft::is_integral<InputIterator>::value> >
+        template <class InputIterator, typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator> >
         vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type()) : 
         _vector(NULL),
         _size(0),
