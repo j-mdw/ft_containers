@@ -11,7 +11,7 @@
 
 
 # define VECTOR_GROWTH 2
-# define MAX_SIZE std::numeric_limits<size_t>::max() >> 2
+# define VEC_MAX_SIZE std::numeric_limits<size_t>::max() >> 1
 
 namespace ft
 {
@@ -145,12 +145,22 @@ class vector
         // CAPACITY
 
         size_type   size(void) const    { return this->_size; };
-        size_type   max_size(void) const    { return MAX_SIZE; };
+        size_type   max_size(void) const
+		{
+			long long max_size = std::numeric_limits<size_t>::max() >> 1;
+			int divisor = sizeof(T) / 2;
+			if (divisor > 1)
+				return max_size / divisor;
+			return max_size;
+		};
         
         void        resize (size_type n, value_type val = value_type())
         {
             reserve(n);
             if (n > this->_size)
+			{
+				construct(this->_vector + this->_size, n - this->_size, val);
+			}
                 memset(this->_vector + this->_size, (n - this->_size), val);
             this->_size = n;
         };
@@ -163,10 +173,15 @@ class vector
             if (n > this->_capacity)
             {
                 value_type *p = _allocator.allocate(n);
+				for (size_type i = 0; i < _size ; ++i)
+				{
+					_allocator.construct(p + i, _vector[i]);
+					_allocator.destroy(_vector[i]);
+				}
+				if (p != NULL)
+                	_allocator.deallocate(this->_vector, this->_capacity);
                 this->_capacity = n;
-                memcpy(p, this->_vector, this->_size);
-                delete [] this->_vector;
-                this->_vector = p;
+				this->_vector = p;
             }
         };
 
@@ -219,13 +234,17 @@ class vector
                 	reserve(this->_capacity * VECTOR_GROWTH);
 				}
 			}
-            this->_vector[this->_size] = val;
-            this->_size++;
+			_allocator.construct(_vector + _size, val);
+			this->_size++;
         };
 
-        void pop_back(void) { this->_size--; };
+        void pop_back(void)
+		{ 
+			_allocator.destroy(_vector + _size - 1);
+			this->_size--;
+		};
     
-        iterator    insert (iterator position, const value_type& val)	
+        iterator    insert (iterator position, const value_type& val)
         {
             resize(this->_size + 1);
             memmove(position + 1, position, end() - position);
@@ -322,6 +341,32 @@ class vector
                 dst[i] = p[i];
             delete [] p;
         };
+
+		void	construct(pointer p, size_type n, value_type v)
+		{
+			for (size_type i = 0; i < n; ++i)
+			{
+				_allocator.construct(p + i, v);
+			}
+		}
+
+		// void	construct(pointer p_dst, pointer p_src, size_type n, value_type v)
+		// {
+		// 	for (size_type i = 0; i < n; ++i)
+		// 	{
+		// 		_allocator.construct(p + i, v);
+		// 	}
+		// }
+
+		void	destroy(pointer p, size_type n)
+		{
+			for (size_type i = 0; i < n; ++i)
+			{
+				_allocator.destroy(p + i);
+			}
+		}
+
+
 
 	// GET ALLOCATOR
 		allocator_type get_allocator() const { return _allocator; };

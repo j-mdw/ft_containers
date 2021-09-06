@@ -4,7 +4,11 @@
 # include <iostream>
 # include <string>
 # include <stdarg.h>
-# include <cstdlib>
+
+
+# include <iterator>
+# include "iterator_traits.hpp"
+
 // # define NS ft
 // # define CONTAINER vector
 
@@ -75,13 +79,13 @@ class Tester
 			for(typename NS::CONTAINER<T>::size_type n = 0;
 			n < ins.size(); n++)
 			{
-				print_value(ins.at(n));				
-				print_value(ins[n]);
+				print_valuetype(ins.at(n));				
+				print_valuetype(ins[n]);
 			}
 			if (!ins.empty())
 			{
-				print_value(ins.front());
-				print_value(ins.back());
+				print_valuetype(ins.front());
+				print_valuetype(ins.back());
 				std::cout << '\n';
 			}
 		};
@@ -108,18 +112,43 @@ class Tester
 			print("Capacity: resize to 0", ins_cpy, PRINT_ATTR | PRINT_VAL);
 		};
 
-		// void
-		// test_iterators(NS::CONTAINER<T> & ins)
-		// {
+		//Tests performed depend on container size. To perform all tests, provide container.size() > 4
+		void
+		test_iterator(NS::CONTAINER<T> & ins)
+		{
+			std::cout << "Iterator comparisons: == and !=\n";
+			print_value(ins.begin() == ins.begin());
+			print_value(ins.begin() != ins.begin());
+			print_value(ins.begin() == ins.end());
+			print_value(ins.begin() != ins.end());
 
-		// };
+			if (!ins.empty())
+			{
+				std::cout << "\nIterator begin value: simple begin() call, copy constructor, assignment operator\n";
+				print_valuetype(*ins.begin());
+				typename NS::CONTAINER<T>::iterator it1(ins.begin());
+				print_valuetype(*it1);
+				typename NS::CONTAINER<T>::iterator it2 = ins.begin();
+				print_valuetype(*it2);
+
+				if (ins.size() >= 2)
+				{
+					print_valuetype(*++it1);
+					print_valuetype(*it2++);
+					std::cout << '\n';
+					typename NS::iterator_traits<typename NS::CONTAINER<T>::iterator>::iterator_category category;
+					test_iterator_category(ins, category);
+				}
+				std::cout << '\n';
+			}
+		};
 
 
 
 	private:
 
 		void
-		print(std::string test_name, NS::CONTAINER<T> ins, int flag)
+		print(const std::string & test_name, NS::CONTAINER<T> & ins, int flag)
 		{
 			std::cout << "Test: " << test_name << '\n';
 			switch (flag & 0x03)
@@ -141,14 +170,14 @@ class Tester
 		};
 
 		void
-		print_attr(NS::CONTAINER<T> ins)
+		print_attr(const NS::CONTAINER<T> & ins)
 		{
     		std::cout << "Size: " << ins.size()
     		<< "\tCapacity: " << ins.capacity() << std::endl;
 		};
 
 		void
-		print_all_values(NS::CONTAINER<T> ins)
+		print_all_values(NS::CONTAINER<T> & ins)
 		{
 			typename NS::CONTAINER<T>::iterator it = ins.begin();
 			for (; it != ins.end(); ++it)
@@ -160,17 +189,54 @@ class Tester
 		};
 
 		void
-		print_value(typename NS::CONTAINER<T>::value_type v)
+		print_valuetype(typename NS::CONTAINER<T>::value_type v)
 		{
 			std::cout << v << '|';	//Only works if ins::type defines operator<<
 		};
-};
 
-int
-random_val_genertor(int max)
-{
-	std::srand(std::time(NULL) + std::clock());
-	return rand() % max;
-}
+		template<typename U>
+		void print_value(U val)
+		{
+			std::cout << val << '|';
+		};
+
+		void
+		test_iterator_category(NS::CONTAINER<T> & ins, std::bidirectional_iterator_tag tag)
+		{
+			(void) tag;
+			std::cout << "Bidirectional operator tests:\n";
+			typename NS::CONTAINER<T>::iterator it = ins.begin();
+			it++;
+			print_valuetype(*--it);
+			it++;
+			print_valuetype(*it--);
+			print_valuetype(*it);
+		};
+
+		void
+		test_iterator_category(NS::CONTAINER<T> & ins, std::random_access_iterator_tag tag)
+		{
+			(void) tag;
+			std::cout << "Random access operator tests:\n";
+			typename NS::CONTAINER<T>::iterator it = ins.begin();
+			it++;
+			print_valuetype(*--it);
+			it++;
+			print_valuetype(*it--);
+			print_valuetype(*it);
+			print_valuetype(*(it + ins.size() / 2));
+			it += ins.size() / 2;
+			print_valuetype(*it);
+			it = ins.end();
+			print_valuetype(*(it - ins.size() / 2));
+			it -= ins.size() / 2;
+			print_valuetype(*it);
+			it = ins.begin();
+			print_value(it[ins.size() / 2]);
+			it = ins.end();
+			print_value(it[-(ins.size() / 2)]);
+		};
+
+};
 
 #endif
