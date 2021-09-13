@@ -1,5 +1,5 @@
-FT_EXEC = ft_exec
-STD_EXEC = std_exec
+FT_VEC = ft_vector
+STD_VEC = std_vector
 
 F = -Wall 
 
@@ -24,17 +24,17 @@ endif
 all:
 	@echo "Please enter container name after \"make\" (e.g. \"make vector\")"
 
-vector: $(FT_EXEC) $(STD_EXEC)
+vector: $(FT_VEC) $(STD_VEC)
 
-$(FT_EXEC): $(VEC_MAIN) $(UTIL_FILES)
+$(FT_VEC): $(VEC_MAIN) $(UTIL_FILES)
 	$C $F $(IFLAGS) -D NS=ft -D CONTAINER=vector $^ -o $@
 
-$(STD_EXEC): $(VEC_MAIN) $(UTIL_FILES)
+$(STD_VEC): $(VEC_MAIN) $(UTIL_FILES)
 	$C $F $(IFLAGS) -D NS=std -D CONTAINER=vector $^ -o $@
 
 clean:
 
 fclean:
-	rm -f $(FT_EXEC) $(STD_EXEC)
+	rm -f $(FT_VEC) $(STD_VEC)
 
 re: fclean

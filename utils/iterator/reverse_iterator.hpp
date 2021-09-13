@@ -2,6 +2,10 @@
 # define FT_REVERSE_ITERATOR_HPP
 
 # include "iterator_traits.hpp"
+# include <vector>
+
+// std::vector<int>::reverse_iterator rit;
+
 
 namespace ft
 {
@@ -26,17 +30,17 @@ class reverse_iterator
 		explicit reverse_iterator(iterator_type it) :
         _base(it) {};
 		
-		template <class Iter>
+        template <typename Iter>
 		reverse_iterator(const reverse_iterator<Iter> & rev_it) :
-        _base(rev_it._base) {};
+        _base(rev_it.base()) {};
 
         ~reverse_iterator(void) {};
 
-        reverse_iterator & operator= (const reverse_iterator & rev_it)
-        {
-            _base = rev_it._base;
-            return (*this);
-        };
+        // reverse_iterator & operator= (const reverse_iterator & rev_it)
+        // {
+        //     _base = rev_it._base;
+        //     return (*this);
+        // };
 
         iterator_type base(void) const
         {

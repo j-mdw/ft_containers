@@ -19,7 +19,6 @@ namespace ft
 template <typename T, typename Alloc = std::allocator<T> >
 class vector
 {
-
     public:
 
         typedef T                                           		value_type;
@@ -29,7 +28,7 @@ class vector
         typedef typename allocator_type::pointer            		pointer;
         typedef typename allocator_type::const_pointer      		const_pointer;
         typedef value_type *                                		iterator;
-        typedef value_type * const                          		const_iterator;
+        typedef const value_type *                          		const_iterator;
         typedef typename ft::reverse_iterator<iterator>         	reverse_iterator;
         typedef typename ft::reverse_iterator<const_iterator>   	const_reverse_iterator;
         typedef typename iterator_traits<iterator>::difference_type difference_type;
@@ -81,14 +80,6 @@ class vector
 		_capacity(0),
 		_allocator(x._allocator)
         {
-            // std::cout << "this->begin: " << this->begin() << std::endl;
-            // std::cout << "this->size: " << this->size() << std::endl;
-            // std::cout << "this->capacity: " << this->capacity() << std::endl;
-
-            // std::cout << "x.begin: " << *x.begin() << std::endl;
-            // std::cout << "x.size: " << x.size() << std::endl;
-            // std::cout << "x.capacity: " << x.capacity() << std::endl;
-			// reserve(x._capacity);
             assign(x.begin(), x.end());
         };
 
@@ -96,15 +87,15 @@ class vector
 
         ~vector(void)
         {
-			_allocator.deallocate(this->_vector, _capacity);
+            destroy_n(_vector, _size);
+			_allocator.deallocate(_vector, _capacity);
         };
 
-        // ASSIGNMENT OPERATOR
+        // ASSIGNMENT OPERATOR -> The container preserves its current allocator
 
         vector& operator= (const vector & x)
 		{
-			_allocator = x._allocator;
-			reserve(x._capacity);
+			// reserve(x._capacity);
 			assign(x.begin(), x.end());
 		};
 
@@ -159,9 +150,12 @@ class vector
             reserve(n);
             if (n > this->_size)
 			{
-				construct(this->_vector + this->_size, n - this->_size, val);
+				construct_n(this->_vector + this->_size, n - this->_size, val);
 			}
-                memset(this->_vector + this->_size, (n - this->_size), val);
+            else if (n < this->_size)
+            {
+                destroy_n(this->_vector + n, this->_size - n);
+            }
             this->_size = n;
         };
 
@@ -173,10 +167,10 @@ class vector
             if (n > this->_capacity)
             {
                 value_type *p = _allocator.allocate(n);
-				for (size_type i = 0; i < _size ; ++i)
+				for (size_type i = 0; i < _size; ++i)
 				{
 					_allocator.construct(p + i, _vector[i]);
-					_allocator.destroy(_vector[i]);
+					_allocator.destroy(&_vector[i]);
 				}
 				if (p != NULL)
                 	_allocator.deallocate(this->_vector, this->_capacity);
@@ -205,9 +199,9 @@ class vector
         void assign(InputIterator first, typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type last)
         {
             size_type inputRange = range(first, last);
-            if (inputRange > this->_capacity)
-                reserve(inputRange);
-            this->_size = inputRange;
+            // if (inputRange > this->_capacity)
+            resize(inputRange);
+            // this->_size = inputRange;
             for (size_type i = 0; i < inputRange; i++)
             {
                 this->_vector[i] = *first;
@@ -223,19 +217,20 @@ class vector
 
         void push_back(const value_type & val)
         {
-            if (this->_size == this->_capacity)
-			{
-				if (this->_size == 0)
-				{
-					reserve(1);
-				}
-				else
-				{
-                	reserve(this->_capacity * VECTOR_GROWTH);
-				}
-			}
-			_allocator.construct(_vector + _size, val);
-			this->_size++;
+            resize(this->_size + 1, val);
+            // if (this->_size == this->_capacity)
+			// {
+			// 	if (this->_size == 0)
+			// 	{
+			// 		reserve(1);
+			// 	}
+			// 	else
+			// 	{
+            //     	reserve(this->_capacity * VECTOR_GROWTH);
+			// 	}
+			// }
+			// _allocator.construct(_vector + _size, val);
+			// this->_size++;
         };
 
         void pop_back(void)
@@ -276,15 +271,18 @@ class vector
 
         iterator erase(iterator position)
         {
-            memmove(position, position + 1, range(position + 1, this->end()));
+            memmove(position, position + 1, range(position + 1, end()));
+            _allocator.destroy(end() - 1);
             this->_size--;
             return (position);
         };
 
         iterator erase(iterator first, iterator last)
         {
-            memmove(first, last, range(first, this->end()));
-            this->_size -= range(first, last);
+            memmove(first, last, range(last, end()));
+            size_t it_range = range(first, last);
+            destroy_n(end() - it_range, it_range);
+            this->_size -= it_range;
             return (first);
         };
 
@@ -342,7 +340,7 @@ class vector
             delete [] p;
         };
 
-		void	construct(pointer p, size_type n, value_type v)
+		void	construct_n(pointer p, size_type n, value_type v)
 		{
 			for (size_type i = 0; i < n; ++i)
 			{
@@ -358,7 +356,7 @@ class vector
 		// 	}
 		// }
 
-		void	destroy(pointer p, size_type n)
+		void	destroy_n(pointer p, size_type n)
 		{
 			for (size_type i = 0; i < n; ++i)
 			{
