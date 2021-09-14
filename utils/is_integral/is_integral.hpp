@@ -1,7 +1,7 @@
 #ifndef IS_INTEGRAL_H
 # define IS_INTEGRAL_H
 
-#include <type_traits>
+# include <uchar.h>
 
 namespace ft
 {
@@ -24,17 +24,17 @@ struct is_integral<char>
 	static const bool value = true;
 };
 
-template <>
-struct is_integral<char16_t>
-{
-	static const bool value = true;
-};
+// template <>
+// struct is_integral<char16_t>
+// {
+// 	static const bool value = true;
+// };
 
-template <>
-struct is_integral<char32_t>
-{
-	static const bool value = true;
-};
+// template <>
+// struct is_integral<char32_t>
+// {
+// 	static const bool value = true;
+// };
 
 template <>
 struct is_integral<signed char>
@@ -43,7 +43,7 @@ struct is_integral<signed char>
 };
 
 template <>
-struct is_integral<short int>
+struct is_integral<short>
 {
 	static const bool value = true;
 };
@@ -55,13 +55,13 @@ struct is_integral<int>
 };
 
 template <>
-struct is_integral<long int>
+struct is_integral<long>
 {
 	static const bool value = true;
 };
 
 template <>
-struct is_integral<long long int>
+struct is_integral<long long>
 {
 	static const bool value = true;
 };
@@ -73,7 +73,7 @@ struct is_integral<unsigned char>
 };
 
 template <>
-struct is_integral<unsigned short int>
+struct is_integral<unsigned short>
 {
 	static const bool value = true;
 };
@@ -85,13 +85,13 @@ struct is_integral<unsigned int>
 };
 
 template <>
-struct is_integral<unsigned long int>
+struct is_integral<unsigned long>
 {
 	static const bool value = true;
 };
 
 template <>
-struct is_integral<unsigned long long int>
+struct is_integral<unsigned long long>
 {
 	static const bool value = true;
 };
