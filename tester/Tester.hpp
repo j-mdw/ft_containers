@@ -66,11 +66,31 @@ class Tester
 
 	// };
 
-	// void
-	// test_comparisons(NS::CONTAINER<T> ins1, NS::CONTAINER<T> ins2)
-	// {
+	void
+	test_comparisons(NS::CONTAINER<T> & ins)
+	{
+		if (!ins.empty())
+		{
+			NS::CONTAINER<T> ins_cp = ins;
+			
+			std::cout << "\nComparison operators\n";
+			print_value(ins == ins_cp);
+			print_value(ins != ins_cp);
+			print_value(ins <= ins_cp);
+			print_value(ins >= ins_cp);
+			print_value(ins < ins_cp);
+			print_value(ins > ins_cp);
 
-	// };
+			ins_cp.insert(ins_cp.end(), *ins_cp.begin());
+			print_value(ins == ins_cp);
+			print_value(ins != ins_cp);
+			print_value(ins <= ins_cp);
+			print_value(ins >= ins_cp);
+			print_value(ins < ins_cp);
+			print_value(ins > ins_cp);
+			std::cout << '\n' << std::endl;
+		}
+	};
 
 	// Testing at(), operator[], front(), back()
 	void
@@ -114,9 +134,9 @@ class Tester
 
 	//Tests performed depend on container size. To perform all tests, provide container.size() > 4
 	
-	template <typename Vector, typename Iterator>
+	template <typename Iterator>
 	void
-	test_iterator(const Vector & ins, Iterator begin, Iterator end)
+	test_iterator(const NS::CONTAINER<T> & ins, Iterator begin, Iterator end)
 	{
 		std::cout << "Iterator comparisons: == and !=\n";
 		print_value(begin == end);
@@ -128,10 +148,6 @@ class Tester
 		{
 			std::cout << "\nIterator begin value: simple begin() call, copy constructor, assignment operator\n";
 			print_valuetype(*begin);
-			// typename NS::CONTAINER<T>::iterator it1(ins.begin());
-			// print_valuetype(*it1);
-			// typename NS::CONTAINER<T>::iterator it2 = ins.begin();
-			// print_valuetype(*it2);
 			Iterator it1 = begin;
 			Iterator it2 = begin;
 
@@ -148,64 +164,59 @@ class Tester
 			std::cout << '\n';
 		}
 	};
-	// void
-	// test_iterator(NS::CONTAINER<T> & ins)
-	// {
-	// 	std::cout << "Iterator comparisons: == and !=\n";
-	// 	typename NS::CONTAINER<T>::const_iterator cit = ins.begin();
-	// 	typename NS::CONTAINER<T>::const_iterator cite = ins.end();
-	// 	print_value(cit == cit);
-	// 	print_value(cit != cit);
-	// 	print_value(cit == cite);
-	// 	print_value(cit != cite);
 
-	// 	if (!ins.empty())
-	// 	{
-	// 		std::cout << "\niterator begin value: simple begin() call, copy constructor, assignment operator\n";
-	// 		print_valuetype(*cit);
-	// 		typename NS::CONTAINER<T>::const_iterator cit2 = ins.begin();
-	// 		print_valuetype(*cit2);
+	void
+	test_modifiers(NS::CONTAINER<T> & ins)
+	{
+		NS::CONTAINER<T> ins_cpy(ins);
+		if (ins != ins_cpy)
+		{
+			std::cout << "Copy constructor error";
+		}
+		if (ins_cpy.empty())
+		{
+			std::cout << "test_modifiers: provide non-empty container";
+		}
+		else
+		{
+			std::cout << "\nModifiers tests\n";
+			NS::CONTAINER<T> ins2;
+			
+			ins2.assign(ins_cpy.begin(), ins_cpy.end());
+			print_value(ins2 == ins_cpy);
+			NS::CONTAINER<T> ins3(ins_cpy.size(), *ins_cpy.begin());
+			ins2.assign(ins_cpy.size(), *ins_cpy.begin());
+			print_value(ins2 == ins3);
+			
+			ins2.push_back(ins_cpy.begin());
+			print_value(ins2 > ins3);
+			
+			ins2.pop_back();
+			print_value(ins2 > ins3);
+			print_value(ins2 == ins3);
+			
+			ins3.insert(ins3.end(), *ins3.begin());
+			print_all_values(ins3);
+			ins3.insert(ins3.begin(), *ins3.begin());
+			print_all_values(ins3);
+			ins2.insert(ins2.begin(), ins3.begin(), ins3.end());
+			print_all_values(ins2);
+			
+			ins2.erase(ins2.begin());
+			print_all_values(ins2);
+			ins2.erase(ins2.end());
+			print_all_values(ins2);
+			ins2.erase(ins2.begin(), ins2.end());
+			print_value(ins2.empty());
 
-	// 		if (ins.size() >= 2)
-	// 		{
-	// 			print_valuetype(*++cit);
-	// 			print_valuetype(*cit2++);
-	// 			std::cout << '\n';
-	// 			typename NS::iterator_traits<typename NS::CONTAINER<T>::iterator>::iterator_category category;
-	// 			test_iterator_category(ins, category);
-	// 		}
-	// 		std::cout << '\n';
-	// 	}
-	// };
-	// void
-	// test_const_iterator(const NS::CONTAINER<T> & ins)
-	// {
-	// 	std::cout << "Const Iterator comparisons: == and !=\n";
-	// 	typename NS::CONTAINER<T>::const_iterator cit = ins.begin();
-	// 	typename NS::CONTAINER<T>::const_iterator cite = ins.end();
-	// 	print_value(cit == cit);
-	// 	print_value(cit != cit);
-	// 	print_value(cit == cite);
-	// 	print_value(cit != cite);
+			ins2.swap(ins3);
+			print_all_values(ins2);
+			print_value(ins3.empty());
 
-	// 	if (!ins.empty())
-	// 	{
-	// 		std::cout << "\nConst Iterator begin value: simple begin() call, copy constructor, assignment operator\n";
-	// 		print_valuetype(*cit);
-	// 		typename NS::CONTAINER<T>::const_iterator cit2 = ins.begin();
-	// 		print_valuetype(*cit2);
-
-	// 		if (ins.size() >= 2)
-	// 		{
-	// 			print_valuetype(*++cit);
-	// 			print_valuetype(*cit2++);
-	// 			std::cout << '\n';
-	// 			typename NS::iterator_traits<typename NS::CONTAINER<T>::iterator>::iterator_category category;
-	// 			test_iterator_category(ins, category);
-	// 		}
-	// 		std::cout << '\n';
-	// 	}
-	// };
+			ins2.clear();
+			print_value(ins2.empty());
+		}
+	};
 
 	private:
 
@@ -262,19 +273,6 @@ class Tester
 		std::cout << val << '|';
 	};
 
-	// void
-	// test_iterator_category(NS::CONTAINER<T> & ins, std::bidirectional_iterator_tag tag)
-	// {
-	// 	(void) tag;
-	// 	std::cout << "Bidirectional operator tests:\n";
-	// 	typename NS::CONTAINER<T>::iterator it = ins.begin();
-	// 	it++;
-	// 	print_valuetype(*--it);
-	// 	it++;
-	// 	print_valuetype(*it--);
-	// 	print_valuetype(*it);
-	// };
-
 	template <typename Iterator>
 	void
 	test_iterator_category(const NS::CONTAINER<T> & ins, Iterator begin, Iterator end, std::bidirectional_iterator_tag tag)
@@ -300,32 +298,6 @@ class Tester
 			print_valuetype(*it2);
 		}
 	};
-
-
-
-	// void
-	// test_iterator_category(NS::CONTAINER<T> & ins, std::random_access_iterator_tag tag)
-	// {
-	// 	(void) tag;
-	// 	std::cout << "Random access operator tests:\n";
-	// 	typename NS::CONTAINER<T>::iterator it = ins.begin();
-	// 	it++;
-	// 	print_valuetype(*--it);
-	// 	it++;
-	// 	print_valuetype(*it--);
-	// 	print_valuetype(*it);
-	// 	print_valuetype(*(it + ins.size() / 2));
-	// 	it += ins.size() / 2;
-	// 	print_valuetype(*it);
-	// 	it = ins.end();
-	// 	print_valuetype(*(it - ins.size() / 2));
-	// 	it -= ins.size() / 2;
-	// 	print_valuetype(*it);
-	// 	it = ins.begin();
-	// 	print_value(it[ins.size() / 2]);
-	// 	it = ins.end();
-	// 	print_value(it[-(ins.size() / 2)]);
-	// };
 
 	template <typename Iterator>
 	void

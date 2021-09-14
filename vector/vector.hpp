@@ -239,33 +239,38 @@ class vector
 			this->_size--;
 		};
     
-        iterator    insert (iterator position, const value_type& val)
+        iterator    insert(iterator position, const value_type& val)
         {
+            size_t index = 0;
+            for (iterator it = begin(); it != position; ++it)
+                index++;
+
             resize(this->_size + 1);
-            memmove(position + 1, position, end() - position);
-            *position = val;
-            return (position);
+            memmove(&this->_vector[index + 1], &this->_vector[index], this->_size - 1 - index);
+            this->_vector[index] = val;
+            return (&_vector[index]);
         };
 
         void        insert(iterator position, size_type n, const value_type& val)
         {
+            int index = position - begin();
             resize(this->_size + n);
-            memmove(position + n, position, end() - position);
-            memset(position, n, val);
+            memmove(this->_vector + index + n, this->_vector + index, this->_size - 1 - index);
+            memset(this->_vector + index, n, val);
         };
 
         template <class InputIterator>
         void        insert(iterator position, InputIterator first, typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type last)
         {
-            // iterator startPosition = position;
-            size_type inputSize = range(first, last);
-            resize(this->_size + inputSize);
-            memmove(position + inputSize, position, end() - position);
-            while (first != last)
+            vector<T> store(first, last);
+            int index = position - begin();
+            size_type n = range(first, last);
+            resize(this->_size + n);
+            memmove(this->_vector + index + n, this->_vector + index, this->_size - 1 - index);
+            
+            for (size_type i = 0; i < store.size(); ++i)
             {
-                *position = *first;
-                position++;
-                first++;
+                this->_vector[index + i] = store[i];
             }
         };
 
@@ -302,6 +307,8 @@ class vector
 
         void clear(void)    { this->resize(0); };
 
+	// GET ALLOCATOR
+		allocator_type get_allocator() const { return _allocator; };
 
     private:
 
@@ -363,11 +370,6 @@ class vector
 				_allocator.destroy(p + i);
 			}
 		}
-
-
-
-	// GET ALLOCATOR
-		allocator_type get_allocator() const { return _allocator; };
 };
 
 
@@ -376,11 +378,11 @@ class vector
 //  Relational operators
 
 template <class T, class Alloc>
-bool operator== (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+bool operator== (const vector<T, Alloc> & lhs, const vector<T, Alloc> & rhs)
 {
 	if (lhs.size() != rhs.size())
 		return false;
-	for (typename vector<T>::size_type i = 0; i < lhs.size(); i++)
+	for (typename vector<T, Alloc>::size_type i = 0; i < lhs.size(); i++)
 	{
 		if (rhs[i] != lhs[i])
 			return false;
@@ -399,11 +401,11 @@ bool operator!= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
 template <class T, class Alloc>
 bool operator< (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
 {
-	typename vector<T>::iterator it1 = lhs.begin();
-	typename vector<T>::iterator ite1 = lhs.end();
+	typename vector<T, Alloc>::const_iterator it1 = lhs.begin();
+	typename vector<T, Alloc>::const_iterator ite1 = lhs.end();
 
-	typename vector<T>::iterator it2 = rhs.begin();
-	typename vector<T>::iterator ite2 = rhs.end();
+	typename vector<T, Alloc>::const_iterator it2 = rhs.begin();
+	typename vector<T, Alloc>::const_iterator ite2 = rhs.end();
 
 	for(;it1 != ite1; it1++)
 	{

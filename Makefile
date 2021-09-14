@@ -18,7 +18,7 @@ VEC_MAIN = vector/main.cpp
 UTIL_FILES = tester/utils/RandomGenerator.cpp
 
 ifdef DEBUG
-	F += -g3
+	F += -g3 -fsanitize=address
 endif
 
 all:
