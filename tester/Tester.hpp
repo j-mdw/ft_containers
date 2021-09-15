@@ -188,7 +188,7 @@ class Tester
 			ins2.assign(ins_cpy.size(), *ins_cpy.begin());
 			print_value(ins2 == ins3);
 			
-			ins2.push_back(ins_cpy.begin());
+			ins2.push_back(*ins_cpy.begin());
 			print_value(ins2 > ins3);
 			
 			ins2.pop_back();
@@ -204,7 +204,7 @@ class Tester
 			
 			ins2.erase(ins2.begin());
 			print_all_values(ins2);
-			ins2.erase(ins2.end());
+			ins2.erase(ins2.end()--);
 			print_all_values(ins2);
 			ins2.erase(ins2.begin(), ins2.end());
 			print_value(ins2.empty());
