@@ -4,6 +4,10 @@
 #include <string>
 #include "RandomGenerator.hpp"
 
+#include "Person.hpp"
+
+// std::vector<int> v;
+
 int main(void)
 {
 	{
@@ -61,6 +65,40 @@ int main(void)
 
 		tst_s.test_iterator(vec_s, vec_s.begin(), vec_s.end());
 		tst_s.test_iterator(vec_s, vec_s.rbegin(), vec_s.rend());
+	}
+
+	{
+		// class Person
+		// {
+		// private:
+		// 	int age;
+		// 	std::string name;
+		// 	std::vector<int> v;
+		// public:
+		// 	TestClass(void) : age(10), name("henri"), v(10, 42) {};
+		// 	TestClass(int age, std::string name) : age(age), name(name), v(10, 42) {};
+		// 	TestClass(const TestClass & ins) : age(ins.age), name(ins.name), v(ins.v) {};
+		// 	~TestClass(void) {};
+
+		// 	TestClass &	operator= (const TestClass & ins)
+		// 	{
+		// 		age = ins.age; name = ins.name; v = ins.v;
+		// 		return (*this);
+		// 	}
+		// };
+
+		NS::CONTAINER<Person> vec_tc;
+		for (int i = 0; i < 25; i++)
+		{
+			vec_tc.push_back(Person(RandomGenerator::generate_unsigned(100), RandomGenerator::generate_string(3, 10)));
+		}
+		Tester<Person> tst_s;
+		tst_s.test_constructor(20, Person(), vec_tc);
+		tst_s.test_instance(vec_tc);
+		tst_s.test_comparisons(vec_tc);
+
+		tst_s.test_iterator(vec_tc, vec_tc.begin(), vec_tc.end());
+		tst_s.test_iterator(vec_tc, vec_tc.rbegin(), vec_tc.rend());
 	}
 	return (0);
 }

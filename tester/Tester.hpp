@@ -24,6 +24,7 @@ class Tester
 	~Tester(void) {};
 
 	// Tests constructor behavior and assignment operator
+	// Needs an value_type and a CONTAINER<value_type> to perform all tests
 	void
 	test_constructor(size_t n, T val, NS::CONTAINER<T> initialized_ins)
 	{
@@ -204,7 +205,9 @@ class Tester
 			
 			ins2.erase(ins2.begin());
 			print_all_values(ins2);
-			ins2.erase(ins2.end()--);
+			// ins.erase(++(ins2.begin());
+			// ins2.erase(ins2.end()--);
+			ins2.erase(ins2.end() - 1);
 			print_all_values(ins2);
 			ins2.erase(ins2.begin(), ins2.end());
 			print_value(ins2.empty());

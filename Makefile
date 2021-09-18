@@ -27,6 +27,7 @@ all:
 vector: $(FT_VEC) $(STD_VEC)
 
 $(FT_VEC): $(VEC_MAIN) $(UTIL_FILES)
+	echo haha
 	$C $F $(IFLAGS) -D NS=ft -D CONTAINER=vector $^ -o $@
 
 $(STD_VEC): $(VEC_MAIN) $(UTIL_FILES)

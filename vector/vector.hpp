@@ -27,8 +27,10 @@ class vector
         typedef typename allocator_type::const_reference    		const_reference;
         typedef typename allocator_type::pointer            		pointer;
         typedef typename allocator_type::const_pointer      		const_pointer;
-        typedef value_type *                                		iterator;
-        typedef const value_type *                          		const_iterator;
+        typedef pointer									iterator;
+		// typedef value_type *                                		iterator;
+		typedef const_pointer								const_iterator;
+        // typedef const value_type *                          		const_iterator;
         typedef typename ft::reverse_iterator<iterator>         	reverse_iterator;
         typedef typename ft::reverse_iterator<const_iterator>   	const_reverse_iterator;
         typedef typename iterator_traits<iterator>::difference_type difference_type;
