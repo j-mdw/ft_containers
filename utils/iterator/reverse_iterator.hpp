@@ -104,15 +104,13 @@ class reverse_iterator
 
         pointer operator-> (void) const
         {
-            return &(*this);
+            return this;
         };
 
         reference operator[] (difference_type n)
         {
-
-            return *(*this + n);
+            return this->_base[-n - 1];
         }
-
 };
 
 template <class Iterator>
