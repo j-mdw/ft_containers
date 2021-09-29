@@ -2,15 +2,17 @@
 
 make vector
 
-./ft_vector > ft.out;
-./std_vector > std.out;
+dir=output/
 
-diff -a ft.out std.out > diff.out;
+./ft_vector > "$dir"ft_vector.out;
+./std_vector > "$dir"std_vector.out;
 
-if [ -s diff.out ];
+diff -a "$dir"ft_vector.out "$dir"std_vector.out > vector_diff.out;
+
+if [ -s "$dir"vector_diff.out ];
 then
-	echo "[KO] /!\\ Outputs differ /!\\ check \"diff.out\" for more details"
+	echo "[KO] /!\\ Outputs differ /!\\ check \""$dir"diff.out\" for more details"
 else
 	echo "[OK]"
-	rm -f diff.out
+	rm -f "$dir"vector_diff.out
 fi

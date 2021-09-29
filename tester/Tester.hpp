@@ -4,17 +4,15 @@
 # include <iostream>
 # include <string>
 # include <stdarg.h>
-
-
 # include <iterator>
 # include "iterator_traits.hpp"
-
-// # define NS ft
-// # define CONTAINER vector
 
 # define PRINT_ATTR 0x01
 # define PRINT_VAL	0x02
 
+class stack;
+# include "stack.hpp"
+class vector;
 
 template<typename T>
 class Tester
@@ -26,7 +24,7 @@ class Tester
 	// Tests constructor behavior and assignment operator
 	// Needs an value_type and a CONTAINER<value_type> to perform all tests
 	void
-	test_constructor(size_t n, T val, NS::CONTAINER<T> initialized_ins)
+	test_constructor(size_t n, T val, NS::vector<T> initialized_ins)
 	{
 		{
 			NS::CONTAINER<T> ins;
@@ -55,10 +53,30 @@ class Tester
 	};
 
 	void
-	test_instance(NS::CONTAINER<T> & ins)
+	test_constructor(size_t n, T val, NS::stack<T, NS::vector<T> > initialized_ins)
+	{
+		(void)n; (void)val;
+		// print("Stack instance", initialized_ins, PRINT_ATTR);
+		// NS::stack<T, NS::vector<T> > ins;
+		// print("Constructor with vector", ins, PRINT_ATTR);
+
+		print_attr(initialized_ins);
+		NS::stack<T, NS::vector<T> > ins;
+		print_attr(ins);
+	}
+
+
+	void
+	test_instance(NS::vector<T> & ins)
 	{
 		test_access(ins);
 		test_capacity(ins);
+	};
+
+	void
+	test_instance(NS::stack<T, NS::vector<T> > & ins)
+	{
+		test_access(ins);
 	};
 
 	// void
@@ -68,11 +86,11 @@ class Tester
 	// };
 
 	void
-	test_comparisons(NS::CONTAINER<T> & ins)
+	test_comparisons(NS::vector<T> & ins)
 	{
 		if (!ins.empty())
 		{
-			NS::CONTAINER<T> ins_cp = ins;
+			NS::vector<T> ins_cp = ins;
 			
 			std::cout << "\nComparison operators\n";
 			print_value(ins == ins_cp);
@@ -93,9 +111,36 @@ class Tester
 		}
 	};
 
+	void
+	test_comparisons(NS::stack<T, NS::vector<T> > & ins)
+	{
+		if (!ins.empty())
+		{
+			NS::stack<T, NS::vector<T> > ins_cp = ins;
+			
+			std::cout << "\nComparison operators\n";
+			print_value(ins == ins_cp);
+			print_value(ins != ins_cp);
+			print_value(ins <= ins_cp);
+			print_value(ins >= ins_cp);
+			print_value(ins < ins_cp);
+			print_value(ins > ins_cp);
+
+			ins_cp.pop();
+			print_value(ins == ins_cp);
+			print_value(ins != ins_cp);
+			print_value(ins <= ins_cp);
+			print_value(ins >= ins_cp);
+			print_value(ins < ins_cp);
+			print_value(ins > ins_cp);
+			std::cout << '\n' << std::endl;
+		}
+	};
+
+
 	// Testing at(), operator[], front(), back()
 	void
-	test_access(NS::CONTAINER<T> & ins)
+	test_access(NS::vector<T> & ins)
 	{
 		for(typename NS::CONTAINER<T>::size_type n = 0;
 		n < ins.size(); n++)
@@ -108,6 +153,16 @@ class Tester
 			print_valuetype(ins.front());
 			print_valuetype(ins.back());
 			std::cout << '\n';
+		}
+	};
+
+	void
+	test_access(NS::stack<T, NS::vector<T> > & ins)
+	{
+		while (!ins.empty())
+		{
+			print_valuetype(ins.top());				
+			ins.pop();
 		}
 	};
 
@@ -246,11 +301,18 @@ class Tester
 	};
 
 	void
-	print_attr(const NS::CONTAINER<T> & ins)
+	print_attr(const NS::vector<T> & ins)
 	{
 		std::cout << "Size: " << ins.size()
 		<< "\tCapacity: " << ins.capacity() << std::endl;
 	};
+
+	void
+	print_attr(NS::stack<T, NS::vector<T> > & ins)
+	{
+		std::cout << "Size: " << ins.size() << std::endl;
+	};
+
 
 	void
 	print_all_values(NS::CONTAINER<T> & ins)

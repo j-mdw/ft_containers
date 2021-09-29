@@ -2,5 +2,4 @@
 */.vscode
 */a.out*
 */error
-ft_out
-std_out
+output/*

@@ -8,7 +8,7 @@
 # include "reverse_iterator.hpp"
 # include "enable_if.hpp"
 # include "is_integral.hpp" 
-
+# include "lexicographical_compare.hpp"
 
 # define VECTOR_GROWTH 2
 # define VEC_MAX_SIZE std::numeric_limits<size_t>::max() >> 1
@@ -27,13 +27,11 @@ class vector
         typedef typename allocator_type::const_reference    		const_reference;
         typedef typename allocator_type::pointer            		pointer;
         typedef typename allocator_type::const_pointer      		const_pointer;
-        typedef pointer									iterator;
-		// typedef value_type *                                		iterator;
-		typedef const_pointer								const_iterator;
-        // typedef const value_type *                          		const_iterator;
+        typedef pointer												iterator;
+		typedef const_pointer										const_iterator;
         typedef typename ft::reverse_iterator<iterator>         	reverse_iterator;
         typedef typename ft::reverse_iterator<const_iterator>   	const_reverse_iterator;
-        typedef typename iterator_traits<iterator>::difference_type difference_type;
+        typedef typename iterator_traits<iterator>::difference_type difference_type; // ft?
         typedef size_t                                      		size_type;
 
 		// VARIABLES
@@ -357,14 +355,6 @@ class vector
 			}
 		}
 
-		// void	construct(pointer p_dst, pointer p_src, size_type n, value_type v)
-		// {
-		// 	for (size_type i = 0; i < n; ++i)
-		// 	{
-		// 		_allocator.construct(p + i, v);
-		// 	}
-		// }
-
 		void	destroy_n(pointer p, size_type n)
 		{
 			for (size_type i = 0; i < n; ++i)
@@ -403,24 +393,29 @@ bool operator!= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
 template <class T, class Alloc>
 bool operator< (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
 {
-	typename vector<T, Alloc>::const_iterator it1 = lhs.begin();
-	typename vector<T, Alloc>::const_iterator ite1 = lhs.end();
+	// typename vector<T, Alloc>::const_iterator it1 = lhs.begin();
+	// typename vector<T, Alloc>::const_iterator ite1 = lhs.end();
 
-	typename vector<T, Alloc>::const_iterator it2 = rhs.begin();
-	typename vector<T, Alloc>::const_iterator ite2 = rhs.end();
+	// typename vector<T, Alloc>::const_iterator it2 = rhs.begin();
+	// typename vector<T, Alloc>::const_iterator ite2 = rhs.end();
 
-	for(;it1 != ite1; it1++)
-	{
-		if (it2 == ite2)
-			return false; // rhs ends before lhs, rhs is less than lhs
-		if (*it1 != *it2)
-			return (*it1 < *it2);
-		else
-			it2++;
-	}
-	if (it2 != ite2)
-		return true;    // lhs ends before rhs
-	return false;
+	// return ft::lexicographical_compare(it1, ite1, it2, ite2);
+
+	return ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+
+
+	// for(;it1 != ite1; it1++)
+	// {
+	// 	if (it2 == ite2)
+	// 		return false; // rhs ends before lhs, rhs is less than lhs
+	// 	if (*it1 != *it2)
+	// 		return (*it1 < *it2);
+	// 	else
+	// 		it2++;
+	// }
+	// if (it2 != ite2)
+	// 	return true;    // lhs ends before rhs
+	// return false;
 };
 
 
@@ -433,7 +428,7 @@ bool operator<= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
 template <class T, class Alloc>
 bool operator>  (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
 {
-	return !(lhs < rhs || lhs == rhs);
+	return !(lhs <= rhs);
 };
 
 
