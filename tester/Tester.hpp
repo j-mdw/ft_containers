@@ -12,6 +12,7 @@
 
 class stack;
 # include "stack.hpp"
+# include <stack>
 class vector;
 
 template<typename T>

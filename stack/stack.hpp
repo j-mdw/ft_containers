@@ -1,5 +1,4 @@
 #include "vector.hpp"
-# include <stack>
 
 #ifndef STACK_H
 # define STACK_H
