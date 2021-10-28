@@ -11,7 +11,7 @@
 # include "lexicographical_compare.hpp"
 
 # define VECTOR_GROWTH 2
-# define VEC_MAX_SIZE std::numeric_limits<size_t>::max() >> 1
+// # define VEC_MAX_SIZE std::numeric_limits<size_t>::max() >> 1
 
 namespace ft
 {
