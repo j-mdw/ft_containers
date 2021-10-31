@@ -9,6 +9,7 @@
 # include "enable_if.hpp"
 # include "is_integral.hpp" 
 # include "lexicographical_compare.hpp"
+# include "equal.hpp"
 
 # define VECTOR_GROWTH 2
 // # define VEC_MAX_SIZE std::numeric_limits<size_t>::max() >> 1
@@ -374,12 +375,15 @@ bool operator== (const vector<T, Alloc> & lhs, const vector<T, Alloc> & rhs)
 {
 	if (lhs.size() != rhs.size())
 		return false;
-	for (typename vector<T, Alloc>::size_type i = 0; i < lhs.size(); i++)
-	{
-		if (rhs[i] != lhs[i])
-			return false;
-	}
-	return true;
+
+	return ft::equal(lhs.begin(), lhs.end(), rhs.begin());
+
+	// for (typename vector<T, Alloc>::size_type i = 0; i < lhs.size(); i++)
+	// {
+	// 	if (rhs[i] != lhs[i])
+	// 		return false;
+	// }
+	// return true;
 };
 
 

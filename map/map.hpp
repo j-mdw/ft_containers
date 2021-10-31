@@ -3,7 +3,9 @@
 
 # include <functional>
 # include "pair.hpp"
+# include "map_iterator.hpp"
 # include "reverse_iterator.hpp"
+# include <map> //Remove
 
 namespace ft
 {
@@ -11,7 +13,7 @@ namespace ft
 		class Key,
 		class T,                
 		class Compare = std::less<Key>,    
-		class Alloc = std::allocator<pair<const Key,T> >
+		class Alloc = std::allocator<pair<const Key, T> >
 	>
 	class map
 	{
@@ -21,14 +23,29 @@ namespace ft
 		typedef	T											mapped_type;
 		typedef	pair<const key_type,mapped_type>			value_type;
 		typedef	Compare										key_compare;
-		typedef												value_compare;
+
+		class value_compare
+        : public binary_function<value_type, value_type, bool> // in C++98, it is required to inherit binary_function<value_type,value_type,bool>
+		{
+		private:
+			friend class map;
+		protected:
+			Compare comp;
+			value_compare (Compare c) : comp(c) {}  // constructed with map's comparison object
+		public:
+			bool operator() (const value_type& x, const value_type& y) const
+			{
+				return comp(x.first, y.first);
+			}
+		};
+
 		typedef	Alloc										allocator_type;
 		typedef	allocator_type::reference					reference;
 		typedef	allocator_type::const_reference				const_reference;
 		typedef	allocator_type::pointer						pointer;
 		typedef	allocator_type::const_pointer				const_pointer;
-		typedef												iterator;
-		typedef												const_iterator;
+		typedef	map_iterator<value_type>					iterator;
+		typedef	map_iterator<const value_type>				const_iterator;
 		typedef	reverse_iterator<iterator>					reverse_iterator;
 		typedef	reverse_iterator<const_iterator>			const_reverse_iterator;
 		typedef	iterator_traits<iterator>::difference_type	difference_type;
