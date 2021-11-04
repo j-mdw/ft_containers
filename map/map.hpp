@@ -6,6 +6,7 @@
 # include "map_iterator.hpp"
 # include "reverse_iterator.hpp"
 # include <map> //Remove
+# include "rb_tree.hpp"
 
 namespace ft
 {
@@ -21,18 +22,20 @@ namespace ft
 
 		typedef	Key											key_type;
 		typedef	T											mapped_type;
-		typedef	pair<const key_type,mapped_type>			value_type;
+		typedef	pair<const key_type, mapped_type>			value_type;
 		typedef	Compare										key_compare;
 
 		class value_compare
-        : public binary_function<value_type, value_type, bool> // in C++98, it is required to inherit binary_function<value_type,value_type,bool>
+        : public std::binary_function<value_type, value_type, bool> // in C++98, it is required to inherit binary_function<value_type,value_type,bool>
 		{
-		private:
+			private:
 			friend class map;
-		protected:
+
+			protected:
 			Compare comp;
 			value_compare (Compare c) : comp(c) {}  // constructed with map's comparison object
-		public:
+
+			public:
 			bool operator() (const value_type& x, const value_type& y) const
 			{
 				return comp(x.first, y.first);
@@ -40,40 +43,42 @@ namespace ft
 		};
 
 		typedef	Alloc										allocator_type;
-		typedef	allocator_type::reference					reference;
-		typedef	allocator_type::const_reference				const_reference;
-		typedef	allocator_type::pointer						pointer;
-		typedef	allocator_type::const_pointer				const_pointer;
-		typedef	map_iterator<value_type>					iterator;
-		typedef	map_iterator<const value_type>				const_iterator;
-		typedef	reverse_iterator<iterator>					reverse_iterator;
-		typedef	reverse_iterator<const_iterator>			const_reverse_iterator;
-		typedef	iterator_traits<iterator>::difference_type	difference_type;
+		typedef	typename allocator_type::reference					reference;
+		typedef	typename allocator_type::const_reference				const_reference;
+		typedef	typename allocator_type::pointer						pointer;
+		typedef	typename allocator_type::const_pointer				const_pointer;
+		// typedef	map_iterator<value_type>					iterator;
+		// typedef	map_iterator<const value_type>				const_iterator;
+		// typedef	reverse_iterator<iterator>					reverse_iterator;
+		// typedef	reverse_iterator<const_iterator>			const_reverse_iterator;
+		// typedef	typename iterator_traits<iterator>::difference_type	difference_type;
 		typedef	size_t										size_type;
 
 		private:
-			key_compare		_compare;
-			allocator_type	_allocator;
-			size_type		_size;
+		key_compare		_compare;
+		allocator_type	_allocator;
+		size_type		_size;
+		rb_tree<value_type, value_compare, allocator_type> _tree;
 
 		public:
 		// Constructors
-		explicit map (const key_compare& comp = key_compare(),
+		explicit map(const key_compare& comp = key_compare(),
               const allocator_type& alloc = allocator_type()) :
 			  _compare(comp),
 			  _allocator(alloc),
-			  _size(0)
+			  _size(0),
+			  _tree(value_comp(), _allocator)
 			  {};
 
-		template <class InputIterator>
-  		map (InputIterator first, InputIterator last,
-       		const key_compare& comp = key_compare(),
-       		const allocator_type& alloc = allocator_type());
+		// template <class InputIterator>
+  		// map(InputIterator first, InputIterator last,
+       	// 	const key_compare& comp = key_compare(),
+       	// 	const allocator_type& alloc = allocator_type());
 
-		map (const map& x);
+		// map(const map& x);
 
 		//Destructor
-		~map(void);
+		~map(void) {};
 
 		bool empty(void) const
 		{
@@ -95,6 +100,7 @@ namespace ft
 
 		// Not Implemented: /!\
 			// Iterators:
+		/*
 		iterator begin();
 		const_iterator begin() const;
 		iterator end();
@@ -108,8 +114,14 @@ namespace ft
 		mapped_type& operator[] (const key_type& k);
 
 			// Modifiers:
-		pair<iterator,bool> insert (const value_type& val);
-
+			*/
+		// pair<iterator,bool> 
+		void insert (const value_type& val) // returning void for testing
+		{
+			_tree.insert(val);
+		};
+		void print(void) { _tree.print_tree(); };
+/*
 		iterator insert (iterator position, const value_type& val);
 
 		template <class InputIterator>
@@ -120,10 +132,11 @@ namespace ft
 		void erase (iterator first, iterator last);
 		void swap (map& x);
 		void clear();
-
+		*/
 
 		key_compare key_comp() const { return _compare; };
-		value_compare value_comp() const;
+		
+		value_compare value_comp() const { return value_compare(_compare); };
 	};
 }
 

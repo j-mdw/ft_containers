@@ -15,7 +15,7 @@ namespace ft
 			second_type	second;
 
 			//Constructors
-			pair(void) {};
+			pair(void) : first(), second() {};
 			
 			template<class U, class V>
 			pair (const pair<U,V>& pr) : first(pr.first), second(pr.second) {};

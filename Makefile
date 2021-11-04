@@ -4,7 +4,8 @@ STD_VEC = std_vector
 FT_STK = ft_stack
 STD_STK = std_stack
 
-F = -Wall 
+FT_MAP = ft_map
+STD_MAP = std_map
 
 C = clang++
 
@@ -19,6 +20,7 @@ IFLAGS = $(foreach dir, $(INC_DIR), -I $(dir)) # Lucas did not add space after "
 
 VEC_MAIN = vector/main.cpp
 STK_MAIN = stack/main.cpp
+MAP_MAIN = map/main.cpp
 
 UTIL_FILES = tester/utils/RandomGenerator.cpp
 
@@ -45,9 +47,17 @@ $(FT_STK): $(STK_MAIN) $(UTIL_FILES)
 $(STD_STK): $(STK_MAIN) $(UTIL_FILES)
 	$C $F $(IFLAGS) -D NS=std -D CONTAINER=stack $^ -o $@
 
+map: $(FT_MAP) $(STD_MAP)
+
+$(FT_MAP): $(MAP_MAIN) $(UTIL_FILES)
+	$C $F $(IFLAGS) -D NS=ft -D CONTAINER=map $^ -o $@
+
+# $(STD_STK): $(STK_MAIN) $(UTIL_FILES)
+# 	$C $F $(IFLAGS) -D NS=std -D CONTAINER=stack $^ -o $@
+
 clean:
 
 fclean:
-	rm -f $(FT_VEC) $(STD_VEC) $(FT_STK) $(STD_STK)
+	rm -f $(FT_VEC) $(STD_VEC) $(FT_STK) $(STD_STK) $(FT_MAP) $(STD_MAP)
 
 re: fclean
