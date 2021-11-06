@@ -2,7 +2,14 @@
 # define FT_RB_MAP_HPP
 
 #include "map.hpp"
-#include <iostream> //For print methods --> DELETE
+
+#define DEBUG 1 //Need makefile implementation
+#ifdef DEBUG
+# include <iostream> //For print methods --> DELETE
+# include <queue> //Used for breadth_first_traversal
+# include <cmath>
+#endif
+
 namespace ft
 {
     template<typename T>
@@ -19,12 +26,20 @@ namespace ft
         Node    *parent;
         Node    *left;
         Node    *right;
+		#ifdef DEBUG
+			int		id; //DEBUG
+			int		parent_id; //DEBUG
+		#endif
 
         Node(void) :
             color(black),
             parent(NULL),
             left(NULL),
             right(NULL) {
+				#ifdef DEBUG
+					id = 0; //DEBUG
+					parent_id = 0; //DEBUG
+				#endif
             };
 
         Node(color_t color, T val) :
@@ -33,6 +48,10 @@ namespace ft
             parent(NULL),
             left(NULL),
             right(NULL) {
+				#ifdef DEBUG
+					id = 0; //DEBUG
+					parent_id = 0; //DEBUG
+				#endif
             };
 
         ~Node(void) {};
@@ -56,7 +75,7 @@ namespace ft
         value_compare       			compare;
         allocator_type					allocator;
 		node_allocator					node_alloc;
-        const tree_node					*_nil; //should be const
+        tree_node					*_nil; //should be const
         tree_node						*_root;
 
 		public:
@@ -84,6 +103,7 @@ namespace ft
 			{
 				_root = to_insert;
 				_root->parent = _nil;
+				to_insert->color = tree_node::black;
 			}
 			else
 			{
@@ -111,52 +131,147 @@ namespace ft
 						parent = parent->right;
 					}
 				}
+			rb_tree_fixup(to_insert);
 			}
+			std::cout << "Node inserted\n";
+		};
+
+		/*
+			At this stage, 2 RB tree conditions might be violated:
+			1. node's parent might be red
+			2. root could be red
+
+			Otherwise, we know that black depth property is respected
+		*/
+
+		void	rb_tree_fixup(tree_node *node)
+		{
+			tree_node *current_node = node;
+
+			while (current_node->parent->color == tree_node::red)
+			{
+				if (current_node->parent == current_node->parent->parent->left)
+				{
+					if (right_uncle(current_node)->color == tree_node::red)
+					{
+						current_node->parent->color = tree_node::black;
+						right_uncle(current_node)->color = tree_node::black;
+						current_node->parent->parent->color = tree_node::red;
+						current_node = current_node->parent->parent;
+					}
+					else
+					{
+						if (current_node == current_node->parent->right)
+						{
+							current_node = current_node->parent;
+							left_rotate(current_node);
+						}
+						if (current_node == current_node->parent->left)
+						{
+							current_node->parent->color = tree_node::black;
+							current_node->parent->parent->color = tree_node::red;
+							right_rotate(current_node->parent->parent);
+						}
+					}
+				}
+				else
+				{
+					if (left_uncle(current_node)->color == tree_node::red)
+					{
+						current_node->parent->color = tree_node::black;
+						left_uncle(current_node)->color = tree_node::black;
+						current_node->parent->parent->color = tree_node::red;
+						current_node = current_node->parent->parent;
+					}
+					else
+					{
+						if (current_node == current_node->parent->left)
+						{
+							current_node = current_node->parent;
+							right_rotate(current_node);
+						}
+						if (current_node == current_node->parent->right)
+						{
+							current_node->parent->color = tree_node::black;
+							current_node->parent->parent->color = tree_node::red;
+							left_rotate(current_node->parent->parent);
+						}
+					}
+				}
+			}
+			if (current_node->parent == _nil)
+			{
+				_root = current_node;
+			}
+			_root->color = tree_node::black;
 		};
 		
+		tree_node *right_uncle(tree_node *node)
+		{
+			return node->parent->parent->right;
+		};
+		tree_node *left_uncle(tree_node *node)
+		{
+			return node->parent->parent->left;
+		};
+
+
+		tree_node *search(value_type val)
+		{
+			if (_root == NULL)
+				return NULL;
+			tree_node *node = _root;
+			while (node != _nil)
+			{
+				if (compare(val, node->value) == true)
+					node = node->left;
+				else if (compare(node->value, val) == false) //values are equal
+					return node;
+				else
+					node = node->right;
+			}
+			if (node == _nil)
+				return NULL;
+			return node;
+		};
+
+		void	remove(value_type val)
+		{
+			tree_node *to_delete = search(val);
+			if (to_delete == NULL)
+				return ;
+			// TB Continued...	
+		}
+
 		/*
 		 ### ROTATIONS ###
 		*/
-		/*
-		void	right_rotate(tree_node *node)
-		{
-			if (!node || node->parent == _nil)
-				return ;
-			tree_node *node_right = node->right;
-			node->right = node->parent;
-			node->parent = node->parent->parent;
-			node->right->left = node_right;
-		}
-
-		void	left_rotate(tree_node *node)
-		{
-			if (!node || node->parent == _nil)
-				return ;
-			tree_node *node_left = node->left;
-			node->left = node->parent;
-			node->parent = node->parent->parent;
-			node->left->right = node_left;
-		}
 
 		void	left_rotate(tree_node *old_parent)
 		{
 			if (!old_parent || old_parent->right == _nil) //Not sure about the nil check
+			{
+				#ifdef DEBUG
+					std::cout << "Rotate received unexpected parameter: NULL node or non-rotable node\n";
+				#endif
 				return ;
+			}
 			
 			tree_node *new_parent = old_parent->right;
 
 			//Set new_parent as old_parent's parent, and then set new_parent as old_parent's parent left or right child
 			new_parent->parent = old_parent->parent;
-			if (old_parent->parent != _nil)
+			if (old_parent->parent == _nil)
 			{
-				if (old_parent == old_parent->parent->left)
-				{
-					old_parent->parent->left = new_parent;
-				}
-				else
-				{
-					old_parent->parent->right = new_parent;
-				}
+				_root = new_parent;
+			}
+			else if (old_parent == old_parent->parent->left)
+			{
+				old_parent->parent->left = new_parent;
+			}
+			else
+			{
+				old_parent->parent->right = new_parent;
 			}
 			old_parent->parent = new_parent;
 
@@ -166,23 +281,134 @@ namespace ft
 				old_parent->right->parent = old_parent;
 			}
 			new_parent->left = old_parent;
+			old_parent->parent = new_parent;
 		}
-		*/
+
+		void	right_rotate(tree_node *old_parent)
+		{
+			if (!old_parent || old_parent->left == _nil) //Not sure about the nil check
+			{
+				#ifdef DEBUG
+					std::cout << "Rotate received unexpected parameter: NULL node or non-rotable node\n";
+				#endif
+				return ;
+			}
+			
+			tree_node *new_parent = old_parent->left;
+
+			//Set new_parent as old_parent's parent, and then set new_parent as old_parent's parent left or right child
+			new_parent->parent = old_parent->parent;
+			if (old_parent->parent == _nil)
+			{
+				_root = new_parent;
+			}
+			else if (old_parent == old_parent->parent->left)
+			{
+				old_parent->parent->left = new_parent;
+			}
+			else
+			{
+				old_parent->parent->right = new_parent;
+			}
+			old_parent->parent = new_parent;
+
+			old_parent->left = new_parent->right;
+			if (new_parent->right != _nil)
+			{
+				old_parent->left->parent = old_parent;
+			}
+			new_parent->right = old_parent;
+			old_parent->parent = new_parent;
+		}
+
 		void	print_tree(void) // DELETE --> Testing only
 		{
-			in_order_walk(_root, &rb_tree::print_pair);
+			// in_order_walk(_root, &rb_tree::print_pair);
+			breadth_first_traversal(_root, &rb_tree::print_pair);
 		};
 		
-		void	print_pair(tree_node *node) // DELETE --> Only for map testing 
+		void	print_pair(tree_node *node, bool line_break = true) // DELETE --> Only for map testing 
 		{
-			std::cout << "key: " << node->value.first << " value: " << node->value.second << '\n';
+			if (!node)
+				return ;
+			std::cout << "[ ";
+			if (node->color == tree_node::red)
+				std::cout << "RED, ";
+			else
+				std::cout << "BLK, ";
+			
+			std::cout << node->value.first << " : " << node->value.second << " ; ";
+			
+			if (node->parent == _nil)
+				std::cout << "nil | ";
+			else
+				std::cout << node->parent_id << " | ";
+			std::cout << node->id << " ]\t";
+			// if (node->left == _nil)
+			// 	std::cout << "nil | ";
+			// else
+			// 	std::cout << node->left << " | ";
+			// if (node->right == _nil)
+			// 	std::cout << "nil | ";
+			// else
+			// 	std::cout << node->right << " ] ";
+
+			if (line_break)
+				std::cout << '\n';
 		};
 
+		void	breadth_first_traversal(tree_node *node, void (rb_tree::*f)(tree_node *, bool))
+		{
+			if (node == NULL)
+				return ;
+			std::queue<tree_node *> queue;
+			size_t current_level_node_count = 0;
+			size_t next_level_node_count = 0;
+			int	level = 1;
+			queue.push(node);
+			current_level_node_count++;
+			node->id = 0;
+			node->parent_id = 0;
+			while (!queue.empty())
+			{
+				tree_node *current_node = queue.front();
+				queue.pop();
+				(this->*f)(current_node, false);
+				if (current_node->left != _nil)
+				{
+					current_node->left->parent_id = current_node->id;
+					current_node->left->id = pow(2, level) + next_level_node_count;
+
+					queue.push(current_node->left);
+					next_level_node_count++;
+				}
+				if (current_node->right != _nil)
+				{
+					current_node->right->parent_id = current_node->id;
+					current_node->right->id = pow(2, level) + next_level_node_count;
+
+					queue.push(current_node->right);
+					next_level_node_count++;
+				}
+				current_level_node_count--;
+				if (current_level_node_count == 0)
+				{
+					std::cout << '\n';
+					current_level_node_count = next_level_node_count;
+					next_level_node_count = 0;
+					level++;
+				}
+			}
+		}
+
+		tree_node *get_root(void) { return _root; }
+
 		private:
-		void	delete_node(tree_node *node)
+		void	delete_node(tree_node *node, bool flag = false)
 		{
 			node_alloc.destroy(node);
 			node_alloc.deallocate(node, 1);
+			(void)flag;
 		};
 
 		void	delete_tree(void)
@@ -204,23 +430,23 @@ namespace ft
 			return node;
 		};
         
-		void post_order_walk(tree_node *node, void (rb_tree::*f)(tree_node *))
+		void post_order_walk(tree_node *node, void (rb_tree::*f)(tree_node *, bool))
 		{
 			if (node == _nil)
 				return ;
 
 			post_order_walk(node->left, f);
 			post_order_walk(node->right, f);
-			(this->*f)(node);
+			(this->*f)(node, false);
 		};
 		
-		void in_order_walk(tree_node *node, void (rb_tree::*f)(tree_node *))
+		void in_order_walk(tree_node *node, void (rb_tree::*f)(tree_node *, bool))
 		{
 			if (node == _nil)
 				return ;
 
 			in_order_walk(node->left, f);
-			(this->*f)(node);
+			(this->*f)(node, false);
 			in_order_walk(node->right, f);
 		};
     };

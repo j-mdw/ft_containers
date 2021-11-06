@@ -4,13 +4,22 @@ int
 main(void)
 {
 	ft::map<int, int> mi;
-	mi.insert(ft::pair<int, int>(4, 5));
-	mi.insert(ft::pair<int, int>(6, 6));
-	mi.insert(ft::pair<int, int>(-1, 6));
-	mi.insert(ft::pair<int, int>(43, 6));
-	mi.insert(ft::pair<int, int>(0, 6));
-	mi.insert(ft::pair<int, int>(72, 6));
-	mi.insert(ft::pair<int, int>(-23, 6));
+
+	for (size_t i = 15; i > 0; --i)
+	{
+		mi.insert(ft::pair<int, int>(i, 7));
+	}
+
+	// std::cout << "Left rotate:\n";
+	// mi.left_rotate();
+	// mi.print();
+
+	// std::cout << "+ node\n";
+	// mi.insert(ft::pair<int, int>(243, 6));
 	mi.print();
+
+	// std::cout << "Right rotate:\n";
+	// mi.right_rotate();
+	// mi.print();
 	return 0;
 }

@@ -121,6 +121,9 @@ namespace ft
 			_tree.insert(val);
 		};
 		void print(void) { _tree.print_tree(); };
+
+		void left_rotate(void) { _tree.left_rotate(_tree.get_root()); };
+		void right_rotate(void) { _tree.right_rotate(_tree.get_root()); };
 /*
 		iterator insert (iterator position, const value_type& val);
 

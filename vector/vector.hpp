@@ -139,11 +139,12 @@ class vector
         size_type   size(void) const    { return this->_size; };
         size_type   max_size(void) const
 		{
-			long long max_size = std::numeric_limits<size_t>::max() >> 1;
-			int divisor = sizeof(T) / 2;
-			if (divisor > 1)
-				return max_size / divisor;
-			return max_size;
+			// long long max_size = std::numeric_limits<size_t>::max() >> 1;
+			// int divisor = sizeof(T) / 2;
+			// if (divisor > 1)
+			// 	return max_size / divisor;
+			// return max_size;
+            return _allocator.max_size();
 		};
         
         void        resize (size_type n, value_type val = value_type())
