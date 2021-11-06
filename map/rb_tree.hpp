@@ -52,25 +52,22 @@ namespace ft
 		typedef Node<value_type>	tree_node;
 		typedef typename allocator_type::template rebind<Node<value_type> >::other node_allocator;
 		
-		// typedef typename std::allocator_traits<Alloc>::template rebind_alloc<Node<Value> > node_allocator;
         private:
         value_compare       			compare;
         allocator_type					allocator;
 		node_allocator					node_alloc;
-        tree_node						*_nil; //should be const
+        const tree_node					*_nil; //should be const
         tree_node						*_root;
 
 		public:
         rb_tree(value_compare cmp, allocator_type alloc) : 
 			compare(cmp),
-			allocator(alloc)
-		{
-			// node_alloc = allocator_type::template rebind<Node<value_type> >::other;
-			// alloc::template rebind<Node<value_type> >::other;
-			_nil = create_node();
-			_root = NULL;
+			allocator(alloc),
+			_nil(create_node()),
+			_root(NULL) {
 		};
-        ~rb_tree(void)
+        
+		~rb_tree(void)
 		{
 			if (_root != NULL)
 				delete_tree();
@@ -116,7 +113,61 @@ namespace ft
 				}
 			}
 		};
+		
+		/*
+		 ### ROTATIONS ###
+		*/
+		/*
+		void	right_rotate(tree_node *node)
+		{
+			if (!node || node->parent == _nil)
+				return ;
+			tree_node *node_right = node->right;
+			node->right = node->parent;
+			node->parent = node->parent->parent;
+			node->right->left = node_right;
+		}
 
+		void	left_rotate(tree_node *node)
+		{
+			if (!node || node->parent == _nil)
+				return ;
+			tree_node *node_left = node->left;
+			node->left = node->parent;
+			node->parent = node->parent->parent;
+			node->left->right = node_left;
+		}
+
+		void	left_rotate(tree_node *old_parent)
+		{
+			if (!old_parent || old_parent->right == _nil) //Not sure about the nil check
+				return ;
+			
+			tree_node *new_parent = old_parent->right;
+
+			//Set new_parent as old_parent's parent, and then set new_parent as old_parent's parent left or right child
+			new_parent->parent = old_parent->parent;
+			if (old_parent->parent != _nil)
+			{
+				if (old_parent == old_parent->parent->left)
+				{
+					old_parent->parent->left = new_parent;
+				}
+				else
+				{
+					old_parent->parent->right = new_parent;
+				}
+			}
+			old_parent->parent = new_parent;
+
+			old_parent->right = new_parent->left;
+			if (new_parent->left != _nil)
+			{
+				old_parent->right->parent = old_parent;
+			}
+			new_parent->left = old_parent;
+		}
+		*/
 		void	print_tree(void) // DELETE --> Testing only
 		{
 			in_order_walk(_root, &rb_tree::print_pair);
