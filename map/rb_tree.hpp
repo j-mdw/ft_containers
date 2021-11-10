@@ -235,14 +235,103 @@ namespace ft
 			return node;
 		};
 
-		void	remove(value_type val)
+		void	remove(tree_node *to_delete)
 		{
-			tree_node *to_delete = search(val);
+			tree_node::color_t original_color = to_delete->color;
+			tree_node *to_fix;
 			if (to_delete == NULL)
 				return ;
-			// TB Continued...	
+			if (to_delete->right == _nil)
+			{
+				to_fix = to_delete->left;
+				transplant(to_delete, to_delete->left);
+			}
+			else if (to_delete->left == _nil)
+			{
+				to_fix = to_delete->right;
+				transplant(to_delete, to_delete->right);
+			}
+			else
+			{
+				tree_node *subtitute = minimum(to_delete->right);
+				original_color = subtitute->color;
+				if (subtitute->right != _nil)
+					to_fix = subtitute->right;
+				else if (subtitute->parent != to_delete)
+				{
+					to_fix = subtitute->parent;
+				}
+				else
+				{
+					to_fix = subtitute;
+				}
+
+				if (subtitute->parent != to_delete)
+				{
+					transplant(subtitute, subtitute->right);
+					subtitute->right = to_delete->right;
+					subtitute->right->parent = subtitute;
+				}
+				else
+				{
+					subtitute->parent->right
+				}
+				transplant(to_delete, subtitute);
+				subtitute->left = to_delete->left;
+				if (subtitute->left != _nil)
+					subtitute->left->parent = subtitute;
+				subtitute->color = to_delete->color;
+			}
+			delete_node(to_delete);
+			if (original_color == tree_node::black)
+				remove_fixup(to_fix);
+		};
+
+		void	remove_fixup(tree_node) {};
+
+		void	transplant(tree_node *current, tree_node *transplanted)
+		{
+			if (current == _root)
+			{
+				_root = transplanted;
+			}
+			else if (current == current->parent->right)
+			{
+				current->parent->right = transplanted;
+			}
+			else
+			{
+				current->parent->left = transplanted;
+			}
+			if (transplanted != _nil)
+			{
+				transplanted->parent = current->parent;
+			}
+		};
+
+		tree_node *minimum(tree_node *start)
+		{
+			if (start == NULL || start == _nil)
+				return NULL;
+			tree_node *node = start;
+			while (node->left != _nil)
+			{
+				node = node->left;
+			}
+			return node;
 		}
 
+		tree_node *maximum(tree_node *start)
+		{
+			if (start == NULL || start == _nil)
+				return NULL;
+			tree_node *node = start;
+			while (node->right != _nil)
+			{
+				node = node->right;
+			}
+			return node;
+		}
 		/*
 		 ### ROTATIONS ###
 		*/
@@ -335,9 +424,9 @@ namespace ft
 			if (node->color == tree_node::red)
 				std::cout << "RED, ";
 			else
-				std::cout << "BLK, ";
+				std::cout << "BLK, {";
 			
-			std::cout << node->value.first << " : " << node->value.second << " ; ";
+			std::cout << node->value.first << " : " << node->value.second << "} ; ";
 			
 			if (node->parent == _nil)
 				std::cout << "nil | ";
