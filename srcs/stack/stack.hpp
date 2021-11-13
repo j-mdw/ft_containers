@@ -22,12 +22,12 @@ class stack
 		
 		~stack(void) {};
 
-		bool empty(void) const { return _ctnr.empty(); };
-		size_type size(void) const { return _ctnr.size(); };
-		value_type& top(void) { return _ctnr.back(); };
-		const value_type& top(void) const { return _ctnr.back(); };
-		void push(const value_type& val) { _ctnr.push_back(val); };
-		void pop() { _ctnr.pop_back(); };
+		bool				empty(void) const { return _ctnr.empty(); };
+		size_type			size(void) const { return _ctnr.size(); };
+		value_type&			top(void) { return _ctnr.back(); };
+		const value_type&	top(void) const { return _ctnr.back(); };
+		void				push(const value_type& val) { _ctnr.push_back(val); };
+		void				pop() { _ctnr.pop_back(); };
 
 
 		template <class T1, class Container1>

@@ -255,16 +255,16 @@ namespace ft
 			{
 				tree_node *subtitute = minimum(to_delete->right);
 				original_color = subtitute->color;
-				if (subtitute->right != _nil)
-					to_fix = subtitute->right;
-				else if (subtitute->parent != to_delete)
-				{
-					to_fix = subtitute->parent;
-				}
-				else
-				{
-					to_fix = subtitute;
-				}
+				// if (subtitute->right != _nil)
+				to_fix = subtitute->right;
+				// else if (subtitute->parent != to_delete)
+				// {
+				// 	to_fix = subtitute->parent;
+				// }
+				// else
+				// {
+				// 	to_fix = subtitute;
+				// }
 
 				if (subtitute->parent != to_delete)
 				{
@@ -272,10 +272,10 @@ namespace ft
 					subtitute->right = to_delete->right;
 					subtitute->right->parent = subtitute;
 				}
-				else
-				{
-					subtitute->parent->right
-				}
+				// else
+				// {
+				// 	subtitute->parent->right
+				// }
 				transplant(to_delete, subtitute);
 				subtitute->left = to_delete->left;
 				if (subtitute->left != _nil)
@@ -283,6 +283,11 @@ namespace ft
 				subtitute->color = to_delete->color;
 			}
 			delete_node(to_delete);
+			if (to_fix == _nil)
+			{
+				to_fix = to_fix->parent;
+				_nil->parent = NULL;
+			}
 			if (original_color == tree_node::black)
 				remove_fixup(to_fix);
 		};
@@ -303,10 +308,7 @@ namespace ft
 			{
 				current->parent->left = transplanted;
 			}
-			if (transplanted != _nil)
-			{
-				transplanted->parent = current->parent;
-			}
+			transplanted->parent = current->parent;
 		};
 
 		tree_node *minimum(tree_node *start)

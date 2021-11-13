@@ -11,16 +11,14 @@ C = clang++
 
 F = -Wall -Werror -Wextra -std=c++98
 
-INC_DIR =	$(shell find utils -type d) \
-			$(shell find tester -type d) \
-			$(shell find vector -type d) \
-			$(shell find stack -type d)
+INC_DIR =	$(shell find srcs -type d) \
+			$(shell find tester -type d)
 
-IFLAGS = $(foreach dir, $(INC_DIR), -I $(dir)) # Lucas did not add space after "-I"
+IFLAGS = $(foreach dir, $(INC_DIR), -I $(dir))
 
-VEC_MAIN = vector/main.cpp
-STK_MAIN = stack/main.cpp
-MAP_MAIN = map/main.cpp
+VEC_MAIN = srcs/vector/main.cpp
+STK_MAIN = srcs/stack/main.cpp
+MAP_MAIN = srcs/map/main.cpp
 
 UTIL_FILES = tester/utils/RandomGenerator.cpp
 
