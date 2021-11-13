@@ -5,7 +5,7 @@ main(void)
 {
 	ft::map<int, int> mi;
 
-	for (size_t i = 15; i > 0; --i)
+	for (size_t i = 20; i > 0; --i)
 	{
 		mi.insert(ft::pair<int, int>(i, 7));
 	}
@@ -17,7 +17,31 @@ main(void)
 	// std::cout << "+ node\n";
 	// mi.insert(ft::pair<int, int>(243, 6));
 	mi.print();
+	mi.remove(ft::pair<int, int>(3, 7));
+	std::cout << '\n';
+	mi.print();
 
+	mi.remove(ft::pair<int, int>(1, 7));
+	std::cout << '\n';
+	mi.print();
+
+	// mi.remove(ft::pair<int, int>(8, 7));
+	// mi.remove(ft::pair<int, int>(6, 7));
+	// mi.remove(ft::pair<int, int>(2, 7));
+	// std::cout << '\n';
+	// mi.print();
+
+	mi.remove(ft::pair<int, int>(5, 7));
+	std::cout << '\n';
+	mi.print();
+
+	// mi.remove(ft::pair<int, int>(7, 7));
+	// std::cout << '\n';
+	// mi.print();
+	
+	// mi.remove(ft::pair<int, int>(4, 7));
+	// std::cout << '\n';
+	// mi.print();
 	// std::cout << "Right rotate:\n";
 	// mi.right_rotate();
 	// mi.print();

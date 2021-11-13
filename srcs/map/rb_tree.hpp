@@ -237,7 +237,7 @@ namespace ft
 
 		void	remove(tree_node *to_delete)
 		{
-			tree_node::color_t original_color = to_delete->color;
+			typename tree_node::color_t original_color = to_delete->color;
 			tree_node *to_fix;
 			if (to_delete == NULL)
 				return ;
@@ -278,7 +278,7 @@ namespace ft
 				// }
 				transplant(to_delete, subtitute);
 				subtitute->left = to_delete->left;
-				if (subtitute->left != _nil)
+				// if (subtitute->left != _nil)
 					subtitute->left->parent = subtitute;
 				subtitute->color = to_delete->color;
 			}
@@ -288,11 +288,11 @@ namespace ft
 				to_fix = to_fix->parent;
 				_nil->parent = NULL;
 			}
-			if (original_color == tree_node::black)
-				remove_fixup(to_fix);
+			// if (original_color == tree_node::black)
+			// 	remove_fixup(to_fix);
 		};
 
-		void	remove_fixup(tree_node) {};
+		// void	remove_fixup(tree_node) {};
 
 		void	transplant(tree_node *current, tree_node *transplanted)
 		{
@@ -309,6 +309,11 @@ namespace ft
 				current->parent->left = transplanted;
 			}
 			transplanted->parent = current->parent;
+			
+			#ifdef DEBUG
+				transplanted->parent_id = current->parent_id;
+			#endif
+
 		};
 
 		tree_node *minimum(tree_node *start)
@@ -424,7 +429,7 @@ namespace ft
 				return ;
 			std::cout << "[ ";
 			if (node->color == tree_node::red)
-				std::cout << "RED, ";
+				std::cout << "RED, {";
 			else
 				std::cout << "BLK, {";
 			
@@ -450,7 +455,7 @@ namespace ft
 
 		void	breadth_first_traversal(tree_node *node, void (rb_tree::*f)(tree_node *, bool))
 		{
-			if (node == NULL)
+			if (node == NULL || node == _nil)
 				return ;
 			std::queue<tree_node *> queue;
 			size_t current_level_node_count = 0;

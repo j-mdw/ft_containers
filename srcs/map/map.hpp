@@ -122,6 +122,11 @@ namespace ft
 		};
 		void print(void) { _tree.print_tree(); };
 
+		void remove(const value_type& val) // Test version
+		{
+			_tree.remove(_tree.search(val));
+		};
+
 		void left_rotate(void) { _tree.left_rotate(_tree.get_root()); };
 		void right_rotate(void) { _tree.right_rotate(_tree.get_root()); };
 /*
