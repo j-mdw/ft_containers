@@ -26,20 +26,20 @@ namespace ft
         Node    *parent;
         Node    *left;
         Node    *right;
-		#ifdef DEBUG
-			int		id; //DEBUG
-			int		parent_id; //DEBUG
-		#endif
+	#ifdef DEBUG
+		int		id; //DEBUG
+		int		parent_id; //DEBUG
+	#endif
 
         Node(void) :
             color(black),
             parent(NULL),
             left(NULL),
             right(NULL) {
-				#ifdef DEBUG
-					id = 0; //DEBUG
-					parent_id = 0; //DEBUG
-				#endif
+			#ifdef DEBUG
+				id = 0; //DEBUG
+				parent_id = 0; //DEBUG
+			#endif
             };
 
         Node(color_t color, T val) :
@@ -48,10 +48,10 @@ namespace ft
             parent(NULL),
             left(NULL),
             right(NULL) {
-				#ifdef DEBUG
-					id = 0; //DEBUG
-					parent_id = 0; //DEBUG
-				#endif
+			#ifdef DEBUG
+				id = 0; //DEBUG
+				parent_id = 0; //DEBUG
+			#endif
             };
 
         ~Node(void) {};
@@ -255,16 +255,8 @@ namespace ft
 			{
 				tree_node *subtitute = minimum(to_delete->right);
 				original_color = subtitute->color;
-				// if (subtitute->right != _nil)
+
 				to_fix = subtitute->right;
-				// else if (subtitute->parent != to_delete)
-				// {
-				// 	to_fix = subtitute->parent;
-				// }
-				// else
-				// {
-				// 	to_fix = subtitute;
-				// }
 
 				if (subtitute->parent != to_delete)
 				{
@@ -272,27 +264,37 @@ namespace ft
 					subtitute->right = to_delete->right;
 					subtitute->right->parent = subtitute;
 				}
-				// else
-				// {
-				// 	subtitute->parent->right
-				// }
+
 				transplant(to_delete, subtitute);
 				subtitute->left = to_delete->left;
-				// if (subtitute->left != _nil)
-					subtitute->left->parent = subtitute;
+				subtitute->left->parent = subtitute;
 				subtitute->color = to_delete->color;
 			}
 			delete_node(to_delete);
-			if (to_fix == _nil)
-			{
-				to_fix = to_fix->parent;
-				_nil->parent = NULL;
-			}
 			// if (original_color == tree_node::black)
+			// {
 			// 	remove_fixup(to_fix);
+			// }
+			_nil->parent = tree_node::black;
 		};
 
-		// void	remove_fixup(tree_node) {};
+		// void	remove_fixup(tree_node *node)
+		// {
+		// 	tree_node *to_fix = node;
+		// 	while (to_fix != _root && to_fix->color == tree_node::black)
+		// 	{
+		// 		if (to_fix == to_fix->parent->right)
+		// 		{
+		// 			if (sibling(to_fix)->color == tree_node::red)
+		// 			{
+
+		// 			}
+		// 		}
+
+		// 	}
+		// 	to_fix->color = tree_node::black;
+			// _root->color = tree_node::black;
+		};
 
 		void	transplant(tree_node *current, tree_node *transplanted)
 		{
@@ -310,11 +312,21 @@ namespace ft
 			}
 			transplanted->parent = current->parent;
 			
-			#ifdef DEBUG
-				transplanted->parent_id = current->parent_id;
-			#endif
-
+		#ifdef DEBUG
+			transplanted->parent_id = current->parent_id;
+		#endif
 		};
+
+		tree_node *sibling(tree_node *sibling1)
+		{
+			if (sibling1 == NULL || sibling1 == _root)
+				return ;
+			if (sibling1 == sibling1->parent->right)
+			{
+				return sibling1->parent->left;
+			}
+			return sibling1->parent->right;
+		}
 
 		tree_node *minimum(tree_node *start)
 		{
@@ -347,9 +359,9 @@ namespace ft
 		{
 			if (!old_parent || old_parent->right == _nil) //Not sure about the nil check
 			{
-				#ifdef DEBUG
-					std::cout << "Rotate received unexpected parameter: NULL node or non-rotable node\n";
-				#endif
+			#ifdef DEBUG
+				std::cout << "Rotate received unexpected parameter: NULL node or non-rotable node\n";
+			#endif
 				return ;
 			}
 			
@@ -384,9 +396,9 @@ namespace ft
 		{
 			if (!old_parent || old_parent->left == _nil) //Not sure about the nil check
 			{
-				#ifdef DEBUG
-					std::cout << "Rotate received unexpected parameter: NULL node or non-rotable node\n";
-				#endif
+			#ifdef DEBUG
+				std::cout << "Rotate received unexpected parameter: NULL node or non-rotable node\n";
+			#endif
 				return ;
 			}
 			
@@ -437,9 +449,12 @@ namespace ft
 			
 			if (node->parent == _nil)
 				std::cout << "nil | ";
+		#ifdef DEBUG
 			else
 				std::cout << node->parent_id << " | ";
-			std::cout << node->id << " ]\t";
+			std::cout << node->id;
+		#endif
+			std::cout << " ]\t";
 			// if (node->left == _nil)
 			// 	std::cout << "nil | ";
 			// else
@@ -458,13 +473,17 @@ namespace ft
 			if (node == NULL || node == _nil)
 				return ;
 			std::queue<tree_node *> queue;
+		#ifdef DEBUG
 			size_t current_level_node_count = 0;
 			size_t next_level_node_count = 0;
 			int	level = 1;
+		#endif
 			queue.push(node);
 			current_level_node_count++;
+		#ifdef DEBUG
 			node->id = 0;
 			node->parent_id = 0;
+		#endif
 			while (!queue.empty())
 			{
 				tree_node *current_node = queue.front();
@@ -472,20 +491,23 @@ namespace ft
 				(this->*f)(current_node, false);
 				if (current_node->left != _nil)
 				{
+				#ifdef DEBUG
 					current_node->left->parent_id = current_node->id;
 					current_node->left->id = pow(2, level) + next_level_node_count;
-
-					queue.push(current_node->left);
 					next_level_node_count++;
+				#endif
+					queue.push(current_node->left);
 				}
 				if (current_node->right != _nil)
 				{
+				#ifdef DEBUG
 					current_node->right->parent_id = current_node->id;
 					current_node->right->id = pow(2, level) + next_level_node_count;
-
-					queue.push(current_node->right);
 					next_level_node_count++;
+				#endif
+					queue.push(current_node->right);
 				}
+			#ifdef DEBUG
 				current_level_node_count--;
 				if (current_level_node_count == 0)
 				{
@@ -494,6 +516,7 @@ namespace ft
 					next_level_node_count = 0;
 					level++;
 				}
+			#endif
 			}
 		}
 
