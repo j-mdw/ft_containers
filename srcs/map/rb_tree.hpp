@@ -294,7 +294,7 @@ namespace ft
 		// 	}
 		// 	to_fix->color = tree_node::black;
 			// _root->color = tree_node::black;
-		};
+		// };
 
 		void	transplant(tree_node *current, tree_node *transplanted)
 		{
