@@ -3,7 +3,7 @@
 
 #include "map.hpp"
 
-#define DEBUG 1 //Need makefile implementation
+#define DEBUG 1 //TBU --> Need makefile implementation
 #ifdef DEBUG
 # include <iostream> //For print methods --> DELETE
 # include <queue> //Used for breadth_first_traversal
@@ -83,7 +83,12 @@ namespace ft
 			compare(cmp),
 			allocator(alloc),
 			_nil(create_node()),
-			_root(NULL) {
+			_root(NULL)
+		{
+		#ifdef DEBUG
+			_nil->id = -1;
+			_nil->parent_id = -1;
+		#endif
 		};
         
 		~rb_tree(void)
@@ -96,7 +101,7 @@ namespace ft
 
 		void	insert(value_type val)
 		{
-			tree_node * to_insert = create_node(tree_node::red, val);
+			tree_node *to_insert = create_node(tree_node::red, val);
 			to_insert->right = _nil;
 			to_insert->left = _nil;
 			if (_root == NULL)
@@ -131,7 +136,7 @@ namespace ft
 						parent = parent->right;
 					}
 				}
-			rb_tree_fixup(to_insert);
+				insert_fixup(to_insert);
 			}
 			std::cout << "Node inserted\n";
 		};
@@ -144,7 +149,7 @@ namespace ft
 			Otherwise, we know that black depth property is respected
 		*/
 
-		void	rb_tree_fixup(tree_node *node)
+		void	insert_fixup(tree_node *node)
 		{
 			tree_node *current_node = node;
 
@@ -264,6 +269,10 @@ namespace ft
 					subtitute->right = to_delete->right;
 					subtitute->right->parent = subtitute;
 				}
+				else
+				{
+					to_fix->parent = subtitute; //in case to_fix is nil
+				}
 
 				transplant(to_delete, subtitute);
 				subtitute->left = to_delete->left;
@@ -271,30 +280,85 @@ namespace ft
 				subtitute->color = to_delete->color;
 			}
 			delete_node(to_delete);
-			// if (original_color == tree_node::black)
-			// {
-			// 	remove_fixup(to_fix);
-			// }
-			_nil->parent = tree_node::black;
+			if (original_color == tree_node::black)
+			{
+				remove_fixup(to_fix);
+			}
+			_nil->parent = NULL;
 		};
 
-		// void	remove_fixup(tree_node *node)
-		// {
-		// 	tree_node *to_fix = node;
-		// 	while (to_fix != _root && to_fix->color == tree_node::black)
-		// 	{
-		// 		if (to_fix == to_fix->parent->right)
-		// 		{
-		// 			if (sibling(to_fix)->color == tree_node::red)
-		// 			{
-
-		// 			}
-		// 		}
-
-		// 	}
-		// 	to_fix->color = tree_node::black;
-			// _root->color = tree_node::black;
-		// };
+		void	remove_fixup(tree_node *node)
+		{
+			tree_node *to_fix = node;
+			while (to_fix != _root && to_fix->color == tree_node::black)
+			{
+				if (to_fix == to_fix->parent->left)
+				{
+					tree_node *sibling = to_fix->parent->right;
+					if (sibling->color == tree_node::red)
+					{
+						sibling->color = tree_node::black;
+						to_fix->parent->color = tree_node::red;
+						left_rotate(to_fix->parent);
+						sibling = to_fix->parent->right;
+					}
+					if (sibling->left->color == tree_node::black &&
+					sibling->right->color == tree_node::black)
+					{
+						sibling->color = tree_node::red;
+						to_fix = to_fix->parent;
+					}
+					else
+					{
+						if (sibling->right->color == tree_node::black)
+						{
+							sibling->left->color = tree_node::black;
+							sibling->color = tree_node::red;
+							right_rotate(sibling);
+							sibling = to_fix->parent->right;
+						}
+						sibling->color = to_fix->parent->color;
+						to_fix->parent->color = tree_node::black;
+						sibling->right->color = tree_node::black;
+						left_rotate(to_fix->parent);
+						to_fix = _root;
+					}
+				}
+				else
+				{
+					tree_node *sibling = to_fix->parent->left;
+					if (sibling->color == tree_node::red)
+					{
+						sibling->color = tree_node::black;
+						to_fix->parent->color = tree_node::red;
+						right_rotate(to_fix->parent);
+						sibling = to_fix->parent->left;
+					}
+					if (sibling->right->color == tree_node::black &&
+					sibling->left->color == tree_node::black)
+					{
+						sibling->color = tree_node::red;
+						to_fix = to_fix->parent;
+					}
+					else
+					{
+						if (sibling->left->color == tree_node::black)
+						{
+							sibling->right->color = tree_node::black;
+							sibling->color = tree_node::red;
+							left_rotate(sibling);
+							sibling = to_fix->parent->left;
+						}
+						sibling->color = to_fix->parent->color;
+						to_fix->parent->color = tree_node::black;
+						sibling->left->color = tree_node::black;
+						right_rotate(to_fix->parent);
+						to_fix = _root;
+					}
+				}
+			}
+			to_fix->color = tree_node::black;
+		};
 
 		void	transplant(tree_node *current, tree_node *transplanted)
 		{
@@ -317,6 +381,7 @@ namespace ft
 		#endif
 		};
 
+		/* Not used for now
 		tree_node *sibling(tree_node *sibling1)
 		{
 			if (sibling1 == NULL || sibling1 == _root)
@@ -327,6 +392,7 @@ namespace ft
 			}
 			return sibling1->parent->right;
 		}
+		*/
 
 		tree_node *minimum(tree_node *start)
 		{
