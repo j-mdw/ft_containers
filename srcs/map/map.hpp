@@ -89,14 +89,7 @@ namespace ft
 
 		size_type size() const { return _size; };
 		
-		size_type max_size() const
-		{
-			long long max_size = std::numeric_limits<size_t>::max() >> 1;
-			int divisor = sizeof(T) / 2;
-			if (divisor > 1)
-				return max_size / divisor;
-			return max_size;
-		};
+		size_type max_size() const { return this->_tree.max_size(); };
 
 		// Not Implemented: /!\
 			// Iterators:

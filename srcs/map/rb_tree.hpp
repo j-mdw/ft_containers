@@ -99,6 +99,8 @@ namespace ft
 			delete_node(_nil);
         };
 
+		size_t	max_size(void) { return node_allocator::max_size; };
+
 		void	insert(value_type val)
 		{
 			tree_node *to_insert = create_node(tree_node::red, val);
