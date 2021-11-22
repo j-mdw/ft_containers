@@ -36,12 +36,6 @@ class reverse_iterator
 
         ~reverse_iterator(void) {};
 
-        // reverse_iterator & operator= (const reverse_iterator & rev_it)
-        // {
-        //     _base = rev_it._base;
-        //     return (*this);
-        // };
-
         iterator_type base(void) const
         {
             return (this->_base);

@@ -48,13 +48,37 @@ namespace ft
             parent(NULL),
             left(NULL),
             right(NULL) {
-			#ifdef DEBUG
-				id = 0; //DEBUG
-				parent_id = 0; //DEBUG
-			#endif
+		#ifdef DEBUG
+			id = 0;
+			parent_id = 0;
+		#endif
             };
+		
+		Node(const Node &node) :
+			color(node.color),
+			parent(node.parent),
+			left(node.left),
+			right(node.right)
+		#ifdef DEBUG
+			,id(node.id)
+			,parent_id(node.parent_id)
+		#endif
+		{};
 
         ~Node(void) {};
+
+		Node & operator=(const Node &node)
+		{
+			color = node.color;
+			parent = node.parent;
+			left = node.left;
+			right = node.right;
+		#ifdef DEBUG
+			id = node.id;
+			parent_id = node.parent_id;
+		#endif
+			return *this;
+		};
     };
 
     template<
@@ -248,6 +272,15 @@ namespace ft
 			tree_node *to_fix;
 			if (to_delete == NULL)
 				return ;
+			if (
+				to_delete == _root &&
+				to_delete->right == _nil &&
+				to_delete->left == _nil
+			) {
+				delete_node(_root);
+				_root = NULL;
+				return;
+			}
 			if (to_delete->right == _nil)
 			{
 				to_fix = to_delete->left;
@@ -419,6 +452,36 @@ namespace ft
 			}
 			return node;
 		}
+
+		tree_node *predecessor(tree_node *node)
+		{
+			if (node->left != _nil)
+			{
+				return node->left;
+			}
+			tree_node *parent = node->parent;
+			while (parent != _nil && parent->left == node)
+			{
+				node = parent;
+				parent = parent->parent;
+			}
+			return parent;
+		};
+
+		tree_node *successor(tree_node *node)
+		{
+			if (node->right != _nil)
+			{
+				return minimum(node->right);
+			}
+			tree_node *parent = node->parent;
+			while (parent != _nil && parent->right == node)
+			{
+				node = parent;
+				parent = parent->parent;
+			}
+			return parent;
+		};
 		/*
 		 ### ROTATIONS ###
 		*/

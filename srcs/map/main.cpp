@@ -18,11 +18,20 @@ main(void)
 	// mi.insert(ft::pair<int, int>(243, 6));
 	mi.print();
 	mi.remove(ft::pair<int, int>(1, 7));
-	mi.remove(ft::pair<int, int>(0, 7));
+
+	std::cout << '\n';
+	mi.print();
+	mi.remove(ft::pair<int, int>(2, 7));
 
 	std::cout << '\n';
 	mi.print();
 
+	for (size_t i = 2; i > 0; --i)
+	{
+		mi.insert(ft::pair<int, int>(i, 7));
+	}
+		std::cout << '\n';
+	mi.print();
 	// mi.remove(ft::pair<int, int>(1, 7));
 	// std::cout << '\n';
 	// mi.print();
