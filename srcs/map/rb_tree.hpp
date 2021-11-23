@@ -455,6 +455,10 @@ namespace ft
 
 		tree_node *predecessor(tree_node *node)
 		{
+			if (node == _nil) //Handling the case where a user asks for _nil-- (maybe not the right place to do this)
+			{
+				return this->maximum(_root);
+			}
 			if (node->left != _nil)
 			{
 				return node->left;
@@ -699,7 +703,72 @@ namespace ft
 			(this->*f)(node, false);
 			in_order_walk(node->right, f);
 		};
+
+		tree_node *begin(void) { return this->minimum(_root); };
+		tree_node *end(void) { return this->_nil; };
     };
+
+	template<typename node_t>
+	node_t *tree_minimum(node_t *start)
+		{
+			if (start == NULL || start->left == NULL)
+				return NULL;
+			node_t *node = start;
+			while (node->left->left != NULL)
+			{
+				node = node->left;
+			}
+			return node;
+		}
+
+	template<typename node_t>
+	node_t *tree_maximum(node_t *start)
+	{
+		if (start == NULL || start->right == NULL)
+			return NULL;
+		node_t *node = start;
+		while (node->right->right != NULL)
+		{
+			node = node->right;
+		}
+		return node;
+	}
+
+	template<typename node_t>
+	node_t	*tree_predecessor(node_t *node)
+	{
+		if (node == NULL || node->parent == NULL) //Handling the case where a user asks for _nil-- (maybe not the right place to do this)
+		{
+			return this->maximum(_root);
+		}
+		if (node->left->left != NULL)
+		{
+			return node->left;
+		}
+		node_t *parent = node->parent;
+		while (parent->parent != NULL && parent->left == node)
+		{
+			node = parent;
+			parent = parent->parent;
+		}
+		return parent;
+	};
+
+	template<typename node_t>
+	node_t *tree_successor(node_t *node)
+	{
+		if (node->right->right != NULL)
+		{
+			return minimum(node->right);
+		}
+		node_t *parent = node->parent;
+		while (parent->parent != NULL && parent->right == node)
+		{
+			node = parent;
+			parent = parent->parent;
+		}
+		return parent;
+	};
 }
 
 #endif
