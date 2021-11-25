@@ -1,21 +1,17 @@
 #include "map.hpp"
-
+#include <vector>
+#include "vector.hpp"
 int
 main(void)
 {
-	ft::map<int, int> mi;
+	typedef ft::map<int, int> m_t;
+	m_t mi;
 
-	for (size_t i = 2; i > 0; --i)
+	std::cout <<'f';
+	for (size_t i = 5; i > 0; --i)
 	{
 		mi.insert(ft::pair<int, int>(i, 7));
 	}
-
-	// std::cout << "Left rotate:\n";
-	// mi.left_rotate();
-	// mi.print();
-
-	// std::cout << "+ node\n";
-	// mi.insert(ft::pair<int, int>(243, 6));
 	mi.print();
 	mi.remove(ft::pair<int, int>(1, 7));
 
@@ -32,9 +28,54 @@ main(void)
 	}
 		std::cout << '\n';
 	mi.print();
-	// mi.remove(ft::pair<int, int>(1, 7));
-	// std::cout << '\n';
-	// mi.print();
+	{
+	m_t::iterator it = mi.begin();
+	m_t::iterator ite = mi.end();
+	for (; it != ite; ++it)
+		std::cout << "It value: " << it->first << " ; " << it->second << '\n';
+	}
+	mi.remove(ft::pair<int, int>(2, 7));
+	std::cout << '\n';
+	mi.print();
+
+	std::cout << "\nIterator tests\n\n";
+	{
+	m_t::iterator it = mi.begin();
+	m_t::iterator ite = mi.end();
+	for (; it != ite; ++it)
+		std::cout << "It value: " << it->first << " ; " << it->second << '\n';
+	}
+
+	std::map<int, int> m;
+	for (size_t i = 5; i > 0; --i)
+	{
+		m.insert(std::pair<int, int>(i, 7));
+	}
+	{
+	std::map<int, int>::iterator it = m.begin();
+	std::map<int, int>::iterator ite = m.end();
+	it--;
+	if (it == ite)
+		std::cout << "yap\n";
+		ite--;
+	for (; it != ite; --ite)
+		std::cout << "STD It value: " << ite->first << " ; " << ite->second << '\n';
+	}
+	{
+	std::vector<int> v;
+	std::vector<int>::iterator vit = v.begin();
+	vit++;
+	vit--;
+	vit--;
+	}{
+	ft::vector<int> v;
+	ft::vector<int>::iterator vit = v.begin();
+	vit++;
+	vit--;
+	vit--;
+	}
+	
+
 
 	// mi.remove(ft::pair<int, int>(8, 7));
 	// mi.remove(ft::pair<int, int>(6, 7));

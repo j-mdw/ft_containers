@@ -95,19 +95,18 @@ namespace ft
 			// Iterators:
 
 		iterator begin() { return _tree.begin(); };
-		const_iterator begin() const { return _tree.begin(); };
+		// const_iterator begin() const { return _tree.begin(); };
 		iterator end() { return _tree.end(); };
-		const_iterator end() const { return _tree.end(); };
+		// const_iterator end() const { return _tree.end(); };
 		reverse_iterator rbegin() { return _tree.end(); };
-		const_reverse_iterator rbegin() const { return _tree.end(); };
+		// const_reverse_iterator rbegin() const { return _tree.end(); };
     	reverse_iterator rend() { return _tree.begin(); };
-		const_reverse_iterator rend() const { return _tree.begin(); };
+		// const_reverse_iterator rend() const { return _tree.begin(); };
 
 			// Operators:
 		mapped_type& operator[] (const key_type& k);
 
 			// Modifiers:
-			*/
 		// pair<iterator,bool> 
 		void insert (const value_type& val) // returning void for testing
 		{

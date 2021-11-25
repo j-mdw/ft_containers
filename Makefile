@@ -23,7 +23,11 @@ MAP_MAIN = srcs/map/main.cpp
 UTIL_FILES = tester/utils/RandomGenerator.cpp
 
 ifdef DEBUG
-	F += -g3 -fsanitize=address
+	F += -g3
+endif
+
+ifdef ASAN
+	F += -fsanitize=address
 endif
 
 all:

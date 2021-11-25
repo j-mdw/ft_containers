@@ -2,7 +2,7 @@
 # define FT_RB_MAP_HPP
 
 #include "map.hpp"
-
+#include "rb_tree_iterator.hpp"
 #define DEBUG 1 //TBU --> Need makefile implementation
 #ifdef DEBUG
 # include <iostream> //For print methods --> DELETE
@@ -12,79 +12,10 @@
 
 namespace ft
 {
-    template<typename T>
-    class Node
-    {
-		public:
-        typedef enum {
-            red,
-            black
-        } color_t;
-
-        color_t color;
-		T       value;
-        Node    *parent;
-        Node    *left;
-        Node    *right;
-	#ifdef DEBUG
-		int		id; //DEBUG
-		int		parent_id; //DEBUG
-	#endif
-
-        Node(void) :
-            color(black),
-            parent(NULL),
-            left(NULL),
-            right(NULL) {
-			#ifdef DEBUG
-				id = 0; //DEBUG
-				parent_id = 0; //DEBUG
-			#endif
-            };
-
-        Node(color_t color, T val) :
-            color(color),
-            value(val),
-            parent(NULL),
-            left(NULL),
-            right(NULL) {
-		#ifdef DEBUG
-			id = 0;
-			parent_id = 0;
-		#endif
-            };
-		
-		Node(const Node &node) :
-			color(node.color),
-			parent(node.parent),
-			left(node.left),
-			right(node.right)
-		#ifdef DEBUG
-			,id(node.id)
-			,parent_id(node.parent_id)
-		#endif
-		{};
-
-        ~Node(void) {};
-
-		Node & operator=(const Node &node)
-		{
-			color = node.color;
-			parent = node.parent;
-			left = node.left;
-			right = node.right;
-		#ifdef DEBUG
-			id = node.id;
-			parent_id = node.parent_id;
-		#endif
-			return *this;
-		};
-    };
-
     template<
             class Value,
             class Comp,   
-            class Alloc = std::allocator<Node<Value> >
+            class Alloc = std::allocator<TreeNode<Value> >
             >
     class rb_tree
     {
@@ -92,15 +23,16 @@ namespace ft
         typedef Value   			value_type;
         typedef Comp    			value_compare;
 		typedef	Alloc   			allocator_type;
-		typedef Node<value_type>	tree_node;
-		typedef typename allocator_type::template rebind<Node<value_type> >::other node_allocator;
-		
+		typedef TreeNode<value_type>	tree_node;
+		typedef typename allocator_type::template rebind<TreeNode<value_type> >::other node_allocator;
+		typedef rb_tree_iterator<value_type> iterator;
+
         private:
-        value_compare       			compare;
-        allocator_type					allocator;
-		node_allocator					node_alloc;
-        tree_node					*_nil; //should be const
-        tree_node						*_root;
+        value_compare       compare;
+        allocator_type		allocator;
+		node_allocator		node_alloc;
+        tree_node			*_nil; //should be const
+        tree_node			*_root;
 
 		public:
         rb_tree(value_compare cmp, allocator_type alloc) : 
@@ -123,9 +55,11 @@ namespace ft
 			delete_node(_nil);
         };
 
-		size_t	max_size(void) { return node_allocator::max_size; };
+		size_t		max_size(void) { return node_allocator::max_size; };
+		iterator	begin(void) { return this->minimum(_root); };
+		iterator	end(void) { return this->_nil; };
 
-		void	insert(value_type val)
+		void	insert(const value_type &val)
 		{
 			tree_node *to_insert = create_node(tree_node::red, val);
 			to_insert->right = _nil;
@@ -164,7 +98,6 @@ namespace ft
 				}
 				insert_fixup(to_insert);
 			}
-			std::cout << "Node inserted\n";
 		};
 
 		/*
@@ -677,7 +610,7 @@ namespace ft
 			return node;
 		};
 
-		tree_node * create_node(typename tree_node::color_t color, value_type val)
+		tree_node * create_node(typename tree_node::color_t color, const value_type &val)
 		{
 			tree_node * node = node_alloc.allocate(1);
 			node_alloc.construct(node, tree_node(color, val));
@@ -703,9 +636,6 @@ namespace ft
 			(this->*f)(node, false);
 			in_order_walk(node->right, f);
 		};
-
-		tree_node *begin(void) { return this->minimum(_root); };
-		tree_node *end(void) { return this->_nil; };
     };
 
 	template<typename node_t>
@@ -739,7 +669,7 @@ namespace ft
 	{
 		if (node == NULL || node->parent == NULL) //Handling the case where a user asks for _nil-- (maybe not the right place to do this)
 		{
-			return this->maximum(_root);
+			return tree_maximum<node_t>(node->left);
 		}
 		if (node->left->left != NULL)
 		{
@@ -759,7 +689,7 @@ namespace ft
 	{
 		if (node->right->right != NULL)
 		{
-			return minimum(node->right);
+			return tree_minimum<node_t>(node->right);
 		}
 		node_t *parent = node->parent;
 		while (parent->parent != NULL && parent->right == node)
