@@ -62,17 +62,23 @@ main(void)
 		std::cout << "STD It value: " << ite->first << " ; " << ite->second << '\n';
 	}
 	{
-	std::vector<int> v;
-	std::vector<int>::iterator vit = v.begin();
-	vit++;
-	vit--;
-	vit--;
-	}{
-	ft::vector<int> v;
-	ft::vector<int>::iterator vit = v.begin();
-	vit++;
-	vit--;
-	vit--;
+		ft::map<int, int> my_map;
+		for (size_t i = 0; i < 20; i++)
+		{
+			my_map.insert(ft::pair<int, int>(i, 7));
+		}
+		ft::map<int, int>::iterator it = my_map.begin();
+		ft::map<int, int>::iterator ite = my_map.end();
+		for (; it != ite; it++)
+		{
+			std::cout << "FT It value: " << it->first << " ; " << it->second << '\n';
+		}
+		my_map.print();
+		ite--;
+		for (it = my_map.begin(); it != ite; ite--)
+		{
+			std::cout << "FT It value: " << ite->first << " ; " << ite->second << '\n';
+		}
 	}
 	
 

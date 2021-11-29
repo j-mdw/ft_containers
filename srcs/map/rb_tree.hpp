@@ -56,8 +56,8 @@ namespace ft
         };
 
 		size_t		max_size(void) { return node_allocator::max_size; };
-		iterator	begin(void) { return this->minimum(_root); };
-		iterator	end(void) { return this->_nil; };
+		iterator	begin(void) { return rb_tree_iterator<value_type>(this->minimum(_root), it_middle); };
+		iterator	end(void) { return rb_tree_iterator<value_type>(this->maximum(_root), it_end); };
 
 		void	insert(const value_type &val)
 		{
@@ -388,19 +388,24 @@ namespace ft
 
 		tree_node *predecessor(tree_node *node)
 		{
-			if (node == _nil) //Handling the case where a user asks for _nil-- (maybe not the right place to do this)
-			{
-				return this->maximum(_root);
-			}
+			// if (node == _nil) //Handling the case where a user asks for _nil-- (maybe not the right place to do this)
+			// {
+			// 	return this->maximum(_root);
+			// }
 			if (node->left != _nil)
 			{
-				return node->left;
+				return maximum(node->left);
 			}
 			tree_node *parent = node->parent;
+			// while (parent != _nil && parent->left == node)
 			while (parent != _nil && parent->left == node)
 			{
 				node = parent;
 				parent = parent->parent;
+			}
+			if (parent->left)
+			{
+				return maximum(parent->left);
 			}
 			return parent;
 		};
@@ -673,7 +678,7 @@ namespace ft
 		}
 		if (node->left->left != NULL)
 		{
-			return node->left;
+			return tree_minimum(node->left);
 		}
 		node_t *parent = node->parent;
 		while (parent->parent != NULL && parent->left == node)
@@ -681,6 +686,8 @@ namespace ft
 			node = parent;
 			parent = parent->parent;
 		}
+		if (parent->left->parent && parent->left != node)
+			return tree_maximum(parent->left);
 		return parent;
 	};
 
