@@ -59,52 +59,64 @@ namespace ft
 			delete_node(_nil);
         };
 
-		size_t		max_size(void) { return node_allocator::max_size; };
+		size_t		max_size(void) const { return node_allocator::max_size; };
+		size_t		size(void) const { return _size; };
 		iterator	begin(void) { return rb_tree_iterator<value_type>(this->minimum(_root), it_middle); };
 		iterator	end(void) { return rb_tree_iterator<value_type>(this->maximum(_root), it_end); };
 
-		void	insert(const value_type &val)
+		pair<iterator, bool>	insert(const value_type &val)
 		{
 			ft::pair<iterator, bool> ret;
-			tree_node *
-
-			tree_node *to_insert = create_node(tree_node::red, val);
-			to_insert->right = _nil;
-			to_insert->left = _nil;
-			if (_root == NULL)
+			tree_node *to_insert = this->search(val);
+			if (to_insert != NULL)
 			{
-				_root = to_insert;
-				_root->parent = _nil;
-				to_insert->color = tree_node::black;
+				ret.first = iterator(to_insert, it_middle);
+				ret.second = false;
 			}
 			else
 			{
-				tree_node *parent = _root;
-				while (1)
+				_size++;
+				to_insert = create_node(tree_node::red, val);
+				to_insert->right = _nil;
+				to_insert->left = _nil;
+				if (_root == NULL)
 				{
-					if (compare(to_insert->value, parent->value) == true)
-					{
-						if (parent->left == _nil)
-						{
-							parent->left = to_insert;
-							to_insert->parent = parent;
-							break ;
-						}
-						parent = parent->left;
-					}
-					else
-					{
-						if (parent->right == _nil)
-						{
-							parent->right = to_insert;
-							to_insert->parent = parent;
-							break ;
-						}
-						parent = parent->right;
-					}
+					_root = to_insert;
+					_root->parent = _nil;
+					to_insert->color = tree_node::black;
 				}
-				insert_fixup(to_insert);
+				else
+				{
+					tree_node *parent = _root;
+					while (1)
+					{
+						if (compare(to_insert->value, parent->value) == true)
+						{
+							if (parent->left == _nil)
+							{
+								parent->left = to_insert;
+								to_insert->parent = parent;
+								break ;
+							}
+							parent = parent->left;
+						}
+						else
+						{
+							if (parent->right == _nil)
+							{
+								parent->right = to_insert;
+								to_insert->parent = parent;
+								break ;
+							}
+							parent = parent->right;
+						}
+					}
+					insert_fixup(to_insert);
+				}
+				ret.first = iterator(to_insert, it_middle);
+				ret.second = true;
 			}
+			return ret;
 		};
 
 		/*

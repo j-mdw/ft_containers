@@ -57,7 +57,6 @@ namespace ft
 		private:
 		key_compare		_compare;
 		allocator_type	_allocator;
-		size_type		_size;
 		rb_tree<value_type, value_compare, allocator_type> _tree;
 
 		public:
@@ -66,7 +65,6 @@ namespace ft
               const allocator_type& alloc = allocator_type()) :
 			  _compare(comp),
 			  _allocator(alloc),
-			  _size(0),
 			  _tree(value_comp(), _allocator)
 			  {};
 
@@ -82,12 +80,12 @@ namespace ft
 
 		bool empty(void) const
 		{
-			if (_size == 0)
+			if (_tree.size() == 0)
 				return true;
 			return false;
 		};
 
-		size_type size() const { return _size; };
+		size_type size() const { return _tree.size(); };
 		
 		size_type max_size() const { return this->_tree.max_size(); };
 
@@ -106,12 +104,34 @@ namespace ft
 			// Operators:
 		mapped_type& operator[] (const key_type& k);
 
-			// Modifiers:
-		// pair<iterator,bool> 
-		void insert (const value_type& val) // returning void for testing
+			// Modifiers: 
+		pair<iterator, bool> insert (const value_type& val) // returning void for testing
 		{
-			_tree.insert(val);
+			return _tree.insert(val);
 		};
+
+		iterator insert (iterator position, const value_type& val)
+		{
+			(void) position;
+			return _tree.insert(val);
+		};
+
+		template <class InputIterator>
+		void insert (InputIterator first, InputIterator last)
+		{
+			while (first != last)
+			{
+				_tree.insert(*first);
+			}
+		};
+
+		// void erase (iterator position)
+		// {
+		// 	_tree.remove(*position);
+		// };
+		// size_type erase (const key_type& k);
+		// void erase (iterator first, iterator last);
+
 		void print(void) { _tree.print_tree(); };
 
 		void remove(const value_type& val) // Test version
@@ -119,10 +139,7 @@ namespace ft
 			_tree.remove(_tree.search(val));
 		};
 /*
-		iterator insert (iterator position, const value_type& val);
 
-		template <class InputIterator>
-		void insert (InputIterator first, InputIterator last);
 
 		void erase (iterator position);
 		size_type erase (const key_type& k);
