@@ -29,6 +29,9 @@ namespace ft
 		typedef typename allocator_type::template rebind<TreeNode<value_type> >::other node_allocator;
 		typedef rb_tree_iterator<value_type> iterator;
 
+		private:
+		typedef rb_tree<value_type, value_compare, allocator_type>	self;
+
         private:
         value_compare       compare;
         allocator_type		allocator;
@@ -59,10 +62,25 @@ namespace ft
 			delete_node(_nil);
         };
 
-		size_t		max_size(void) const { return node_allocator::max_size; };
 		size_t		size(void) const { return _size; };
+		size_t		max_size(void) const { return node_allocator::max_size; };
 		iterator	begin(void) { return rb_tree_iterator<value_type>(this->minimum(_root), it_middle); };
 		iterator	end(void) { return rb_tree_iterator<value_type>(this->maximum(_root), it_end); };
+		
+		void		swap(self &tree)
+		{
+			tree_node	*tmp_root = this->_root;
+			tree_node	*tmp_nil = this->_nil;
+			size_t		tmp_size = this->_size;
+
+			this->_root = tree._root;
+			this->_nil = tree._nil;
+			this->_size = tree._size;
+
+			tree._root = tmp_root;
+			tree._nil = tmp_nil;
+			tree._size = tmp_size;
+		};
 
 		pair<iterator, bool>	insert(const value_type &val)
 		{
@@ -198,7 +216,13 @@ namespace ft
 			return node->parent->parent->left;
 		};
 
-
+		iterator	find(value_type &val)
+		{
+			tree_node *node = this->find(val);
+			if (node != NULL)
+				return iterator(node);
+			return this->end();
+		}
 		tree_node *search(value_type val)
 		{
 			if (_root == NULL)
@@ -214,11 +238,23 @@ namespace ft
 					node = node->right;
 			}
 			if (node == _nil)
-				return NULL;
+				node = NULL;
 			return node;
 		};
 
-		void	remove(tree_node *to_delete)
+		bool	remove(value_type &val)
+		{
+			tree_node *node = this->search(val);
+			if (node != NULL)
+			{
+				_size--;
+				this->remove_node(node);
+				return true;
+			}
+			return false;
+		};
+
+		void	remove_node(tree_node *to_delete)
 		{
 			typename tree_node::color_t original_color = to_delete->color;
 			tree_node *to_fix;
@@ -443,6 +479,41 @@ namespace ft
 			}
 			return parent;
 		};
+
+		// iterator lower_bound (value_type &val)
+		// {
+		// 	tree_node *node = _root;
+		// 	enum previous_compare {
+		// 		start,
+		// 		higher,
+		// 		lower
+		// 	};
+		// 	previous_compare pc = start;
+		// 	while (node != _nil)
+		// 	{
+		// 		if (compare(val, node->value) == true) //val is lower than node->value
+		// 		{
+		// 			if (pc == higher)
+		// 			{
+		// 				return node;
+		// 			}
+		// 			node = node->left;
+		// 			pc = lower;
+		// 		}
+		// 		else if (compare(node->value, val) == false) //values are equal
+		// 			return node;
+		// 		else
+		// 		{
+		// 			if (pc == lower)
+		// 			{
+		// 				return node->parent;
+		// 			}
+		// 			node = node->right;
+		// 			pc = higher;
+		// 		}
+		// 	}
+		// 	return this->end();
+		// };
 		/*
 		 ### ROTATIONS ###
 		*/
@@ -625,6 +696,7 @@ namespace ft
 		void	delete_tree(void)
 		{
 			post_order_walk(_root, &rb_tree::delete_node);
+			_root = NULL;
 		};
 
 		tree_node * create_node(void)

@@ -44,7 +44,7 @@ namespace ft
 		public:
 		rb_tree_iterator(void): _base(), _position(it_middle) {}; // Will base be NULL?
 		rb_tree_iterator(const self &cpy) : _base(cpy._base), _position(cpy._position) {};
-		rb_tree_iterator(base_ptr base, position_t position) : _base(base), _position(position) {};
+		rb_tree_iterator(base_ptr base, position_t position = it_middle) : _base(base), _position(position) {};
 		~rb_tree_iterator(void) {};
 
 		self operator =(const self &cpy)

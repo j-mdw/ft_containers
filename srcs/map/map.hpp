@@ -113,7 +113,7 @@ namespace ft
 		iterator insert (iterator position, const value_type& val)
 		{
 			(void) position;
-			return _tree.insert(val);
+			return _tree.insert(val).first;
 		};
 
 		template <class InputIterator>
@@ -122,34 +122,71 @@ namespace ft
 			while (first != last)
 			{
 				_tree.insert(*first);
+				++first;
 			}
 		};
 
-		// void erase (iterator position)
-		// {
-		// 	_tree.remove(*position);
-		// };
-		// size_type erase (const key_type& k);
-		// void erase (iterator first, iterator last);
-
-		void print(void) { _tree.print_tree(); };
-
-		void remove(const value_type& val) // Test version
+		void erase (iterator position)
 		{
-			_tree.remove(_tree.search(val));
+			_tree.remove(*position);
 		};
-/*
 
+		size_type erase (const key_type& k)
+		{
+			value_type p(k, mapped_type());
+			if (_tree.remove(p))
+				return 1;
+			return 0;
+		}
+		void erase (iterator first, iterator last)
+		{
+			while (first != last)
+			{
+				_tree.remove(*first);
+				++first;
+			}
+		}
 
-		void erase (iterator position);
-		size_type erase (const key_type& k);
-		void erase (iterator first, iterator last);
-		void swap (map& x);
-		void clear();
-		*/
+		void print(void) { _tree.print_tree(); }; // TEST --> To remove
+
+		void swap (map& x)
+		{
+			_tree.swap(x._tree);
+		};
+
+		void clear()
+		{
+			_tree.delete_tree();
+		};
+
 		key_compare key_comp() const { return _compare; };
 		
 		value_compare value_comp() const { return value_compare(_compare); };
+
+		iterator find (const key_type& k)
+		{
+			value_type p(k, mapped_type());
+			return _tree.find(p);
+		};
+		// const_iterator find (const key_type& k) const;
+
+
+
+		size_type count (const key_type& k) const
+		{
+			value_type p(k, mapped_type());
+			if (_tree.search(p) != NULL)
+				return 1;
+			return 0;
+		};
+
+
+
+
+		allocator_type get_allocator() const
+		{
+			return _allocator;
+		};
 	};
 }
 

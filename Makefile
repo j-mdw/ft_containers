@@ -54,8 +54,8 @@ map: $(FT_MAP) $(STD_MAP)
 $(FT_MAP): $(MAP_MAIN) $(UTIL_FILES)
 	$C $F $(IFLAGS) -D NS=ft -D CONTAINER=map $^ -o $@
 
-# $(STD_STK): $(STK_MAIN) $(UTIL_FILES)
-# 	$C $F $(IFLAGS) -D NS=std -D CONTAINER=stack $^ -o $@
+$(STD_MAP): $(MAP_MAIN) $(UTIL_FILES)
+	$C $F $(IFLAGS) -D NS=std -D CONTAINER=map $^ -o $@
 
 clean:
 
