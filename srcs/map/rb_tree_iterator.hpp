@@ -37,6 +37,7 @@ namespace ft
 		typedef TreeNode<T>*		base_ptr;
 		typedef rb_tree_iterator<T>	self;
 
+		private:
 		base_ptr	_base;
 		position_t	_position;
 
@@ -138,6 +139,62 @@ namespace ft
 					_base = tmp;
 			}
 			return current_base;
+		};
+	
+		private:
+		base_ptr tree_minimum(base_ptr start)
+			{
+				if (start == NULL || start->left == NULL)
+					return NULL;
+				base_ptr node = start;
+				while (node->left->left != NULL)
+				{
+					node = node->left;
+				}
+				return node;
+			}
+
+		base_ptr tree_maximum(base_ptr start)
+		{
+			if (start == NULL || start->right == NULL)
+				return NULL;
+			base_ptr node = start;
+			while (node->right->right != NULL)
+			{
+				node = node->right;
+			}
+			return node;
+		}
+
+		base_ptr	tree_predecessor(base_ptr node)
+		{
+			if (node == NULL || node->parent == NULL)
+				return NULL;
+			else if (node->left->parent != NULL) //Left node is not the sentinel
+				return tree_maximum(node->left);
+			else
+			{
+				while (node->parent->parent != NULL && node->parent->left == node)
+				{
+					node = node->parent;
+				}
+			}
+			return node->parent;
+		};
+
+		base_ptr	tree_successor(base_ptr node)
+		{
+			if (node->right->right != NULL)
+			{
+				return tree_minimum(node->right);
+			}
+			base_ptr parent = node->parent;
+			while (parent->parent != NULL && parent->right == node)
+			{
+				node = parent;
+				parent = parent->parent;
+			}
+			return parent;
 		};
 
 		template<typename U>		

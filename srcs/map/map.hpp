@@ -20,10 +20,10 @@ namespace ft
 	{
 		public:
 
-		typedef	Key											key_type;
-		typedef	T											mapped_type;
-		typedef	pair<const key_type, mapped_type>			value_type;
-		typedef	Compare										key_compare;
+		typedef	Key									key_type;
+		typedef	T									mapped_type;
+		typedef	pair<const key_type, mapped_type>	value_type;
+		typedef	Compare								key_compare;
 
 		class value_compare
         : public std::binary_function<value_type, value_type, bool> // in C++98, it is required to inherit binary_function<value_type,value_type,bool>

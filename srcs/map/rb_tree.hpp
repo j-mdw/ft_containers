@@ -2,12 +2,14 @@
 # define FT_RB_MAP_HPP
 
 #include "map.hpp"
+#include "iterator.hpp"
 #include "rb_tree_iterator.hpp"
+
 #define DEBUG 1 //TBU --> Need makefile implementation
 #ifdef DEBUG
-# include <iostream> //For print methods --> DELETE
-# include <queue> //Used for breadth_first_traversal
-# include <cmath>
+	# include <iostream> //For print methods --> DELETE
+	# include <queue> //Used for breadth_first_traversal
+	# include <cmath>
 #endif
 
 namespace ft
@@ -33,13 +35,15 @@ namespace ft
 		node_allocator		node_alloc;
         tree_node			*_nil; //should be const
         tree_node			*_root;
+		size_t				_size;
 
 		public:
         rb_tree(value_compare cmp, allocator_type alloc) : 
 			compare(cmp),
 			allocator(alloc),
 			_nil(create_node()),
-			_root(NULL)
+			_root(NULL),
+			_size(0)
 		{
 		#ifdef DEBUG
 			_nil->id = -1;
@@ -61,6 +65,9 @@ namespace ft
 
 		void	insert(const value_type &val)
 		{
+			ft::pair<iterator, bool> ret;
+			tree_node *
+
 			tree_node *to_insert = create_node(tree_node::red, val);
 			to_insert->right = _nil;
 			to_insert->left = _nil;
@@ -642,70 +649,6 @@ namespace ft
 			in_order_walk(node->right, f);
 		};
     };
-
-	template<typename node_t>
-	node_t *tree_minimum(node_t *start)
-		{
-			if (start == NULL || start->left == NULL)
-				return NULL;
-			node_t *node = start;
-			while (node->left->left != NULL)
-			{
-				node = node->left;
-			}
-			return node;
-		}
-
-	template<typename node_t>
-	node_t *tree_maximum(node_t *start)
-	{
-		if (start == NULL || start->right == NULL)
-			return NULL;
-		node_t *node = start;
-		while (node->right->right != NULL)
-		{
-			node = node->right;
-		}
-		return node;
-	}
-
-	template<typename node_t>
-	node_t	*tree_predecessor(node_t *node)
-	{
-		if (node == NULL || node->parent == NULL) //Handling the case where a user asks for _nil-- (maybe not the right place to do this)
-		{
-			return tree_maximum<node_t>(node->left);
-		}
-		if (node->left->left != NULL)
-		{
-			return tree_minimum(node->left);
-		}
-		node_t *parent = node->parent;
-		while (parent->parent != NULL && parent->left == node)
-		{
-			node = parent;
-			parent = parent->parent;
-		}
-		if (parent->left->parent && parent->left != node)
-			return tree_maximum(parent->left);
-		return parent;
-	};
-
-	template<typename node_t>
-	node_t *tree_successor(node_t *node)
-	{
-		if (node->right->right != NULL)
-		{
-			return tree_minimum<node_t>(node->right);
-		}
-		node_t *parent = node->parent;
-		while (parent->parent != NULL && parent->right == node)
-		{
-			node = parent;
-			parent = parent->parent;
-		}
-		return parent;
-	};
 }
 
 #endif
