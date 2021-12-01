@@ -21,6 +21,17 @@ print_map(m_t &m)
 	}
 }
 
+void
+print_map_reverse(m_t &m)
+{
+	m_t::reverse_iterator rit = m.rbegin();
+	m_t::reverse_iterator rite = m.rend();
+	for (int i = 0; rit != rite; rit++)
+	{
+		std::cout << i << ": " << rit->first << " ; " << rit->second << '\n';
+	}
+}
+
 int
 main(void)
 {
@@ -40,6 +51,7 @@ main(void)
 		std::cout  << " size: " << mi.size() << '\n';
 	}
 	print_map(mi);
+	print_map_reverse(mi);
 	m_t::iterator it = mi.begin();
 	for (size_t i = 0; i < mi.size() / 2; ++i)
 	{
@@ -54,10 +66,12 @@ main(void)
 	mi.swap(mi2);
 	std::cout << "mi post swap\n";
 	print_map(mi);
+	print_map_reverse(mi);
+
 	std::cout << '\n';
 	std::cout << "mi2 post swap\n";
 	print_map(mi2);
-
+	print_map_reverse(mi2);
 	//ERASE
 	mi2.erase(mi2.begin(), mi2.end());
 	std::cout << "mi2\n";
@@ -91,6 +105,7 @@ main(void)
 	mi.erase(2);
 	std::cout << '\n';
 	print_map(mi);
+	print_map_reverse(mi);
 
 	std::cout << "\nIterator tests\n\n";
 	{
@@ -139,6 +154,7 @@ main(void)
 			std::cout << "NS It value: " << it->first << " ; " << it->second << '\n';
 		}
 		print_map(my_map);
+		print_map_reverse(my_map);
 		ite--;
 		for (it = my_map.begin(); it != ite; ite--)
 		{

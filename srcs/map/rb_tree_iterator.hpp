@@ -29,13 +29,17 @@ namespace ft
 		std::bidirectional_iterator_tag,
 		T
 	> {
-		public:
-		typedef T					value_type;
-		typedef T*					pointer;
-		typedef T&					reference;
+		private:
 		typedef TreeNode<T>			base;
 		typedef TreeNode<T>*		base_ptr;
 		typedef rb_tree_iterator<T>	self;
+
+		public:
+		typedef std::bidirectional_iterator_tag  iterator_category;
+		typedef T         value_type;
+		typedef typename std::ptrdiff_t  difference_type;
+		typedef T*   pointer;
+		typedef T& reference;
 
 		private:
 		base_ptr	_base;
@@ -54,7 +58,7 @@ namespace ft
 			return *this;
 		};
 
-		reference	operator*()
+		reference	operator*() const
 		{
 			if (_position == it_bbegin)
 				return _base->left->value; //Segfault
@@ -62,7 +66,7 @@ namespace ft
 				return _base->right->value; //Segfault
 			return _base->value;
 		};
-		pointer		operator->()
+		pointer		operator->() const
 		{
 			if (_position == it_bbegin)
 				return &_base->left->value; //Address of NULL

@@ -43,8 +43,19 @@ class reverse_iterator
 
         reference operator* (void) const
         {
-            return *(this->_base - 1);
+            iterator_type current = this->_base;
+            return *(--current);
         };
+
+        pointer operator-> (void) const
+        {
+            return &(this->operator*());
+        };
+
+        reference operator[] (difference_type n)
+        {
+            return *(*this + n);
+        }
 
         reverse_iterator operator+ (int val) const
         {
@@ -95,16 +106,6 @@ class reverse_iterator
             this->_base += val;
             return *this;
         };
-
-        pointer operator-> (void) const
-        {
-            return this;
-        };
-
-        reference operator[] (difference_type n)
-        {
-            return this->_base[-n - 1];
-        }
 };
 
 template <class Iterator>
