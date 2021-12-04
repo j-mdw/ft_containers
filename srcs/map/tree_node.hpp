@@ -46,6 +46,19 @@ namespace ft
 			parent_id = 0;
 		#endif
             };
+
+        TreeNode(const TreeNode &x) :
+            color(x.color),
+            value(x.value),
+            parent(x.parent),
+            left(x.left),
+            right(x.right)
+        #ifdef DEBUG
+            ,id(x.id),
+            parent_id(x.parent_id)
+        #endif
+        {};
+
         ~TreeNode(void) {};
     };
 }

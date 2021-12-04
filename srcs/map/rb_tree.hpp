@@ -27,7 +27,8 @@ namespace ft
 		typedef	Alloc   			allocator_type;
 		typedef TreeNode<value_type>	tree_node;
 		typedef typename allocator_type::template rebind<TreeNode<value_type> >::other node_allocator;
-		typedef rb_tree_iterator<value_type> iterator;
+		typedef rb_tree_iterator<value_type>		iterator;
+		typedef rb_tree_const_iterator<value_type>	const_iterator;
 
 		private:
 		typedef rb_tree<value_type, value_compare, allocator_type>	self;
@@ -53,20 +54,49 @@ namespace ft
 			_nil->parent_id = -1;
 		#endif
 		};
+
+		rb_tree(const rb_tree &x):
+			compare(x.compare),
+			allocator(x.allocator),
+			node_alloc(x.node_alloc),
+			_nil(create_node()),
+			_root(NULL),
+			_size(x._size)
+		{
+			if (x._size > 0)
+			{
+				_root = new tree_node(*x._root);
+				copy_tree(_root, x._root, x._nil);
+			}
+		};
+
+		rb_tree& operator= (const rb_tree& x)
+		{
+			if (_size > 0)
+			{
+				delete_tree();
+			}
+			compare = x.compare;
+			_size = x._size;
+			_root = new tree_node(*x._root);
+			copy_tree(_root, x._root, x._nil);
+			return *this;
+		}
         
 		~rb_tree(void)
 		{
 			if (_root != NULL)
 				delete_tree();
-
 			delete_node(_nil);
         };
 
-		size_t		size(void) const { return _size; };
-		size_t		max_size(void) const { return node_allocator::max_size; };
-		iterator	begin(void) { return rb_tree_iterator<value_type>(this->minimum(_root), it_middle); };
-		iterator	end(void) { return rb_tree_iterator<value_type>(this->maximum(_root), it_end); };
-		
+		size_t			size(void) const { return _size; };
+		size_t			max_size(void) const { return node_allocator::max_size; };
+		iterator		begin(void) { return iterator(this->minimum(_root), it_middle); };
+		iterator		end(void) { return iterator(this->maximum(_root), it_end); };
+		const_iterator	begin(void) const { return const_iterator(this->minimum(_root), it_middle); };
+		const_iterator	end(void) const { return const_iterator(this->maximum(_root), it_end); };
+
 		void		swap(self &tree)
 		{
 			tree_node	*tmp_root = this->_root;
@@ -218,12 +248,21 @@ namespace ft
 
 		iterator	find(value_type &val)
 		{
-			tree_node *node = this->find(val);
+			tree_node *node = this->search(val);
 			if (node != NULL)
 				return iterator(node);
 			return this->end();
-		}
-		tree_node *search(value_type val)
+		};
+
+		const_iterator	find(value_type &val) const
+		{
+			tree_node *node = this->find(val);
+			if (node != NULL)
+				return const_iterator(node);
+			return this->end();
+		};
+
+		tree_node *search(value_type val) const
 		{
 			if (_root == NULL)
 				return NULL;
@@ -404,20 +443,7 @@ namespace ft
 		#endif
 		};
 
-		/* Not used for now
-		tree_node *sibling(tree_node *sibling1)
-		{
-			if (sibling1 == NULL || sibling1 == _root)
-				return ;
-			if (sibling1 == sibling1->parent->right)
-			{
-				return sibling1->parent->left;
-			}
-			return sibling1->parent->right;
-		}
-		*/
-
-		tree_node *minimum(tree_node *start)
+		tree_node *minimum(tree_node *start) const
 		{
 			if (start == NULL || start == _nil)
 				return NULL;
@@ -429,7 +455,7 @@ namespace ft
 			return node;
 		}
 
-		tree_node *maximum(tree_node *start)
+		tree_node *maximum(tree_node *start) const
 		{
 			if (start == NULL || start == _nil)
 				return NULL;
@@ -441,7 +467,7 @@ namespace ft
 			return node;
 		}
 
-		tree_node *predecessor(tree_node *node)
+		tree_node *predecessor(tree_node *node) const
 		{
 			// if (node == _nil) //Handling the case where a user asks for _nil-- (maybe not the right place to do this)
 			// {
@@ -465,7 +491,7 @@ namespace ft
 			return parent;
 		};
 
-		tree_node *successor(tree_node *node)
+		tree_node *successor(tree_node *node) const
 		{
 			if (node->right != _nil)
 			{
@@ -479,41 +505,52 @@ namespace ft
 			}
 			return parent;
 		};
+		public:
+		iterator lower_bound (value_type &val) const
+		{
+			tree_node *lower = get_lower_bound(_root, val);
+			if (lower == _nil)
+				return iterator(maximum(_root), it_end);
+			return iterator(lower);
+		};
+		private:
+		tree_node *get_lower_bound(tree_node *node, value_type &val) const
+		{
+			if (node == _nil)
+				return _nil;
+			tree_node * bound = get_lower_bound(node->left, val);
+			if (bound != _nil)
+				return bound;
+			if (compare(val, node->value))
+				return node;
+			else if (!(compare(node->value, val)))
+				return node;
+			return get_lower_bound(node->right, val);
+		}
+		public:
+		iterator upper_bound (value_type &val) const
+		{
+			tree_node *lower = get_upper_bound(_root, val);
+			if (lower == _nil)
+				return iterator(maximum(_root), it_end);
+			return iterator(lower);
+		};
+		private:
+		tree_node *	get_upper_bound(tree_node *node, value_type &val) const
+		{
+			if (node == _nil)
+				return _nil;
 
-		// iterator lower_bound (value_type &val)
-		// {
-		// 	tree_node *node = _root;
-		// 	enum previous_compare {
-		// 		start,
-		// 		higher,
-		// 		lower
-		// 	};
-		// 	previous_compare pc = start;
-		// 	while (node != _nil)
-		// 	{
-		// 		if (compare(val, node->value) == true) //val is lower than node->value
-		// 		{
-		// 			if (pc == higher)
-		// 			{
-		// 				return node;
-		// 			}
-		// 			node = node->left;
-		// 			pc = lower;
-		// 		}
-		// 		else if (compare(node->value, val) == false) //values are equal
-		// 			return node;
-		// 		else
-		// 		{
-		// 			if (pc == lower)
-		// 			{
-		// 				return node->parent;
-		// 			}
-		// 			node = node->right;
-		// 			pc = higher;
-		// 		}
-		// 	}
-		// 	return this->end();
-		// };
+			tree_node * bound = get_upper_bound(node->left, val);
+			if (bound != _nil)
+				return bound;
+			if (compare(val, node->value))
+				return node;
+			bound = get_upper_bound(node->right, val);
+			return bound;
+		};
+
+	
 		/*
 		 ### ROTATIONS ###
 		*/
@@ -553,7 +590,7 @@ namespace ft
 			}
 			new_parent->left = old_parent;
 			old_parent->parent = new_parent;
-		}
+		};
 
 		void	right_rotate(tree_node *old_parent)
 		{
@@ -618,14 +655,6 @@ namespace ft
 			std::cout << node->id;
 		#endif
 			std::cout << " ]\t";
-			// if (node->left == _nil)
-			// 	std::cout << "nil | ";
-			// else
-			// 	std::cout << node->left << " | ";
-			// if (node->right == _nil)
-			// 	std::cout << "nil | ";
-			// else
-			// 	std::cout << node->right << " ] ";
 
 			if (line_break)
 				std::cout << '\n';
@@ -681,7 +710,7 @@ namespace ft
 				}
 			#endif
 			}
-		}
+		};
 
 		tree_node *get_root(void) { return _root; }
 
@@ -697,6 +726,7 @@ namespace ft
 		{
 			post_order_walk(_root, &rb_tree::delete_node);
 			_root = NULL;
+			_size = 0;
 		};
 
 		tree_node * create_node(void)
@@ -732,7 +762,47 @@ namespace ft
 			(this->*f)(node, false);
 			in_order_walk(node->right, f);
 		};
-    };
+		
+		void	copy_tree(tree_node *my_node, tree_node *cpy_node, tree_node *cpy_nil)
+		{
+			std::queue<tree_node *> my_queue;
+			std::queue<tree_node *> cpy_queue;
+			my_queue.push(my_node);
+			cpy_queue.push(cpy_node);
+
+			while (!cpy_queue.empty())
+			{
+				tree_node *my_current_node = my_queue.front();
+				my_queue.pop();
+				
+				tree_node *cpy_current_node = cpy_queue.front();
+				cpy_queue.pop();
+
+				if (cpy_current_node->left != cpy_nil)
+				{
+					my_current_node->left = new tree_node(*cpy_current_node->left);
+					my_current_node->left->parent = my_current_node;
+					cpy_queue.push(cpy_current_node->left);
+					my_queue.push(my_current_node->left);
+				}
+				else
+				{
+					my_current_node->left = _nil;
+				}
+				if (cpy_current_node->right != cpy_nil)
+				{
+					my_current_node->right = new tree_node(*cpy_current_node->right);
+					my_current_node->right->parent = my_current_node;
+					cpy_queue.push(cpy_current_node->right);
+					my_queue.push(my_current_node->right);
+				}
+				else
+				{
+					my_current_node->right = _nil;
+				}
+			}
+		};
+	};
 }
 
 #endif
