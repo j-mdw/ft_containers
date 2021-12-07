@@ -2,9 +2,9 @@
 # define FT_RB_TREE_ITERATOR_HPP
 
 # include <iterator> //Necessary for bidirectional_iterator_tag
-# include "iterator.hpp"
+# include "../utils/iterator/iterator.hpp"
 # include "tree_node.hpp"
-
+# include <iostream> //REMOVE
 namespace ft
 {
 	typedef enum {
@@ -25,7 +25,7 @@ namespace ft
 			- RB Tree has a sentinel node which parent's is always NULL 
 	*/
 	template<typename T>
-	class rb_tree_iterator: public iterator<
+	class rb_tree_iterator: public ft::iterator<
 		std::bidirectional_iterator_tag,
 		T
 	> {
@@ -50,20 +50,28 @@ namespace ft
 			_base(),
 			_position(it_middle)
 		{}; // Will base be NULL?
-		rb_tree_iterator(const self &cpy):
+		// rb_tree_iterator(const rb_tree_iterator &cpy):
+		// 	_base(cpy._base),
+		// 	_position(cpy._position)
+		// {};
+
+		template<typename Iter>
+		rb_tree_iterator(const rb_tree_iterator<Iter>& cpy):
 			_base(cpy._base),
 			_position(cpy._position)
 		{};
+
 		rb_tree_iterator(base_ptr base, position_t position = it_middle):
 			_base(base),
 			_position(position)
 		{};
+
 		~rb_tree_iterator(void) {};
 
 		base_ptr get_base() const { return this->_base; };
 		position_t get_position() const { return this->_position; };
 
-		self operator =(const self &cpy)
+		rb_tree_iterator operator =(const rb_tree_iterator &cpy)
 		{
 			_base = cpy._base;
 			_position = cpy._position;
@@ -87,7 +95,7 @@ namespace ft
 			return &_base->value;
 		};
 
-		self&	operator++()
+		rb_tree_iterator&	operator++()
 		{
 			if (_position == it_bbegin)
 				_position = it_middle;
@@ -104,9 +112,9 @@ namespace ft
 			return *this;
 		};
 
-		self	operator++(int)
+		rb_tree_iterator	operator++(int)
 		{
-			self current_base(*this);
+			rb_tree_iterator current_base(*this);
 			if (_position == it_bbegin)
 				_position = it_middle;
 			else if (_position == it_end)
@@ -122,7 +130,7 @@ namespace ft
 			return current_base;
 		}
 
-		self&	operator--()
+		rb_tree_iterator&	operator--()
 		{
 			if (_position == it_bbegin)
 				_base = NULL;
@@ -131,6 +139,7 @@ namespace ft
 			else
 			{
 				base_ptr tmp = tree_predecessor(_base);
+				// std::cout << "predecessor: " << tmp->value.first << " ; " << tmp->value.second << '\n';
 				if (tmp->parent == NULL)
 					_position = it_bbegin;
 				else
@@ -139,9 +148,9 @@ namespace ft
 			return *this;
 		};
 
-		self	operator--(int)
+		rb_tree_iterator	operator--(int)
 		{
-			self current_base(*this);
+			rb_tree_iterator current_base(*this);
 			if (_position == it_bbegin)
 				_base = NULL;
 			else if (_position == it_end)
@@ -230,12 +239,8 @@ namespace ft
 		return !(lhs == rhs);
 	};
 
-
-
-
-
 	template<typename T>
-	class rb_tree_const_iterator: public iterator<
+	class rb_tree_const_iterator: public ft::iterator<
 		std::bidirectional_iterator_tag,
 		T
 	> {
@@ -261,17 +266,29 @@ namespace ft
 			_base(it.get_base()),
 			_position(it.get_position())
 		{};
-		rb_tree_const_iterator(const self &cpy):
+		// rb_tree_const_iterator(const rb_tree_const_iterator &cpy):
+		// 	_base(cpy._base),
+		// 	_position(cpy._position)
+		// {};
+		
+		// rb_tree_const_iterator(const rb_tree_iterator<T> &cpy):
+		// 	_base(cpy._base),
+		// 	_position(cpy._position)
+		// {};
+
+		template<typename Iter>
+		rb_tree_const_iterator(const rb_tree_const_iterator<Iter>& cpy):
 			_base(cpy._base),
 			_position(cpy._position)
 		{};
+
 		rb_tree_const_iterator(base_ptr base, position_t position = it_middle):
 			_base(base),
 			_position(position)
 		{};
 		~rb_tree_const_iterator(void) {};
 
-		self operator =(const self &cpy)
+		rb_tree_const_iterator operator =(const rb_tree_const_iterator &cpy)
 		{
 			_base = cpy._base;
 			_position = cpy._position;
@@ -295,7 +312,7 @@ namespace ft
 			return &_base->value;
 		};
 
-		self&	operator++()
+		rb_tree_const_iterator&	operator++()
 		{
 			if (_position == it_bbegin)
 				_position = it_middle;
@@ -312,16 +329,16 @@ namespace ft
 			return *this;
 		};
 
-		self	operator++(int)
+		rb_tree_const_iterator	operator++(int)
 		{
-			self current_base(*this);
+			rb_tree_const_iterator current_base(*this);
 			if (_position == it_bbegin)
 				_position = it_middle;
 			else if (_position == it_end)
 				_base = NULL;
 			else
 			{
-				base_ptr tmp = tree_successor(_base);
+				rb_tree_const_iterator tmp = tree_successor(_base);
 				if (tmp->parent == NULL)
 					_position = it_end;
 				else
@@ -330,7 +347,7 @@ namespace ft
 			return current_base;
 		}
 
-		self&	operator--()
+		rb_tree_const_iterator&	operator--()
 		{
 			if (_position == it_bbegin)
 				_base = NULL;
@@ -347,9 +364,9 @@ namespace ft
 			return *this;
 		};
 
-		self	operator--(int)
+		rb_tree_const_iterator	operator--(int)
 		{
-			self current_base(*this);
+			rb_tree_const_iterator current_base(*this);
 			if (_position == it_bbegin)
 				_base = NULL;
 			else if (_position == it_end)

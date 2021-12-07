@@ -2,14 +2,15 @@
 # define VECTOR_H
 
 # include <memory>
+# include <vector> //DELETE
 # include <cstddef> // for 'difference_type' type
-# include <limits>
 # include <iostream>
-# include "reverse_iterator.hpp"
-# include "enable_if.hpp"
-# include "is_integral.hpp" 
-# include "lexicographical_compare.hpp"
-# include "equal.hpp"
+# include <stdexcept> // for out of range exception
+# include "../utils/iterator/reverse_iterator.hpp"
+# include "../utils/enable_if/enable_if.hpp"
+# include "../utils/is_integral/is_integral.hpp" 
+# include "../utils/lexicographical_compare/lexicographical_compare.hpp"
+# include "../utils/equal/equal.hpp"
 
 # define VECTOR_GROWTH 2
 // # define VEC_MAX_SIZE std::numeric_limits<size_t>::max() >> 1
@@ -47,7 +48,7 @@ class vector
         // CONSTRUCTORS
 
 	public:
-        explicit vector(const allocator_type & alloc = allocator_type()) : 
+        explicit vector(const allocator_type & alloc = allocator_type()): 
         _vector(NULL),
         _size(0),
         _capacity(0),
@@ -56,7 +57,7 @@ class vector
             reserve(0);
         };
 
-        explicit vector(size_type n, const value_type & val = value_type(), const allocator_type & alloc = allocator_type()) :
+        explicit vector(size_type n, const value_type & val = value_type(), const allocator_type & alloc = allocator_type()):
         _vector(NULL),
         _size(0),
         _capacity(0),
@@ -66,7 +67,7 @@ class vector
         };
 
         template <class InputIterator>
-        vector(InputIterator first, typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type last, const allocator_type& alloc = allocator_type()) : 
+        vector(InputIterator first, typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type last, const allocator_type& alloc = allocator_type()): 
         _vector(NULL),
         _size(0),
         _capacity(0),
@@ -75,13 +76,17 @@ class vector
             assign(first, last);
         };
 
-        vector(const vector & x) :
+        vector(const vector & x):
 		_vector(NULL),
-		_size(0),
-		_capacity(0),
+		_size(x._size),
+		_capacity(x._capacity),
 		_allocator(x._allocator)
         {
-            assign(x.begin(), x.end());
+			_vector = _allocator.allocate(x._capacity);
+			for (size_t i = 0; i < x._size; ++i)
+			{
+				_allocator.construct(_vector + i, x._vector[i]);
+			}
         };
 
         // DESTRUCTOR
@@ -98,6 +103,7 @@ class vector
 		{
 			// reserve(x._capacity);
 			assign(x.begin(), x.end());
+			return *this;
 		};
 
     public:
@@ -110,29 +116,11 @@ class vector
         iterator        end(void)       { return (this->_vector + this->_size); };
         const_iterator  end(void) const { return (this->_vector + this->_size); };
 
-        reverse_iterator    rbegin(void)
-        {
-            reverse_iterator rit(this->end());
-            return rit;
-        };
+        reverse_iterator    	rbegin(void) { return reverse_iterator(this->end()); };
+        const_reverse_iterator  rbegin(void) const { return const_reverse_iterator(this->end()); };
 
-        const_reverse_iterator  rbegin(void) const
-        {
-            const_reverse_iterator rit(this->end());
-            return rit;
-        };
-
-        reverse_iterator        rend(void)
-        {
-            reverse_iterator rite(this->begin());
-            return rite;
-        };
-        
-        const_reverse_iterator  rend(void) const
-        {
-            const_reverse_iterator rite(this->begin());
-            return rite;
-        };
+        reverse_iterator        rend(void) { return reverse_iterator(this->begin()); };
+        const_reverse_iterator  rend(void) const { return const_reverse_iterator(this->begin()); };
 
         // CAPACITY
 
@@ -186,8 +174,23 @@ class vector
         reference       operator[] (size_type n)        { return this->_vector[n]; };
         const_reference operator[] (size_type n) const  { return this->_vector[n]; };
 
-        reference       at(size_type n)        { return this->_vector[n]; };
-        const_reference at(size_type n) const  { return this->_vector[n]; };
+        reference       at(size_type n)
+        {
+            if (n >= this->_size)
+            {
+                throw std::out_of_range("out of range");
+            }
+            return this->_vector[n];
+        };
+        
+        const_reference at(size_type n) const
+        {
+            if (n >= this->_size)
+            {
+                throw std::out_of_range("out of range");
+            }
+            return this->_vector[n];
+        };
 
         reference       front(void)         { return this->_vector[0]; };
         const_reference front(void) const   { return this->_vector[0]; };
@@ -200,21 +203,36 @@ class vector
         template <class InputIterator>
         void assign(InputIterator first, typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type last)
         {
+			destroy_n(_vector, _size);
             size_type inputRange = range(first, last);
-            // if (inputRange > this->_capacity)
-            resize(inputRange);
-            // this->_size = inputRange;
-            for (size_type i = 0; i < inputRange; i++)
-            {
-                this->_vector[i] = *first;
-                first++;
-            }
+			if (_capacity < inputRange)
+			{
+				_allocator.deallocate(_vector, _capacity);
+				_vector = _allocator.allocate(inputRange);
+				_capacity = inputRange;
+			}
+			for (size_t i = 0; first != last; ++first)
+			{
+				_allocator.construct(_vector + i, *first);
+				i++;
+			}
+			_size = inputRange;
         };
 
         void assign(size_type n, const value_type & val)
         {
-            this->_size = 0;
-            resize(n, val);
+			destroy_n(_vector, _size);
+			if (_capacity < n)
+			{
+				_allocator.deallocate(_vector, _capacity);
+				_vector = _allocator.allocate(n);
+				_capacity = n;
+			}
+			for (size_t i = 0; i < n; ++i)
+			{
+				_allocator.construct(_vector + i, val);
+			}
+			_size = n;
         };
 
         void push_back(const value_type & val)
@@ -243,36 +261,33 @@ class vector
     
         iterator    insert(iterator position, const value_type& val)
         {
-            size_t index = 0;
-            for (iterator it = begin(); it != position; ++it)
-                index++;
-
+            size_t index = position - begin();
             resize(this->_size + 1);
-            memmove(&this->_vector[index + 1], &this->_vector[index], this->_size - 1 - index);
+            memmove(this->_vector + index + 1, this->_vector + index, this->_size - (index + 1));
             this->_vector[index] = val;
-            return (&_vector[index]);
+            return (_vector + index);
         };
 
         void        insert(iterator position, size_type n, const value_type& val)
         {
             int index = position - begin();
             resize(this->_size + n);
-            memmove(this->_vector + index + n, this->_vector + index, this->_size - 1 - index);
+            memmove(this->_vector + index + n, this->_vector + index, this->_size - (index + 1));
             memset(this->_vector + index, n, val);
         };
 
         template <class InputIterator>
         void        insert(iterator position, InputIterator first, typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type last)
         {
-            vector<T> store(first, last);
+            // vector<T> store(first, last);
             int index = position - begin();
             size_type n = range(first, last);
             resize(this->_size + n);
-            memmove(this->_vector + index + n, this->_vector + index, this->_size - 1 - index);
-            
-            for (size_type i = 0; i < store.size(); ++i)
+            memmove(this->_vector + index + n, this->_vector + index, this->_size - (index + 1));
+            for (size_type i = 0; first != last; ++first)
             {
-                this->_vector[index + i] = store[i];
+                this->_vector[index + i] = *first;
+				++i;
             }
         };
 

@@ -2,7 +2,7 @@
 # define FT_RB_MAP_HPP
 
 #include "map.hpp"
-#include "iterator.hpp"
+#include "../utils/iterator/iterator.hpp"
 #include "rb_tree_iterator.hpp"
 
 #define DEBUG 1 //TBU --> Need makefile implementation
@@ -91,11 +91,23 @@ namespace ft
         };
 
 		size_t			size(void) const { return _size; };
-		size_t			max_size(void) const { return node_allocator::max_size; };
+		size_t			max_size(void) const { return node_alloc.max_size(); };
+
 		iterator		begin(void) { return iterator(this->minimum(_root), it_middle); };
-		iterator		end(void) { return iterator(this->maximum(_root), it_end); };
 		const_iterator	begin(void) const { return const_iterator(this->minimum(_root), it_middle); };
-		const_iterator	end(void) const { return const_iterator(this->maximum(_root), it_end); };
+
+		iterator		end(void)
+		{
+			if (_size == 0)
+				return this->begin();
+			return iterator(this->maximum(_root), it_end);
+		};
+		const_iterator	end(void) const
+		{
+			if (_size == 0)
+				return this->begin();
+			return const_iterator(this->maximum(_root), it_end);
+		};
 
 		void		swap(self &tree)
 		{
@@ -256,7 +268,7 @@ namespace ft
 
 		const_iterator	find(value_type &val) const
 		{
-			tree_node *node = this->find(val);
+			tree_node *node = this->search(val);
 			if (node != NULL)
 				return const_iterator(node);
 			return this->end();
@@ -287,6 +299,7 @@ namespace ft
 			if (node != NULL)
 			{
 				_size--;
+				// std::cout << "Removing node: " << node->value.first << " ; " << node->value.second << '\n';
 				this->remove_node(node);
 				return true;
 			}
@@ -721,7 +734,8 @@ namespace ft
 			node_alloc.deallocate(node, 1);
 			(void)flag;
 		};
-
+		
+		public:
 		void	delete_tree(void)
 		{
 			post_order_walk(_root, &rb_tree::delete_node);
@@ -729,6 +743,7 @@ namespace ft
 			_size = 0;
 		};
 
+		private:
 		tree_node * create_node(void)
 		{
 			tree_node *node = node_alloc.allocate(1);

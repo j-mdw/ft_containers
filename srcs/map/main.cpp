@@ -2,7 +2,7 @@
 #include <vector>
 #include "vector.hpp"
 #include <cstdlib> // used for rand()
-
+#include <list>
 #ifndef NS
 # define NS ft
 #endif
@@ -300,6 +300,32 @@ main(void)
 		print_map(mp);
 		mp[3] = 9;
 		print_map(mp);
+	}
+	{
+		std::list<NS::pair<int, int> > lst;
+		unsigned int lst_size = 7;
+		for (unsigned int i = 0; i < lst_size; ++i)
+			lst.push_back(NS::pair<int, int>(lst_size - i, i));
+
+		NS::map<int, int> mp(lst.begin(), lst.end());
+		NS::map<int, int>::iterator it = mp.begin(), ite = mp.end();
+
+		NS::map<int, int> mp_range(it, --(--ite));
+		for (int i = 0; it != ite; ++it)
+			it->second = ++i * 5;
+
+		it = mp.begin(); ite = --(--mp.end());
+		NS::map<int, int> mp_copy(mp);
+		for (int i = 0; it != ite; ++it)
+			it->second = ++i * 7;
+
+		std::cout << "\t-- PART ONE --" << std::endl;
+
+		mp = mp_copy;
+		mp_copy = mp_range;
+		mp_range.clear();
+
+		std::cout << "\t-- PART TWO --" << std::endl;
 	}
 	return 0;
 }

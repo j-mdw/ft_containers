@@ -2,11 +2,11 @@
 # define FT_MAP_HPP
 
 # include <functional>
-# include "pair.hpp"
-# include "make_pair.hpp"
+# include "../utils/pair/pair.hpp"
+# include "../utils/pair/make_pair.hpp"
 # include "rb_tree_iterator.hpp"
-# include "reverse_iterator.hpp"
-# include <map> //Remove
+# include "../utils/iterator/reverse_iterator.hpp"
+// # include <map> //Remove
 # include "rb_tree.hpp"
 
 namespace ft
@@ -126,7 +126,7 @@ namespace ft
 			return (
 				(
 					this->insert(
-						make_pair(
+						ft::make_pair(
 							k, mapped_type()
 						)
 					)
@@ -151,8 +151,9 @@ namespace ft
 		{
 			while (first != last)
 			{
-				_tree.insert(*first);
+				value_type v(*first);
 				++first;
+				_tree.insert(v);
 			}
 		};
 
@@ -172,8 +173,9 @@ namespace ft
 		{
 			while (first != last)
 			{
-				_tree.remove(*first);
+				value_type v = *first;
 				++first;
+				_tree.remove(v);
 			}
 		}
 
@@ -244,12 +246,12 @@ namespace ft
 
 		pair<iterator,iterator>	equal_range (const key_type& k)
 		{
-			return make_pair(lower_bound(k), upper_bound(k));
+			return ft::make_pair(lower_bound(k), upper_bound(k));
 		};
 
 		pair<const_iterator,const_iterator> equal_range (const key_type& k) const
 		{
-			return make_pair(lower_bound(k), upper_bound(k));
+			return ft::make_pair(lower_bound(k), upper_bound(k));
 		};
 	};
 }
