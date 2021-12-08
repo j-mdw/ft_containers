@@ -29,8 +29,10 @@ class vector
         typedef typename allocator_type::const_reference    		const_reference;
         typedef typename allocator_type::pointer            		pointer;
         typedef typename allocator_type::const_pointer      		const_pointer;
-        typedef pointer												iterator;
-		typedef const_pointer										const_iterator;
+        // typedef typename allocator_type::pointer            		pointer;
+        // typedef typename allocator_type::const_pointer      		const_pointer;
+        typedef T*												iterator;
+		typedef const T*										const_iterator;
         typedef typename ft::reverse_iterator<iterator>         	reverse_iterator;
         typedef typename ft::reverse_iterator<const_iterator>   	const_reverse_iterator;
         typedef typename iterator_traits<iterator>::difference_type difference_type; // ft?
@@ -263,7 +265,7 @@ class vector
         {
             size_t index = position - begin();
             resize(this->_size + 1);
-            memmove(this->_vector + index + 1, this->_vector + index, this->_size - (index + 1));
+            memmove(this->_vector + index + 1, this->_vector + index, (this->_size - 1) - (index));
             this->_vector[index] = val;
             return (_vector + index);
         };
@@ -272,7 +274,7 @@ class vector
         {
             int index = position - begin();
             resize(this->_size + n);
-            memmove(this->_vector + index + n, this->_vector + index, this->_size - (index + 1));
+            memmove(this->_vector + index + n, this->_vector + index, (this->_size - n) - (index));
             memset(this->_vector + index, n, val);
         };
 
@@ -283,7 +285,7 @@ class vector
             int index = position - begin();
             size_type n = range(first, last);
             resize(this->_size + n);
-            memmove(this->_vector + index + n, this->_vector + index, this->_size - (index + 1));
+            memmove(this->_vector + index + n, this->_vector + index, (this->_size - n) - (index));
             for (size_type i = 0; first != last; ++first)
             {
                 this->_vector[index + i] = *first;
@@ -356,12 +358,15 @@ class vector
 
         void    memmove(iterator dst, iterator src, size_type n)
         {
-            value_type *p = new value_type [n];
-            for (size_type i = 0; i < n; i++)
-                p[i] = src[i];
-            for (size_type i = 0; i < n; i++)
-                dst[i] = p[i];
-            delete [] p;
+            if (n > 0)
+            {
+                value_type *p = new value_type [n];
+                for (size_type i = 0; i < n; i++)
+                    p[i] = src[i];
+                for (size_type i = 0; i < n; i++)
+                    dst[i] = p[i];
+                delete [] p;
+            }
         };
 
 		void	construct_n(pointer p, size_type n, value_type v)

@@ -1,4 +1,5 @@
 #include "map.hpp"
+#include <map>
 #include <vector>
 #include "vector.hpp"
 #include <cstdlib> // used for rand()

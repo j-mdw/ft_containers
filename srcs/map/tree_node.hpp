@@ -1,7 +1,7 @@
 #ifndef FT_TREE_TREENODE_HPP
 # define FT_TREE_TREENODE_HPP
 
-# define DEBUG 1
+// # define DEBUG 1
 
 namespace ft
 {

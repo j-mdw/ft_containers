@@ -4,11 +4,11 @@
 #include "map.hpp"
 #include "../utils/iterator/iterator.hpp"
 #include "rb_tree_iterator.hpp"
+# include <queue> //Used for breadth_first_traversal
 
-#define DEBUG 1 //TBU --> Need makefile implementation
+// #define DEBUG 1 //TBU --> Need makefile implementation
 #ifdef DEBUG
 	# include <iostream> //For print methods --> DELETE
-	# include <queue> //Used for breadth_first_traversal
 	# include <cmath>
 #endif
 
@@ -684,8 +684,8 @@ namespace ft
 			int	level = 1;
 		#endif
 			queue.push(node);
-			current_level_node_count++;
 		#ifdef DEBUG
+			current_level_node_count++;
 			node->id = 0;
 			node->parent_id = 0;
 		#endif

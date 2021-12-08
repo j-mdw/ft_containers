@@ -128,7 +128,7 @@ namespace ft
 					_base = tmp;
 			}
 			return current_base;
-		}
+		};
 
 		rb_tree_iterator&	operator--()
 		{
@@ -168,16 +168,16 @@ namespace ft
 	
 		private:
 		base_ptr tree_minimum(base_ptr start)
+		{
+			if (start == NULL || start->left == NULL)
+				return NULL;
+			base_ptr node = start;
+			while (node->left->left != NULL)
 			{
-				if (start == NULL || start->left == NULL)
-					return NULL;
-				base_ptr node = start;
-				while (node->left->left != NULL)
-				{
-					node = node->left;
-				}
-				return node;
+				node = node->left;
 			}
+			return node;
+		};
 
 		base_ptr tree_maximum(base_ptr start)
 		{
@@ -189,7 +189,7 @@ namespace ft
 				node = node->right;
 			}
 			return node;
-		}
+		};
 
 		base_ptr	tree_predecessor(base_ptr node)
 		{
@@ -222,22 +222,34 @@ namespace ft
 			return parent;
 		};
 
-		template<typename U>		
+		// template<typename U, typename V>		
+		// friend
+		// bool	operator==(const rb_tree_iterator<U> &lhs, const rb_tree_iterator<V> &rhs);
+
 		friend
-		bool	operator==(const rb_tree_iterator<U> &lhs, const rb_tree_iterator<U> &rhs);
+		bool	operator==(const rb_tree_iterator &lhs, const rb_tree_iterator &rhs)
+		{
+			return (lhs._base == rhs._base && lhs._position == rhs._position);
+		};
+		
+		friend
+		bool	operator!=(const rb_tree_iterator &lhs, const rb_tree_iterator &rhs)
+		{
+			return !(lhs == rhs);
+		};
 	};
 
-	template<typename T>
-	bool	operator==(const rb_tree_iterator<T> &lhs, const rb_tree_iterator<T> &rhs)
-	{
-		return (lhs._base == rhs._base && lhs._position == rhs._position);
-	};
+	// template<typename T, typename U>
+	// bool	operator==(const rb_tree_iterator<T> &lhs, const rb_tree_iterator<U> &rhs)
+	// {
+	// 	return (lhs._base == rhs._base && lhs._position == rhs._position);
+	// };
 	
-	template<typename T>
-	bool	operator!=(const rb_tree_iterator<T> &lhs, const rb_tree_iterator<T> &rhs)
-	{
-		return !(lhs == rhs);
-	};
+	// template<typename T, typename U>
+	// bool	operator!=(const rb_tree_iterator<T> &lhs, const rb_tree_iterator<U> &rhs)
+	// {
+	// 	return !(lhs == rhs);
+	// };
 
 	template<typename T>
 	class rb_tree_const_iterator: public ft::iterator<
@@ -246,15 +258,15 @@ namespace ft
 	> {
 		private:
 		typedef TreeNode<T>			base;
-		typedef TreeNode<T>*		base_ptr;
+		typedef base *				base_ptr;
 		typedef rb_tree_const_iterator<T>	self;
 
 		public:
 		typedef std::bidirectional_iterator_tag  iterator_category;
-		typedef T         value_type;
-		typedef typename std::ptrdiff_t  difference_type;
-		typedef T*   pointer;
-		typedef T& reference;
+		typedef T         				value_type;
+		typedef typename std::ptrdiff_t	difference_type;
+		typedef T*						  pointer;
+		typedef T&						reference;
 
 		private:
 		base_ptr	_base;
@@ -278,7 +290,7 @@ namespace ft
 
 		template<typename Iter>
 		rb_tree_const_iterator(const rb_tree_const_iterator<Iter>& cpy):
-			_base(cpy._base),
+			_base(cpy.base()),
 			_position(cpy._position)
 		{};
 
@@ -338,14 +350,14 @@ namespace ft
 				_base = NULL;
 			else
 			{
-				rb_tree_const_iterator tmp = tree_successor(_base);
+				base_ptr tmp = tree_successor(_base);
 				if (tmp->parent == NULL)
 					_position = it_end;
 				else
 					_base = tmp;
 			}
 			return current_base;
-		}
+		};
 
 		rb_tree_const_iterator&	operator--()
 		{
@@ -384,16 +396,16 @@ namespace ft
 	
 		private:
 		base_ptr tree_minimum(base_ptr start)
+		{
+			if (start == NULL || start->left == NULL)
+				return NULL;
+			base_ptr node = start;
+			while (node->left->left != NULL)
 			{
-				if (start == NULL || start->left == NULL)
-					return NULL;
-				base_ptr node = start;
-				while (node->left->left != NULL)
-				{
-					node = node->left;
-				}
-				return node;
+				node = node->left;
 			}
+			return node;
+		};
 
 		base_ptr tree_maximum(base_ptr start)
 		{
@@ -405,7 +417,7 @@ namespace ft
 				node = node->right;
 			}
 			return node;
-		}
+		};
 
 		base_ptr	tree_predecessor(base_ptr node)
 		{
@@ -438,22 +450,34 @@ namespace ft
 			return parent;
 		};
 
-		template<typename U>		
 		friend
-		bool	operator==(const rb_tree_const_iterator<U> &lhs, const rb_tree_const_iterator<U> &rhs);
+		bool	operator==(const rb_tree_const_iterator &lhs, const rb_tree_const_iterator &rhs)
+		{
+			return (lhs._base == rhs._base && lhs._position == rhs._position);
+		};
+		
+		friend
+		bool	operator!=(const rb_tree_const_iterator &lhs, const rb_tree_const_iterator &rhs)
+		{
+			return !(lhs == rhs);
+		};
+
+		// template<typename U, typename V>		
+		// friend
+		// bool	operator==(const rb_tree_const_iterator<U> &lhs, const rb_tree_const_iterator<V> &rhs);
 	};
 
-	template<typename T>
-	bool	operator==(const rb_tree_const_iterator<T> &lhs, const rb_tree_const_iterator<T> &rhs)
-	{
-		return (lhs._base == rhs._base && lhs._position == rhs._position);
-	};
+	// template<typename T, typename U>
+	// bool	operator==(const rb_tree_const_iterator<T> &lhs, const rb_tree_const_iterator<U> &rhs)
+	// {
+	// 	return (lhs._base == rhs._base && lhs._position == rhs._position);
+	// };
 	
-	template<typename T>
-	bool	operator!=(const rb_tree_const_iterator<T> &lhs, const rb_tree_const_iterator<T> &rhs)
-	{
-		return !(lhs == rhs);
-	};
+	// template<typename T, typename U>
+	// bool	operator!=(const rb_tree_const_iterator<T> &lhs, const rb_tree_const_iterator<U> &rhs)
+	// {
+	// 	return !(lhs == rhs);
+	// };
 }
 
 #endif
