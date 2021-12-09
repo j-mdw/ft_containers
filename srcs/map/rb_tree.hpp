@@ -93,21 +93,22 @@ namespace ft
 		size_t			size(void) const { return _size; };
 		size_t			max_size(void) const { return node_alloc.max_size(); };
 
-		iterator		begin(void) { return iterator(this->minimum(_root), it_middle); };
-		const_iterator	begin(void) const { return const_iterator(this->minimum(_root), it_middle); };
+		iterator		begin(void)
+		{
+			if (_size == 0)
+				return this->end();
+			return iterator(this->minimum(_root), &_root, it_middle);
+		};
 
-		iterator		end(void)
+		const_iterator	begin(void) const
 		{
 			if (_size == 0)
-				return this->begin();
-			return iterator(this->maximum(_root), it_end);
+				return this->end();
+			return const_iterator(this->minimum(_root), &_root, it_middle);
 		};
-		const_iterator	end(void) const
-		{
-			if (_size == 0)
-				return this->begin();
-			return const_iterator(this->maximum(_root), it_end);
-		};
+
+		iterator		end(void) {	return iterator(this->maximum(_root), &_root, it_end);};
+		const_iterator	end(void) const { return const_iterator(this->maximum(_root), &_root, it_end); };
 
 		void		swap(self &tree)
 		{
@@ -130,7 +131,7 @@ namespace ft
 			tree_node *to_insert = this->search(val);
 			if (to_insert != NULL)
 			{
-				ret.first = iterator(to_insert, it_middle);
+				ret.first = iterator(to_insert, &_root, it_middle);
 				ret.second = false;
 			}
 			else
@@ -173,7 +174,7 @@ namespace ft
 					}
 					insert_fixup(to_insert);
 				}
-				ret.first = iterator(to_insert, it_middle);
+				ret.first = iterator(to_insert, &_root, it_middle);
 				ret.second = true;
 			}
 			return ret;
@@ -262,7 +263,7 @@ namespace ft
 		{
 			tree_node *node = this->search(val);
 			if (node != NULL)
-				return iterator(node);
+				return iterator(node, &_root);
 			return this->end();
 		};
 
@@ -270,7 +271,7 @@ namespace ft
 		{
 			tree_node *node = this->search(val);
 			if (node != NULL)
-				return const_iterator(node);
+				return const_iterator(node, &_root);
 			return this->end();
 		};
 
@@ -519,13 +520,22 @@ namespace ft
 			return parent;
 		};
 		public:
-		iterator lower_bound (value_type &val) const
+		iterator lower_bound (value_type &val)
 		{
 			tree_node *lower = get_lower_bound(_root, val);
 			if (lower == _nil)
-				return iterator(maximum(_root), it_end);
-			return iterator(lower);
+				return iterator(maximum(_root), &_root, it_end);
+			return iterator(lower, &_root);
 		};
+
+		const_iterator lower_bound (value_type &val) const
+		{
+			tree_node *lower = get_lower_bound(_root, val);
+			if (lower == _nil)
+				return const_iterator(maximum(_root), &_root, it_end);
+			return const_iterator(lower, &_root);
+		};
+
 		private:
 		tree_node *get_lower_bound(tree_node *node, value_type &val) const
 		{
@@ -539,15 +549,25 @@ namespace ft
 			else if (!(compare(node->value, val)))
 				return node;
 			return get_lower_bound(node->right, val);
-		}
+		};
+
 		public:
-		iterator upper_bound (value_type &val) const
+		iterator upper_bound (value_type &val)
 		{
 			tree_node *lower = get_upper_bound(_root, val);
 			if (lower == _nil)
-				return iterator(maximum(_root), it_end);
-			return iterator(lower);
+				return iterator(maximum(_root), &_root, it_end);
+			return iterator(lower, &_root);
 		};
+
+		const_iterator upper_bound (value_type &val) const
+		{
+			tree_node *lower = get_upper_bound(_root, val);
+			if (lower == _nil)
+				return const_iterator(maximum(_root), &_root, it_end);
+			return const_iterator(lower, &_root);
+		};
+
 		private:
 		tree_node *	get_upper_bound(tree_node *node, value_type &val) const
 		{

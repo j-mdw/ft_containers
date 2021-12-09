@@ -9,6 +9,7 @@
 # include <map> //Remove
 # include "rb_tree.hpp"
 # include "../utils/lexicographical_compare/lexicographical_compare.hpp"
+# include "../utils/equal/equal.hpp"
 
 namespace ft
 {
@@ -260,20 +261,7 @@ namespace ft
 	template< class Key, class T, class Compare, class Alloc >
 	bool operator==( const map<Key,T,Compare,Alloc>& lhs, const map<Key,T,Compare,Alloc>& rhs )
 	{
-		if (lhs.size() == rhs.size())
-		{
-			typename map<T, Compare, Alloc>::const_iterator it1 = lhs.begin();
-			typename map<T, Compare, Alloc>::const_iterator it2 = rhs.begin();
-			while (it1 != lhs.end())
-			{
-				if (*it1 != *it2)
-					return false;
-				++it1;
-				++it2;
-			}
-			return true;
-		}
-		return false;
+		return ((lhs.size() == rhs.size()) && equal(lhs.begin(), lhs.end(), rhs.begin()));
 	};
 
 	template< class Key, class T, class Compare, class Alloc >
@@ -291,7 +279,7 @@ namespace ft
 	template< class Key, class T, class Compare, class Alloc >
 	bool operator<=( const map<Key,T,Compare,Alloc>& lhs, const map<Key,T,Compare,Alloc>& rhs )
 	{
-		return (lhs < rhs) || (lhs == rhs);
+		return !(rhs < lhs);
 	};
 
 	template< class Key, class T, class Compare, class Alloc >
@@ -303,7 +291,13 @@ namespace ft
 	template< class Key, class T, class Compare, class Alloc >
 	bool operator>( const map<Key,T,Compare,Alloc>& lhs, const map<Key,T,Compare,Alloc>& rhs )
 	{
-		return !(lhs <= rhs);
+		return (rhs < lhs);
+	};
+
+	template <class Key, class T, class Compare, class Alloc>
+  void swap (map<Key,T,Compare,Alloc>& x, map<Key,T,Compare,Alloc>& y)
+	{
+		x.swap(y);
 	};
 }
 

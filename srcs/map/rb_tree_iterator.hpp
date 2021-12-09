@@ -43,11 +43,13 @@ namespace ft
 
 		private:
 		base_ptr	_base;
+		base_ptr *	_tree_root;
 		position_t	_position;
 
 		public:
 		rb_tree_iterator(void):
 			_base(),
+			_tree_root(NULL),
 			_position(it_middle)
 		{}; // Will base be NULL?
 		// rb_tree_iterator(const rb_tree_iterator &cpy):
@@ -57,24 +59,28 @@ namespace ft
 
 		template<typename Iter>
 		rb_tree_iterator(const rb_tree_iterator<Iter>& cpy):
-			_base(cpy._base),
-			_position(cpy._position)
+			_base(cpy.get_base()),
+			_tree_root(cpy.get_root()),
+			_position(cpy.get_position())
 		{};
 
-		rb_tree_iterator(base_ptr base, position_t position = it_middle):
+		rb_tree_iterator(base_ptr base, base_ptr *root_ptr, position_t position = it_middle):
 			_base(base),
+			_tree_root(root_ptr),
 			_position(position)
 		{};
 
 		~rb_tree_iterator(void) {};
 
 		base_ptr get_base() const { return this->_base; };
+		base_ptr *get_root() const { return this->_tree_root; };
 		position_t get_position() const { return this->_position; };
 
 		rb_tree_iterator operator =(const rb_tree_iterator &cpy)
 		{
-			_base = cpy._base;
-			_position = cpy._position;
+			_base = cpy.get_base();
+			_tree_root = cpy.get_root();
+			_position = cpy.get_position();
 			return *this;
 		};
 
@@ -98,10 +104,11 @@ namespace ft
 		rb_tree_iterator&	operator++()
 		{
 			if (_position == it_bbegin)
+			{
+				_base = this->tree_minimum(*_tree_root);
 				_position = it_middle;
-			else if (_position == it_end)
-				_base = NULL; //Could also do nothing when this case happens
-			else
+			}
+			else if (_position != it_end)
 			{
 				base_ptr tmp = tree_successor(_base);
 				if (tmp->parent == NULL)
@@ -116,10 +123,11 @@ namespace ft
 		{
 			rb_tree_iterator current_base(*this);
 			if (_position == it_bbegin)
+			{
+				_base = this->tree_minimum(*_tree_root);
 				_position = it_middle;
-			else if (_position == it_end)
-				_base = NULL;
-			else
+			}
+			else if (_position != it_end)
 			{
 				base_ptr tmp = tree_successor(_base);
 				if (tmp->parent == NULL)
@@ -132,11 +140,12 @@ namespace ft
 
 		rb_tree_iterator&	operator--()
 		{
-			if (_position == it_bbegin)
-				_base = NULL;
-			else if (_position == it_end)
+			if (_position == it_end)
+			{
+				_base = this->tree_maximum(*_tree_root);
 				_position = it_middle;
-			else
+			}
+			else if (_position != it_bbegin)
 			{
 				base_ptr tmp = tree_predecessor(_base);
 				// std::cout << "predecessor: " << tmp->value.first << " ; " << tmp->value.second << '\n';
@@ -151,11 +160,12 @@ namespace ft
 		rb_tree_iterator	operator--(int)
 		{
 			rb_tree_iterator current_base(*this);
-			if (_position == it_bbegin)
-				_base = NULL;
-			else if (_position == it_end)
+			if (_position == it_end)
+			{
+				_base = this->tree_maximum(*_tree_root);
 				_position = it_middle;
-			else
+			}
+			else if (_position != it_bbegin)
 			{
 				base_ptr tmp = tree_predecessor(_base);
 				if (tmp->parent == NULL)
@@ -167,7 +177,7 @@ namespace ft
 		};
 	
 		private:
-		base_ptr tree_minimum(base_ptr start)
+		base_ptr tree_minimum(base_ptr start) const
 		{
 			if (start == NULL || start->left == NULL)
 				return NULL;
@@ -179,7 +189,7 @@ namespace ft
 			return node;
 		};
 
-		base_ptr tree_maximum(base_ptr start)
+		base_ptr tree_maximum(base_ptr start) const
 		{
 			if (start == NULL || start->right == NULL)
 				return NULL;
@@ -191,7 +201,7 @@ namespace ft
 			return node;
 		};
 
-		base_ptr	tree_predecessor(base_ptr node)
+		base_ptr	tree_predecessor(base_ptr node) const
 		{
 			if (node == NULL || node->parent == NULL)
 				return NULL;
@@ -207,7 +217,7 @@ namespace ft
 			return node->parent;
 		};
 
-		base_ptr	tree_successor(base_ptr node)
+		base_ptr	tree_successor(base_ptr node) const
 		{
 			if (node->right->right != NULL)
 			{
@@ -229,27 +239,17 @@ namespace ft
 		friend
 		bool	operator==(const rb_tree_iterator &lhs, const rb_tree_iterator &rhs)
 		{
+			if (lhs.get_position() == it_end && rhs.get_position() == it_end)
+				return true;
 			return (lhs._base == rhs._base && lhs._position == rhs._position);
 		};
-		
+
 		friend
 		bool	operator!=(const rb_tree_iterator &lhs, const rb_tree_iterator &rhs)
 		{
 			return !(lhs == rhs);
 		};
 	};
-
-	// template<typename T, typename U>
-	// bool	operator==(const rb_tree_iterator<T> &lhs, const rb_tree_iterator<U> &rhs)
-	// {
-	// 	return (lhs._base == rhs._base && lhs._position == rhs._position);
-	// };
-	
-	// template<typename T, typename U>
-	// bool	operator!=(const rb_tree_iterator<T> &lhs, const rb_tree_iterator<U> &rhs)
-	// {
-	// 	return !(lhs == rhs);
-	// };
 
 	template<typename T>
 	class rb_tree_const_iterator: public ft::iterator<
@@ -258,54 +258,60 @@ namespace ft
 	> {
 		private:
 		typedef TreeNode<T>			base;
-		typedef base *				base_ptr;
+		typedef base const *		base_ptr;
 		typedef rb_tree_const_iterator<T>	self;
 
 		public:
 		typedef std::bidirectional_iterator_tag  iterator_category;
-		typedef T         				value_type;
+		typedef const T         				value_type;
 		typedef typename std::ptrdiff_t	difference_type;
-		typedef T*						  pointer;
-		typedef T&						reference;
+		typedef const T*						  pointer;
+		typedef const T&						reference;
 
 		private:
 		base_ptr	_base;
+		base_ptr *	_tree_root;
 		position_t	_position;
 
 		public:
-		rb_tree_const_iterator(void): _base(), _position(it_middle) {}; // Will base be NULL?
+		rb_tree_const_iterator(void):
+			_base(),
+			_tree_root(NULL),
+			_position(it_middle)
+		{};
+		
 		rb_tree_const_iterator(rb_tree_iterator<T> it):
 			_base(it.get_base()),
+			_tree_root(it.get_root()),
 			_position(it.get_position())
 		{};
-		// rb_tree_const_iterator(const rb_tree_const_iterator &cpy):
-		// 	_base(cpy._base),
-		// 	_position(cpy._position)
-		// {};
-		
-		// rb_tree_const_iterator(const rb_tree_iterator<T> &cpy):
-		// 	_base(cpy._base),
-		// 	_position(cpy._position)
-		// {};
 
 		template<typename Iter>
 		rb_tree_const_iterator(const rb_tree_const_iterator<Iter>& cpy):
-			_base(cpy.base()),
-			_position(cpy._position)
+			_base(cpy.get_base()),
+			_tree_root(cpy.get_root()),
+			_position(cpy.get_position())
 		{};
 
-		rb_tree_const_iterator(base_ptr base, position_t position = it_middle):
+		rb_tree_const_iterator(base_ptr base, base_ptr const *root,  position_t position = it_middle):
 			_base(base),
+			_tree_root(const_cast<base_ptr *>(root)),
 			_position(position)
 		{};
+
 		~rb_tree_const_iterator(void) {};
 
 		rb_tree_const_iterator operator =(const rb_tree_const_iterator &cpy)
 		{
-			_base = cpy._base;
-			_position = cpy._position;
+			_base = cpy.get_base();
+			_tree_root = cpy.get_root();
+			_position = cpy.get_position();
 			return *this;
 		};
+
+		base_ptr get_base() const { return this->_base; };
+		base_ptr *get_root() const { return this->_tree_root; };
+		position_t get_position() const { return this->_position; };
 
 		reference	operator*() const
 		{
@@ -327,10 +333,11 @@ namespace ft
 		rb_tree_const_iterator&	operator++()
 		{
 			if (_position == it_bbegin)
+			{
+				_base = this->tree_minimum(*_tree_root);
 				_position = it_middle;
-			else if (_position == it_end)
-				_base = NULL; //Could also do nothing when this case happens
-			else
+			}
+			else if (_position != it_end)
 			{
 				base_ptr tmp = tree_successor(_base);
 				if (tmp->parent == NULL)
@@ -345,10 +352,11 @@ namespace ft
 		{
 			rb_tree_const_iterator current_base(*this);
 			if (_position == it_bbegin)
+			{
+				_base = this->tree_minimum(*_tree_root);
 				_position = it_middle;
-			else if (_position == it_end)
-				_base = NULL;
-			else
+			}
+			else if (_position != it_end)
 			{
 				base_ptr tmp = tree_successor(_base);
 				if (tmp->parent == NULL)
@@ -361,11 +369,12 @@ namespace ft
 
 		rb_tree_const_iterator&	operator--()
 		{
-			if (_position == it_bbegin)
-				_base = NULL;
-			else if (_position == it_end)
+			if (_position == it_end)
+			{
+				_base = this->tree_maximum(*_tree_root);
 				_position = it_middle;
-			else
+			}
+			else if (_position != it_bbegin)
 			{
 				base_ptr tmp = tree_predecessor(_base);
 				if (tmp->parent == NULL)
@@ -379,11 +388,12 @@ namespace ft
 		rb_tree_const_iterator	operator--(int)
 		{
 			rb_tree_const_iterator current_base(*this);
-			if (_position == it_bbegin)
-				_base = NULL;
-			else if (_position == it_end)
+			if (_position == it_end)
+			{
+				_base = this->tree_maximum(*_tree_root);
 				_position = it_middle;
-			else
+			}
+			else if (_position != it_bbegin)
 			{
 				base_ptr tmp = tree_predecessor(_base);
 				if (tmp->parent == NULL)
@@ -395,7 +405,7 @@ namespace ft
 		};
 	
 		private:
-		base_ptr tree_minimum(base_ptr start)
+		base_ptr tree_minimum(base_ptr start) const
 		{
 			if (start == NULL || start->left == NULL)
 				return NULL;
@@ -407,7 +417,7 @@ namespace ft
 			return node;
 		};
 
-		base_ptr tree_maximum(base_ptr start)
+		base_ptr tree_maximum(base_ptr start) const
 		{
 			if (start == NULL || start->right == NULL)
 				return NULL;
@@ -419,7 +429,7 @@ namespace ft
 			return node;
 		};
 
-		base_ptr	tree_predecessor(base_ptr node)
+		base_ptr	tree_predecessor(base_ptr node) const
 		{
 			if (node == NULL || node->parent == NULL)
 				return NULL;
@@ -435,7 +445,7 @@ namespace ft
 			return node->parent;
 		};
 
-		base_ptr	tree_successor(base_ptr node)
+		base_ptr	tree_successor(base_ptr node) const
 		{
 			if (node->right->right != NULL)
 			{
@@ -453,7 +463,19 @@ namespace ft
 		friend
 		bool	operator==(const rb_tree_const_iterator &lhs, const rb_tree_const_iterator &rhs)
 		{
-			return (lhs._base == rhs._base && lhs._position == rhs._position);
+			if (lhs.get_position() == it_end && rhs.get_position() == it_end)
+			{
+				return true;
+				// if (lhs.get_root() == NULL && rhs.get_root() == NULL)
+				// {
+				// 	return true;
+				// }
+				// else if (lhs.get_root() != NULL && rhs.get_root() != NULL)
+				// {
+				// 	return *lhs.get_root() == *rhs.get_root();
+				// }
+			}
+			return (lhs._base == rhs._base) && (lhs._position == rhs._position);
 		};
 		
 		friend
