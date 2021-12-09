@@ -5,3 +5,4 @@
 output/*
 *.dSYM
 maptst.cpp
+containers_test/

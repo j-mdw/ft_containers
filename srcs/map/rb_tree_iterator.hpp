@@ -258,7 +258,7 @@ namespace ft
 	> {
 		private:
 		typedef TreeNode<T>			base;
-		typedef base const *		base_ptr;
+		typedef base *				base_ptr;
 		typedef rb_tree_const_iterator<T>	self;
 
 		public:
@@ -466,14 +466,6 @@ namespace ft
 			if (lhs.get_position() == it_end && rhs.get_position() == it_end)
 			{
 				return true;
-				// if (lhs.get_root() == NULL && rhs.get_root() == NULL)
-				// {
-				// 	return true;
-				// }
-				// else if (lhs.get_root() != NULL && rhs.get_root() != NULL)
-				// {
-				// 	return *lhs.get_root() == *rhs.get_root();
-				// }
 			}
 			return (lhs._base == rhs._base) && (lhs._position == rhs._position);
 		};
