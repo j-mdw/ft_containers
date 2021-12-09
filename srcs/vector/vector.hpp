@@ -11,6 +11,8 @@
 # include "../utils/lexicographical_compare/lexicographical_compare.hpp"
 # include "../utils/equal/equal.hpp"
 
+#define SIZE_FACTOR 2
+
 namespace ft
 {
 
@@ -227,7 +229,14 @@ class vector
 
         void push_back(const value_type & val)
         {
-            resize(this->_size + 1, val);
+            if (this->_size == this->_capacity)
+            {
+                this->reserve((_size * SIZE_FACTOR) + 1);
+            }
+            _allocator.construct(_vector + _size, val);
+            _size++;
+
+            // resize(this->_size + 1, val);
         };
 
         void pop_back(void)
