@@ -1,10 +1,6 @@
 #ifndef IS_INTEGRAL_H
 # define IS_INTEGRAL_H
 
-// # include <uchar.h>
-
-// #include <type_traits>
-
 namespace ft
 {
 

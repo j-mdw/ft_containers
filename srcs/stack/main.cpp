@@ -6,8 +6,6 @@
 
 #include "Person.hpp"
 
-// std::vector<int> v;
-
 int main(void)
 {
 	{

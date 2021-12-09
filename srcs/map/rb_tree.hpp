@@ -6,7 +6,6 @@
 #include "rb_tree_iterator.hpp"
 # include <queue> //Used for breadth_first_traversal
 
-// #define DEBUG 1 //TBU --> Need makefile implementation
 #ifdef DEBUG
 	# include <iostream> //For print methods --> DELETE
 	# include <cmath>
@@ -22,9 +21,9 @@ namespace ft
     class rb_tree
     {
 		public:
-        typedef Value   			value_type;
-        typedef Comp    			value_compare;
-		typedef	Alloc   			allocator_type;
+        typedef Value   				value_type;
+        typedef Comp    				value_compare;
+		typedef	Alloc   				allocator_type;
 		typedef TreeNode<value_type>	tree_node;
 		typedef typename allocator_type::template rebind<TreeNode<value_type> >::other node_allocator;
 		typedef rb_tree_iterator<value_type>		iterator;
@@ -37,7 +36,7 @@ namespace ft
         value_compare       compare;
         allocator_type		allocator;
 		node_allocator		node_alloc;
-        tree_node			*_nil; //should be const
+        tree_node			*_nil;
         tree_node			*_root;
 		size_t				_size;
 
@@ -125,6 +124,7 @@ namespace ft
 			tree._size = tmp_size;
 		};
 
+		public:
 		pair<iterator, bool>	insert(const value_type &val)
 		{
 			ft::pair<iterator, bool> ret;
@@ -180,14 +180,7 @@ namespace ft
 			return ret;
 		};
 
-		/*
-			At this stage, 2 RB tree conditions might be violated:
-			1. node's parent might be red
-			2. root could be red
-
-			Otherwise, we know that black depth property is respected
-		*/
-
+		private:
 		void	insert_fixup(tree_node *node)
 		{
 			tree_node *current_node = node;
@@ -259,6 +252,7 @@ namespace ft
 			return node->parent->parent->left;
 		};
 
+		public:
 		iterator	find(value_type &val)
 		{
 			tree_node *node = this->search(val);
@@ -300,13 +294,12 @@ namespace ft
 			if (node != NULL)
 			{
 				_size--;
-				// std::cout << "Removing node: " << node->value.first << " ; " << node->value.second << '\n';
 				this->remove_node(node);
 				return true;
 			}
 			return false;
 		};
-
+		private:
 		void	remove_node(tree_node *to_delete)
 		{
 			typename tree_node::color_t original_color = to_delete->color;
@@ -456,7 +449,7 @@ namespace ft
 			transplanted->parent_id = current->parent_id;
 		#endif
 		};
-
+		public:
 		tree_node *minimum(tree_node *start) const
 		{
 			if (start == NULL || start == _nil)
@@ -583,14 +576,13 @@ namespace ft
 			return bound;
 		};
 
-	
 		/*
 		 ### ROTATIONS ###
 		*/
 
 		void	left_rotate(tree_node *old_parent)
 		{
-			if (!old_parent || old_parent->right == _nil) //Not sure about the nil check
+			if (!old_parent || old_parent->right == _nil)
 			{
 			#ifdef DEBUG
 				std::cout << "Rotate received unexpected parameter: NULL node or non-rotable node\n";
@@ -627,7 +619,7 @@ namespace ft
 
 		void	right_rotate(tree_node *old_parent)
 		{
-			if (!old_parent || old_parent->left == _nil) //Not sure about the nil check
+			if (!old_parent || old_parent->left == _nil)
 			{
 			#ifdef DEBUG
 				std::cout << "Rotate received unexpected parameter: NULL node or non-rotable node\n";
@@ -662,6 +654,7 @@ namespace ft
 			old_parent->parent = new_parent;
 		}
 
+	#ifdef DEBUG
 		void	print_tree(void) // DELETE --> Testing only
 		{
 			// in_order_walk(_root, &rb_tree::print_pair);
@@ -744,6 +737,7 @@ namespace ft
 			#endif
 			}
 		};
+	#endif
 
 		tree_node *get_root(void) { return _root; }
 

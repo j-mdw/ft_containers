@@ -1,7 +1,6 @@
 #ifndef FT_PAIR_HPP
 # define FT_PAIR_HPP
 
-// #include <utility> //remove
 namespace ft
 {
 	template<typename T1, typename T2>
@@ -31,8 +30,7 @@ namespace ft
 				first = pr.first;
 				second = pr.second;
 				return *this;
-			}
-
+			};
 	};
 
 template <class T1, class T2>
@@ -47,13 +45,8 @@ bool operator!= (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
 	return !(lhs == rhs);
 }
 
-template <class T1, class T2>
-bool operator<  (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
-{
-	return lhs.first < rhs.first || (!(rhs.first < lhs.first) && lhs.second < rhs.second);
-}
-
 /*
+Logic:
 1st false:
 lhs.first >= rhs.first
 2nd false:
@@ -63,6 +56,11 @@ rhs == lhs && lhs.second >= rhs.second
 2nd true:
 rhs == lhs && lhs.second < rhs.second
 */
+template <class T1, class T2>
+bool operator<  (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
+{
+	return lhs.first < rhs.first || (!(rhs.first < lhs.first) && lhs.second < rhs.second);
+}
 
 template <class T1, class T2>
 bool operator<= (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)

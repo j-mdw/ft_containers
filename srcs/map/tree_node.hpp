@@ -20,8 +20,8 @@ namespace ft
         TreeNode    *left;
         TreeNode    *right;
 	#ifdef DEBUG
-		int		id; //DEBUG
-		int		parent_id; //DEBUG
+		int		id;
+		int		parent_id;
 	#endif
 
         TreeNode(void) :
@@ -30,8 +30,8 @@ namespace ft
             left(NULL),
             right(NULL) {
 			#ifdef DEBUG
-				id = 0; //DEBUG
-				parent_id = 0; //DEBUG
+				id = 0;
+				parent_id = 0;
 			#endif
             };
 

@@ -4,7 +4,6 @@
 # include <iterator> //Necessary for bidirectional_iterator_tag
 # include "../utils/iterator/iterator.hpp"
 # include "tree_node.hpp"
-# include <iostream> //REMOVE
 namespace ft
 {
 	typedef enum {
@@ -12,18 +11,7 @@ namespace ft
 		it_middle,
 		it_end
 	}		position_t;
-	/*
-		How it works:
-			- iterator is created either with a copy or by calling begin/end
-			- Other option is default initialization and then assignation
-			- In any case, we must call begin or end to get a tree pointer
-			--> When calling begin, position is set to 'middle'
-			--> When calling end, position is set to 'end'
-			--> decrementing begin sets position to bbegin; _base is not modified
-			--> Doing --/++ when position is begin/end sets _base to NULL => there is no getting back from this
-		Dependencies:
-			- RB Tree has a sentinel node which parent's is always NULL 
-	*/
+
 	template<typename T>
 	class rb_tree_iterator: public ft::iterator<
 		std::bidirectional_iterator_tag,
@@ -51,11 +39,7 @@ namespace ft
 			_base(),
 			_tree_root(NULL),
 			_position(it_middle)
-		{}; // Will base be NULL?
-		// rb_tree_iterator(const rb_tree_iterator &cpy):
-		// 	_base(cpy._base),
-		// 	_position(cpy._position)
-		// {};
+		{};
 
 		template<typename Iter>
 		rb_tree_iterator(const rb_tree_iterator<Iter>& cpy):
@@ -148,7 +132,6 @@ namespace ft
 			else if (_position != it_bbegin)
 			{
 				base_ptr tmp = tree_predecessor(_base);
-				// std::cout << "predecessor: " << tmp->value.first << " ; " << tmp->value.second << '\n';
 				if (tmp->parent == NULL)
 					_position = it_bbegin;
 				else
@@ -232,10 +215,6 @@ namespace ft
 			return parent;
 		};
 
-		// template<typename U, typename V>		
-		// friend
-		// bool	operator==(const rb_tree_iterator<U> &lhs, const rb_tree_iterator<V> &rhs);
-
 		friend
 		bool	operator==(const rb_tree_iterator &lhs, const rb_tree_iterator &rhs)
 		{
@@ -257,15 +236,15 @@ namespace ft
 		T
 	> {
 		private:
-		typedef TreeNode<T>			base;
-		typedef base *				base_ptr;
+		typedef TreeNode<T>					base;
+		typedef base *						base_ptr;
 		typedef rb_tree_const_iterator<T>	self;
 
 		public:
-		typedef std::bidirectional_iterator_tag  iterator_category;
+		typedef std::bidirectional_iterator_tag	iterator_category;
 		typedef const T         				value_type;
-		typedef typename std::ptrdiff_t	difference_type;
-		typedef const T*						  pointer;
+		typedef typename std::ptrdiff_t			difference_type;
+		typedef const T*						pointer;
 		typedef const T&						reference;
 
 		private:
@@ -475,23 +454,7 @@ namespace ft
 		{
 			return !(lhs == rhs);
 		};
-
-		// template<typename U, typename V>		
-		// friend
-		// bool	operator==(const rb_tree_const_iterator<U> &lhs, const rb_tree_const_iterator<V> &rhs);
 	};
-
-	// template<typename T, typename U>
-	// bool	operator==(const rb_tree_const_iterator<T> &lhs, const rb_tree_const_iterator<U> &rhs)
-	// {
-	// 	return (lhs._base == rhs._base && lhs._position == rhs._position);
-	// };
-	
-	// template<typename T, typename U>
-	// bool	operator!=(const rb_tree_const_iterator<T> &lhs, const rb_tree_const_iterator<U> &rhs)
-	// {
-	// 	return !(lhs == rhs);
-	// };
 }
 
 #endif

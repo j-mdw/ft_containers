@@ -2,7 +2,6 @@
 # define VECTOR_H
 
 # include <memory>
-# include <vector> //DELETE
 # include <cstddef> // for 'difference_type' type
 # include <iostream>
 # include <stdexcept> // for out of range exception
@@ -11,9 +10,6 @@
 # include "../utils/is_integral/is_integral.hpp" 
 # include "../utils/lexicographical_compare/lexicographical_compare.hpp"
 # include "../utils/equal/equal.hpp"
-
-# define VECTOR_GROWTH 2
-// # define VEC_MAX_SIZE std::numeric_limits<size_t>::max() >> 1
 
 namespace ft
 {
@@ -25,17 +21,15 @@ class vector
 
         typedef T                                           		value_type;
         typedef Alloc                                       		allocator_type;
-        typedef typename allocator_type::reference          		reference; // Need to test this
+        typedef typename allocator_type::reference          		reference;
         typedef typename allocator_type::const_reference    		const_reference;
         typedef typename allocator_type::pointer            		pointer;
         typedef typename allocator_type::const_pointer      		const_pointer;
-        // typedef typename allocator_type::pointer            		pointer;
-        // typedef typename allocator_type::const_pointer      		const_pointer;
-        typedef T*												iterator;
-		typedef const T*										const_iterator;
-        typedef typename ft::reverse_iterator<iterator>         	reverse_iterator;
-        typedef typename ft::reverse_iterator<const_iterator>   	const_reverse_iterator;
-        typedef typename iterator_traits<iterator>::difference_type difference_type; // ft?
+        typedef T*												    iterator;
+		typedef const T*										    const_iterator;
+        typedef typename ft::reverse_iterator<iterator>               	reverse_iterator;
+        typedef typename ft::reverse_iterator<const_iterator>         	const_reverse_iterator;
+        typedef typename iterator_traits<iterator>::difference_type difference_type;
         typedef size_t                                      		size_type;
 
 		// VARIABLES
@@ -103,7 +97,6 @@ class vector
 
         vector& operator= (const vector & x)
 		{
-			// reserve(x._capacity);
 			assign(x.begin(), x.end());
 			return *this;
 		};
@@ -129,11 +122,6 @@ class vector
         size_type   size(void) const    { return this->_size; };
         size_type   max_size(void) const
 		{
-			// long long max_size = std::numeric_limits<size_t>::max() >> 1;
-			// int divisor = sizeof(T) / 2;
-			// if (divisor > 1)
-			// 	return max_size / divisor;
-			// return max_size;
             return _allocator.max_size();
 		};
         
@@ -240,19 +228,6 @@ class vector
         void push_back(const value_type & val)
         {
             resize(this->_size + 1, val);
-            // if (this->_size == this->_capacity)
-			// {
-			// 	if (this->_size == 0)
-			// 	{
-			// 		reserve(1);
-			// 	}
-			// 	else
-			// 	{
-            //     	reserve(this->_capacity * VECTOR_GROWTH);
-			// 	}
-			// }
-			// _allocator.construct(_vector + _size, val);
-			// this->_size++;
         };
 
         void pop_back(void)
@@ -263,32 +238,35 @@ class vector
     
         iterator    insert(iterator position, const value_type& val)
         {
+            value_type v = val;
             size_t index = position - begin();
             resize(this->_size + 1);
             memmove(this->_vector + index + 1, this->_vector + index, (this->_size - 1) - (index));
-            this->_vector[index] = val;
+            this->_vector[index] = v;
             return (_vector + index);
         };
 
         void        insert(iterator position, size_type n, const value_type& val)
         {
+            value_type v = val;
             int index = position - begin();
             resize(this->_size + n);
             memmove(this->_vector + index + n, this->_vector + index, (this->_size - n) - (index));
-            memset(this->_vector + index, n, val);
+            memset(this->_vector + index, n, v);
         };
 
         template <class InputIterator>
         void        insert(iterator position, InputIterator first, typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type last)
         {
-            // vector<T> store(first, last);
+            vector store(first, last);
             int index = position - begin();
             size_type n = range(first, last);
             resize(this->_size + n);
             memmove(this->_vector + index + n, this->_vector + index, (this->_size - n) - (index));
-            for (size_type i = 0; first != last; ++first)
+            vector::iterator it = store.begin();
+            for (size_type i = 0; it != store.end(); ++it)
             {
-                this->_vector[index + i] = *first;
+                this->_vector[index + i] = *it;
 				++i;
             }
         };
@@ -398,13 +376,6 @@ bool operator== (const vector<T, Alloc> & lhs, const vector<T, Alloc> & rhs)
 		return false;
 
 	return ft::equal(lhs.begin(), lhs.end(), rhs.begin());
-
-	// for (typename vector<T, Alloc>::size_type i = 0; i < lhs.size(); i++)
-	// {
-	// 	if (rhs[i] != lhs[i])
-	// 		return false;
-	// }
-	// return true;
 };
 
 
@@ -418,29 +389,7 @@ bool operator!= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
 template <class T, class Alloc>
 bool operator< (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
 {
-	// typename vector<T, Alloc>::const_iterator it1 = lhs.begin();
-	// typename vector<T, Alloc>::const_iterator ite1 = lhs.end();
-
-	// typename vector<T, Alloc>::const_iterator it2 = rhs.begin();
-	// typename vector<T, Alloc>::const_iterator ite2 = rhs.end();
-
-	// return ft::lexicographical_compare(it1, ite1, it2, ite2);
-
 	return ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
-
-
-	// for(;it1 != ite1; it1++)
-	// {
-	// 	if (it2 == ite2)
-	// 		return false; // rhs ends before lhs, rhs is less than lhs
-	// 	if (*it1 != *it2)
-	// 		return (*it1 < *it2);
-	// 	else
-	// 		it2++;
-	// }
-	// if (it2 != ite2)
-	// 	return true;    // lhs ends before rhs
-	// return false;
 };
 
 

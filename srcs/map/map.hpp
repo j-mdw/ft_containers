@@ -6,7 +6,6 @@
 # include "../utils/pair/make_pair.hpp"
 # include "rb_tree_iterator.hpp"
 # include "../utils/iterator/reverse_iterator.hpp"
-# include <map> //Remove
 # include "rb_tree.hpp"
 # include "../utils/lexicographical_compare/lexicographical_compare.hpp"
 # include "../utils/equal/equal.hpp"
@@ -182,7 +181,9 @@ namespace ft
 			}
 		};
 
+	#ifdef DEBUG
 		void print(void) { _tree.print_tree(); }; // TEST --> To remove
+	#endif
 
 		void swap (map& x)
 		{

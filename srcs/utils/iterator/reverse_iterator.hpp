@@ -2,10 +2,6 @@
 # define FT_REVERSE_ITERATOR_HPP
 
 # include "iterator_traits.hpp"
-# include <vector>
-
-// std::vector<int>::reverse_iterator rit;
-
 
 namespace ft
 {
@@ -119,35 +115,30 @@ bool operator== (const reverse_iterator<Iterator1>& lhs, const reverse_iterator<
     return (lhs.base() == rhs.base());
 };
 
-// template <class Iterator>
 template <class Iterator1, class Iterator2>
 bool operator!= (const reverse_iterator<Iterator1>& lhs, const reverse_iterator<Iterator2>& rhs)
 {
     return !(lhs == rhs);
 };
 
-// template <class Iterator>
 template <class Iterator1, class Iterator2>
 bool operator<  (const reverse_iterator<Iterator1>& lhs, const reverse_iterator<Iterator2>& rhs)
 {
     return (rhs.base() < lhs.base());
 };
 
-// template <class Iterator>
 template <class Iterator1, class Iterator2>
 bool operator<= (const reverse_iterator<Iterator1>& lhs, const reverse_iterator<Iterator2>& rhs)
 {
     return (lhs < rhs || lhs == rhs);
 };
 
-// template <class Iterator>
 template <class Iterator1, class Iterator2>
 bool operator>  (const reverse_iterator<Iterator1>& lhs, const reverse_iterator<Iterator2>& rhs)
 {
     return (rhs < lhs);
 };
 
-// template <class Iterator>
 template <class Iterator1, class Iterator2>
 bool operator>= (const reverse_iterator<Iterator1>& lhs, const reverse_iterator<Iterator2>& rhs)
 {
@@ -155,7 +146,6 @@ bool operator>= (const reverse_iterator<Iterator1>& lhs, const reverse_iterator<
 };
 
 template <class Iterator>
-// template <class Iterator1, class Iterator2>
 reverse_iterator<Iterator>
 operator+ (
     typename reverse_iterator<Iterator>::difference_type n,
@@ -164,7 +154,7 @@ operator+ (
 {
     return reverse_iterator<Iterator>(rev_it + n);
 }
-// template <class Iterator>
+
 template <class Iterator1, class Iterator2>
 typename reverse_iterator<Iterator1>::difference_type
 operator- (

@@ -5,11 +5,11 @@ class Category;
 
 namespace ft {
 
-template <class Category,              // iterator::iterator_category
-          class T,                     // iterator::value_type
-          class Distance = typename std::ptrdiff_t,  // iterator::difference_type
-          class Pointer = T*,          // iterator::pointer
-          class Reference = T&         // iterator::reference
+template <class Category,              				// iterator::iterator_category
+          class T,                     				// iterator::value_type
+          class Distance = typename std::ptrdiff_t,	// iterator::difference_type
+          class Pointer = T*,          				// iterator::pointer
+          class Reference = T&         				// iterator::reference
           >
 class iterator
 {
