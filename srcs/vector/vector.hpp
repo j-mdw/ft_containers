@@ -4,7 +4,7 @@
 # include <memory>
 # include <cstddef> // for 'difference_type' type
 # include <iostream>
-# include <stdexcept> // for out of range exception
+# include <stdexcept> // for out of range exception and length error
 # include "../utils/iterator/reverse_iterator.hpp"
 # include "../utils/enable_if/enable_if.hpp"
 # include "../utils/is_integral/is_integral.hpp" 
@@ -148,6 +148,10 @@ class vector
         {
             if (n > this->_capacity)
             {
+                if (n > this->max_size())
+                {
+                    throw std::length_error("Cannot exceed max_size");
+                }
                 value_type *p = _allocator.allocate(n);
 				for (size_type i = 0; i < _size; ++i)
 				{

@@ -1,8 +1,8 @@
 #ifndef FT_RB_MAP_HPP
 # define FT_RB_MAP_HPP
 
-#include "map.hpp"
-#include "../utils/iterator/iterator.hpp"
+// #include "map.hpp"
+#include "../iterator/iterator.hpp"
 #include "rb_tree_iterator.hpp"
 # include <queue> //Used for breadth_first_traversal
 
@@ -33,7 +33,7 @@ namespace ft
 		typedef rb_tree<value_type, value_compare, allocator_type>	self;
 
         private:
-        value_compare       compare;
+        value_compare		compare;
         allocator_type		allocator;
 		node_allocator		node_alloc;
         tree_node			*_nil;
@@ -41,7 +41,7 @@ namespace ft
 		size_t				_size;
 
 		public:
-        rb_tree(value_compare cmp, allocator_type alloc) : 
+        rb_tree(const value_compare &cmp, allocator_type alloc) : 
 			compare(cmp),
 			allocator(alloc),
 			_nil(create_node()),
@@ -253,7 +253,7 @@ namespace ft
 		};
 
 		public:
-		iterator	find(value_type &val)
+		iterator	find(const value_type &val)
 		{
 			tree_node *node = this->search(val);
 			if (node != NULL)
@@ -261,7 +261,7 @@ namespace ft
 			return this->end();
 		};
 
-		const_iterator	find(value_type &val) const
+		const_iterator	find(const value_type &val) const
 		{
 			tree_node *node = this->search(val);
 			if (node != NULL)
@@ -269,7 +269,7 @@ namespace ft
 			return this->end();
 		};
 
-		tree_node *search(value_type val) const
+		tree_node *search(const value_type &val) const
 		{
 			if (_root == NULL)
 				return NULL;
@@ -288,7 +288,7 @@ namespace ft
 			return node;
 		};
 
-		bool	remove(value_type &val)
+		bool	remove(const value_type &val)
 		{
 			tree_node *node = this->search(val);
 			if (node != NULL)
@@ -513,7 +513,7 @@ namespace ft
 			return parent;
 		};
 		public:
-		iterator lower_bound (value_type &val)
+		iterator lower_bound (value_type val)
 		{
 			tree_node *lower = get_lower_bound(_root, val);
 			if (lower == _nil)
@@ -521,7 +521,7 @@ namespace ft
 			return iterator(lower, &_root);
 		};
 
-		const_iterator lower_bound (value_type &val) const
+		const_iterator lower_bound (value_type val) const
 		{
 			tree_node *lower = get_lower_bound(_root, val);
 			if (lower == _nil)
@@ -545,7 +545,7 @@ namespace ft
 		};
 
 		public:
-		iterator upper_bound (value_type &val)
+		iterator upper_bound (value_type val)
 		{
 			tree_node *lower = get_upper_bound(_root, val);
 			if (lower == _nil)
@@ -553,7 +553,7 @@ namespace ft
 			return iterator(lower, &_root);
 		};
 
-		const_iterator upper_bound (value_type &val) const
+		const_iterator upper_bound (value_type val) const
 		{
 			tree_node *lower = get_upper_bound(_root, val);
 			if (lower == _nil)

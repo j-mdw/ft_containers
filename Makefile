@@ -7,6 +7,9 @@ STD_STK = std_stack
 FT_MAP = ft_map
 STD_MAP = std_map
 
+FT_SET= ft_set
+STD_SET = std_set
+
 C = clang++
 
 F = -Wall -Werror -Wextra -std=c++98
@@ -19,6 +22,7 @@ IFLAGS = $(foreach dir, $(INC_DIR), -I $(dir))
 VEC_MAIN = srcs/vector/main.cpp
 STK_MAIN = srcs/stack/main.cpp
 MAP_MAIN = srcs/map/main.cpp
+SET_MAIN = srcs/set/main.cpp
 
 UTIL_FILES = tester/utils/RandomGenerator.cpp
 
@@ -57,9 +61,17 @@ $(FT_MAP): $(MAP_MAIN) $(UTIL_FILES)
 $(STD_MAP): $(MAP_MAIN) $(UTIL_FILES)
 	$C $F $(IFLAGS) -D NS=std -D CONTAINER=map $^ -o $@
 
+set: $(FT_SET) $(STD_SET)
+
+$(FT_SET): $(SET_MAIN) $(UTIL_FILES)
+	$C $F $(IFLAGS) -D NS=ft -D CONTAINER=set $^ -o $@
+
+$(STD_SET): $(SET_MAIN) $(UTIL_FILES)
+	$C $F $(IFLAGS) -D NS=std -D CONTAINER=set $^ -o $@
+
 clean:
 
 fclean:
-	rm -f $(FT_VEC) $(STD_VEC) $(FT_STK) $(STD_STK) $(FT_MAP) $(STD_MAP)
+	rm -f $(FT_VEC) $(STD_VEC) $(FT_STK) $(STD_STK) $(FT_MAP) $(STD_MAP) $(FT_SET) $(STD_SET)
 
 re: fclean

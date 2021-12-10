@@ -2,7 +2,7 @@
 # define FT_RB_TREE_ITERATOR_HPP
 
 # include <iterator> //Necessary for bidirectional_iterator_tag
-# include "../utils/iterator/iterator.hpp"
+# include "../iterator/iterator.hpp"
 # include "tree_node.hpp"
 namespace ft
 {

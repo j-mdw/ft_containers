@@ -104,6 +104,36 @@ int main(int argc, char** argv) {
 	{
 		ft::map<int, int> copy = map_int;
 	}
+
+		// MY MAP TESTS:
+	{
+		//INSERT
+		ft::map<int, int> map_inc;
+		ft::map<int, int> map_dec;
+		size_t insert_count = 1000000;
+		for (size_t i = 0; i < insert_count; ++i)
+		{
+			map_inc.insert(ft::make_pair(i, i));
+			map_dec.insert(ft::make_pair(insert_count - i, i));
+		}
+		//ACCESS
+		long int my_sum = 0;
+		for (int i = 0; i < 1000; i++)
+		{
+			int access = rand() % insert_count;
+			my_sum += map_inc[access];
+			my_sum += map_dec[access];
+		}
+		std::cout << "My Sum: " << my_sum << '\n';
+		//ERASE
+		for (int i = 0; i < 1000; ++i)
+		{
+			int erase_key = rand() % insert_count;
+			map_inc.erase(erase_key);
+			map_dec.erase(erase_key);
+		}
+	}
+
 	MutantStack<char> iterable_stack;
 	for (char letter = 'a'; letter <= 'z'; letter++)
 		iterable_stack.push(letter);
