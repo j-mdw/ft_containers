@@ -21,7 +21,9 @@ dir=$dir/
 
 function test_container()
 {
-	echo "--Testing $arg--"
+	echo ""
+	echo "** CONTAINER TEST **"
+	echo "--- Testing $arg ---"
 
 	make $arg
 
@@ -38,7 +40,9 @@ function test_container()
 	if [ -s "$dir$arg"_diff.out ]; then
 		echo "[KO] /!\\ Outputs differ /!\\ check \""$dir$arg"_diff.out\" for more details"
 	else
-		echo "[OK]"
+		echo "################"
+		echo "#     [OK]     #"
+		echo "################"
 		rm -f "$dir$arg"_diff.out
 	fi
 }

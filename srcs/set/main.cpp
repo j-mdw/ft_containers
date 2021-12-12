@@ -212,16 +212,10 @@ main(void)
 		m.erase(9);
 		it_lower = m.lower_bound(10);
 		std::cout << "Lower bound: " << *it_lower << '\n';
-		m.erase(10);
-		it_lower = m.lower_bound(10);
-		std::cout << "Lower bound: " << *it_lower << '\n';
-		// it_lower = m.upper_bound(5);
-		// std::cout << "Upper bound: " << it_lower->first << " ; " <<  it_lower->second << '\n';
+
 		m_t::iterator it = m.begin();
 		m_t::iterator ite = m.end();
 	it--;
-	if (it == ite)
-		std::cout << "yap\n";
 	ite--;
 	for (; it != ite; --ite)
 		std::cout << "STD It value: " << *ite << '\n';
@@ -254,9 +248,7 @@ main(void)
 		std::cout << "Lower bound: " << *itc_lower << '\n';
 		std::cout << "Upper bound: " << *itc_upper << '\n';
 		itc_lower = m.lower_bound(10);
-		itc_upper = m.upper_bound(10);
 		std::cout << "Lower bound: " << *itc_lower << '\n';
-		std::cout << "Upper bound: " << *itc_upper << '\n';
 	}
 	{
 		m_t my_map;

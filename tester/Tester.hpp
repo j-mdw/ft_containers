@@ -57,9 +57,6 @@ class Tester
 	test_constructor(size_t n, T val, NS::stack<T, NS::vector<T> > initialized_ins)
 	{
 		(void)n; (void)val;
-		// print("Stack instance", initialized_ins, PRINT_ATTR);
-		// NS::stack<T, NS::vector<T> > ins;
-		// print("Constructor with vector", ins, PRINT_ATTR);
 
 		print_attr(initialized_ins);
 		NS::stack<T, NS::vector<T> > ins;
@@ -171,7 +168,6 @@ class Tester
 	test_capacity(NS::CONTAINER<T> & ins)
 	{
 		NS::CONTAINER<T> ins_cpy(ins);
-		std::cout << "Max size: " << ins_cpy.max_size() << '\n';
 		std::cout << "Empty: " << ins_cpy.empty()  << '\n';
 		print("Capacity: after copy", ins_cpy, PRINT_ATTR);
 		
@@ -261,8 +257,7 @@ class Tester
 			
 			ins2.erase(ins2.begin());
 			print_all_values(ins2);
-			// ins.erase(++(ins2.begin());
-			// ins2.erase(ins2.end()--);
+
 			ins2.erase(ins2.end() - 1);
 			print_all_values(ins2);
 			ins2.erase(ins2.begin(), ins2.end());
@@ -304,8 +299,7 @@ class Tester
 	void
 	print_attr(const NS::vector<T> & ins)
 	{
-		std::cout << "Size: " << ins.size()
-		<< "\tCapacity: " << ins.capacity() << std::endl;
+		std::cout << "Size: " << ins.size() << std::endl;
 	};
 
 	void

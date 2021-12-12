@@ -19,7 +19,6 @@ RandomGenerator::operator=(RandomGenerator const & src)
 size_t
 RandomGenerator::generate_unsigned(size_t max)
 {
- 	// std::srand(std::time(NULL) + std::clock());
 	return rand() % max;
 }
 

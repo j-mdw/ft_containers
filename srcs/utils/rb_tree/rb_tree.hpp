@@ -1,9 +1,9 @@
 #ifndef FT_RB_MAP_HPP
 # define FT_RB_MAP_HPP
 
-// #include "map.hpp"
 #include "../iterator/iterator.hpp"
 #include "rb_tree_iterator.hpp"
+#include "tree_node.hpp"
 # include <queue> //Used for breadth_first_traversal
 
 #ifdef DEBUG
@@ -517,7 +517,7 @@ namespace ft
 		{
 			tree_node *lower = get_lower_bound(_root, val);
 			if (lower == _nil)
-				return iterator(maximum(_root), &_root, it_end);
+				return this->end();//iterator(maximum(_root), &_root, it_end);
 			return iterator(lower, &_root);
 		};
 
@@ -525,7 +525,8 @@ namespace ft
 		{
 			tree_node *lower = get_lower_bound(_root, val);
 			if (lower == _nil)
-				return const_iterator(maximum(_root), &_root, it_end);
+				// return const_iterator(maximum(_root), &_root, it_end);
+				return this->end();
 			return const_iterator(lower, &_root);
 		};
 
@@ -549,7 +550,9 @@ namespace ft
 		{
 			tree_node *lower = get_upper_bound(_root, val);
 			if (lower == _nil)
-				return iterator(maximum(_root), &_root, it_end);
+				return this->end();
+				// return iterator(maximum(_root), &_root, it_end);
+				// this->end();
 			return iterator(lower, &_root);
 		};
 
@@ -557,7 +560,9 @@ namespace ft
 		{
 			tree_node *lower = get_upper_bound(_root, val);
 			if (lower == _nil)
-				return const_iterator(maximum(_root), &_root, it_end);
+				return this->end();
+				// return const_iterator(maximum(_root), &_root, it_end);
+				// this->end();
 			return const_iterator(lower, &_root);
 		};
 
