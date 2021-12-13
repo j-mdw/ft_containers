@@ -1,8 +1,5 @@
 .vscode
-*/.vscode
-*/a.out*
-*/error
+*/**/.vscode
+a.out
 output/*
 *.dSYM
-maptst.cpp
-containers_test/
