@@ -1,5 +1,5 @@
 # ft_containers_WIP
-## Implementation of c++ STL containers
+## Implementation of C++ STL containers
 * Vector
 * Stack
 * Map
@@ -7,9 +7,21 @@
 
 ## Run container tests:
 * Pass one or more container names to "test_container":
-** ./test_container <container1> <container2> ...
+```bash
+./test_container <container1> <container2> ...
+```
 
 ## Dockerfile usage for leaks testing:
-* docker build -t ft_containers .
-* docker run -it ft_containers bash
-* then: "make <container_name>" and run executables with valgrind
+```bash
+docker build -t ft_containers .
+docker run -it ft_containers bash
+make <container_name>; valgrind ./ft_<container_name>
+```
+## Speed testing
+```bash
+cd speed
+./compile_speed_test.sh
+time ./ft_speed <seed>
+time ./std_speed <seed>
+```
+"seed" must be a positive integer and is used to generate random values
