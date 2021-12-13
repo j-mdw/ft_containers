@@ -14,6 +14,8 @@ class stack;
 # include "stack.hpp"
 # include <stack>
 class vector;
+# include "vector.hpp"
+# include <vector>
 
 template<typename T>
 class Tester

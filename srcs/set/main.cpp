@@ -201,7 +201,6 @@ main(void)
 		it_lower = m.lower_bound(7);
 		itc_lower = m.lower_bound(10);
 		it_upper = m.upper_bound(7);
-		itc_upper = m.upper_bound(10);
 		p = m.equal_range(4);
 
 		std::cout << "Lower bound: " << *it_lower << '\n';
